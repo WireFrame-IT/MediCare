@@ -7,7 +7,7 @@ namespace MediCare.Models
 	{
 		[Required]
 		[MaxLength(50)]
-		public string Login { get; set; }
+		public string Email { get; set; }
 
 		[Required]
 		[MaxLength(256)]
@@ -29,10 +29,6 @@ namespace MediCare.Models
 		[MaxLength(11)]
 		[MinLength(11)]
 		public string Pesel { get; set; }
-
-		[Required]
-		[MaxLength(50)]
-		public string Email { get; set; }
 
 		[Required]
 		[MaxLength(15)]
