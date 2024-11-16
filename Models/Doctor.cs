@@ -22,5 +22,7 @@ namespace MediCare.Models
 
 		[ForeignKey("UserId")]
 		public User User { get; set; }
+
+		public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 	}
 }

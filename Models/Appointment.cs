@@ -17,10 +17,10 @@ namespace MediCare.Models
 		public string Diagnosis { get; set; }
 
 		[Required]
-		public int UserId { get; set; }
+		public int PatientId { get; set; }
 
-		[ForeignKey("UserId")]
-		public User User { get; set; }
+		[ForeignKey("PatientId")]
+		public Patient Patient { get; set; }
 
 		[Required]
 		public int DoctorId { get; set; }
@@ -31,5 +31,7 @@ namespace MediCare.Models
 		public int? ServiceId { get; set; }
 
 		public Service? Service { get; set; }
+
+		public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 	}
 }

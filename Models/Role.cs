@@ -8,6 +8,6 @@ namespace MediCare.Models
 		[Required]
 		public RoleType RoleType { get; set; }
 
-		public ICollection<Permission> Permissions { get; set; } = new List<Permission>();
+		public ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
 	}
 }

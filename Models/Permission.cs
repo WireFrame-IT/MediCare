@@ -8,6 +8,6 @@ namespace MediCare.Models
 		[MaxLength(256)]
 		public string Description { get; set; }
 
-		public ICollection<Role> Roles { get; set; } = new List<Role>();
+		public ICollection<RolePermission> PermissionRoles { get; set; } = new List<RolePermission>();
 	}
 }

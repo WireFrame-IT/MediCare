@@ -17,6 +17,6 @@ namespace MediCare.Models
 		[ForeignKey("AppointmentId")]
 		public Appointment Appointment { get; set; }
 
-		public ICollection<Medicament> Medicaments { get; set; } = new List<Medicament>();
+		public ICollection<PrescriptionMedicament> PrescriptionMedicaments { get; set; } = new List<PrescriptionMedicament>();
 	}
 }

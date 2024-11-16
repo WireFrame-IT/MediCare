@@ -17,5 +17,7 @@ namespace MediCare.Models
 
 		[ForeignKey("UserId")]
 		public User User { get; set; }
+
+		public ICollection<Report> Reports { get; set; } = new List<Report>();
 	}
 }

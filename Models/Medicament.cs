@@ -18,6 +18,6 @@ namespace MediCare.Models
 		[Required]
 		public bool PrescriptionRequired { get; set; }
 
-		public ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
+		public ICollection<PrescriptionMedicament> MedicamentPrescriptions { get; set; } = new List<PrescriptionMedicament>();
 	}
 }
