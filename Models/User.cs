@@ -34,11 +34,9 @@ namespace MediCare.Models
 		[MaxLength(15)]
 		public string PhoneNumber { get; set; }
 
-		[Required]
 		[MaxLength(256)]
 		public string? RefreshToken { get; set; }
 
-		[Required]
 		public DateTime? RefreshTokenExpiration { get; set; }
 
 		[Required]

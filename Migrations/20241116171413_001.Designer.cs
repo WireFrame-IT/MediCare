@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20241116151256_001")]
+    [Migration("20241116171413_001")]
     partial class _001
     {
         /// <inheritdoc />
@@ -482,11 +482,10 @@ namespace MediCare.Migrations
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("RefreshToken")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<DateTime>("RefreshTokenExpiration")
+                    b.Property<DateTime?>("RefreshTokenExpiration")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("RoleId")
