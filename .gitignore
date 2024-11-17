@@ -6,6 +6,7 @@ obj/
 .vs/
 .vscode/
 .idea/
+*.csproj.user
 
 # JetBrains Rider
 .idea/
