@@ -32,6 +32,6 @@ namespace MediCare.DTOs
 
 		[Required(ErrorMessage = "Date of birth is required")]
 		[DataType(DataType.Date)]
-		public DateTime DateOfBirth { get; set; }
+		public DateTime BirthDate { get; set; }
 	}
 }
