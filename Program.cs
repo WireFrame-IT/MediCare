@@ -2,6 +2,8 @@ using System.Text;
 using MediCare.Mapping;
 using MediCare.Models;
 using MediCare.ServiceModels;
+using MediCare.Services;
+using MediCare.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -44,6 +46,7 @@ builder.WebHost.ConfigureKestrel(options =>
 	});
 });
 
+builder.Services.AddScoped<IAccountsService, AccountsService>();
 builder.Services.AddAutoMapper(typeof(MediCareMappingProfile).Assembly);
 builder.Services.AddControllers();
 builder.Services.Configure<AppointmentSettings>(builder.Configuration.GetSection("AppointmentSettings"));

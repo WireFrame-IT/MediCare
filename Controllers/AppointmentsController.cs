@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using AutoMapper;
 using MediCare.DTOs;
 using MediCare.Enums;
@@ -15,15 +14,13 @@ namespace MediCare.Controllers
 	[Authorize]
 	[ApiController]
 	[Route("[controller]")]
-	public class AppointmentsController : Controller
+	public class AppointmentsController : BaseController
 	{
-		private readonly MediCareDbContext _context;
 		private readonly IMapper _mapper;
 		private readonly AppointmentSettings _appointmentSettings;
 
-		public AppointmentsController(MediCareDbContext context, IMapper mapper, IOptions<AppointmentSettings> appointmentSettings)
+		public AppointmentsController(MediCareDbContext context, IConfiguration configuration, IMapper mapper, IOptions<AppointmentSettings> appointmentSettings) : base(context, configuration)
 		{
-			_context = context;
 			_mapper = mapper;
 			_appointmentSettings = appointmentSettings.Value;
 		}
@@ -95,24 +92,6 @@ namespace MediCare.Controllers
 			ValidateAppointment(appointment);
 			await _context.SaveChangesAsync();
 			return Ok(appointment);
-		}
-
-		private int GetCurrentUserId()
-		{
-			var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			if (!int.TryParse(userIdString, out var userId))
-				throw new InvalidOperationException("User Id claim is not a valid integer.");
-
-			return userId;
-		}
-
-		private async Task<User> GetCurrentUser()
-		{
-			var userId = GetCurrentUserId();
-			var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
-			if (user == null)
-				throw new InvalidOperationException("User not found");
-			return user;
 		}
 
 		private async Task<Doctor?> FindAvailableDoctor(DateTime time, Service service)
