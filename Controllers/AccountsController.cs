@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using MediCare.DTOs;
@@ -15,7 +16,7 @@ namespace MedicalFacility.Controllers
 {
 	[Authorize]
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("[controller]")]
 	public class AccountsController : Controller
 	{
 		private readonly MediCareDbContext _context;
@@ -56,7 +57,9 @@ namespace MedicalFacility.Controllers
 		[HttpPost("login")]
 		public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequest)
 		{
-			var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == loginRequest.Email);
+			var user = await _context.Users
+				.Include(x => x.Role)
+				.FirstOrDefaultAsync(x => x.Email == loginRequest.Email);
 
 			if (user == null || HashPassword(loginRequest.Password, user.Salt) != user.Password)
 				return Unauthorized("Invalid email or password.");
@@ -67,7 +70,7 @@ namespace MedicalFacility.Controllers
 
 			return Ok(new
 			{
-				accessToken = new JwtSecurityTokenHandler().WriteToken(GenerateAccessToken()),
+				accessToken = new JwtSecurityTokenHandler().WriteToken(GenerateAccessToken(user)),
 				user.RefreshToken
 			});
 		}
@@ -76,7 +79,9 @@ namespace MedicalFacility.Controllers
 		[HttpPost("refresh")]
 		public async Task<IActionResult> RefreshToken([FromBody] string refreshTokenRequest)
 		{
-			var user = await _context.Users.SingleOrDefaultAsync(x => x.RefreshToken == refreshTokenRequest);
+			var user = await _context.Users
+				.Include(x => x.Role)
+				.SingleOrDefaultAsync(x => x.RefreshToken == refreshTokenRequest);
 
 			if (user == null)
 				return Unauthorized("Invalid refresh token.");
@@ -89,7 +94,7 @@ namespace MedicalFacility.Controllers
 
 			return Ok(new
 			{
-				accessToken = GenerateAccessToken(),
+				accessToken = GenerateAccessToken(user),
 				refreshToken = user.RefreshToken
 			});
 		}
@@ -101,12 +106,25 @@ namespace MedicalFacility.Controllers
 			return $"{cardBase}{uniqueSuffix}";
 		}
 
-		private JwtSecurityToken GenerateAccessToken()
+		private JwtSecurityToken GenerateAccessToken(User user)
 		{
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
+			var secretKey = _configuration.GetSection("JwtSettings:SecretKey").Value;
+			if (string.IsNullOrEmpty(secretKey))
+			{
+				throw new InvalidOperationException("SecretKey is not set.");
+			}
+
+			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+			var claims = new List<Claim>
+			{
+				new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+				new(ClaimTypes.Role, user.Role.RoleType.ToString())
+			};
+
 			return new JwtSecurityToken(
 				issuer: _configuration.GetSection("JwtSettings:ValidIssuer").Value,
 				audience: _configuration.GetSection("JwtSettings:ValidAudience").Value,
+				claims: claims,
 				expires: DateTime.Now.AddMinutes(5),
 				signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
 			);
