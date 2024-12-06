@@ -80,7 +80,8 @@ namespace MediCare.Migrations.CustomScripts
 					{ 7, "Psychiatry", "Specialty that deals with diagnosing and treating mental health disorders." },
 					{ 8, "Gynecology", "Specialty that focuses on women's health, including the diagnosis and treatment of reproductive system diseases." },
 					{ 9, "Endocrinology", "Specialty focused on diagnosing and treating hormonal disorders." },
-					{ 10, "Oncology", "Specialty focused on diagnosing and treating cancer." }
+					{ 10, "Oncology", "Specialty focused on diagnosing and treating cancer." },
+					{ 11, "Family Medicine", "Specialty that provides primary healthcare services and treats a wide range of conditions for patients of all ages." }
 				});
 
 			migrationBuilder.InsertData(
@@ -119,15 +120,38 @@ namespace MediCare.Migrations.CustomScripts
 					{ 29, "Pantoprazole", "Proton pump inhibitor for acid reflux and gastric ulcers.", (int)MedicamentType.Antacid, true },
 					{ 30, "Dabigatran", "Antiplatelet medication to prevent blood clots in atrial fibrillation.", (int)MedicamentType.Antiplatelet, true }
 				});
+
+			migrationBuilder.InsertData(
+				table: "Services",
+				columns: new[] { "Id", "Name", "Description", "Price", "DurationMinutes", "SpecialityId" },
+				values: new object[,]
+				{
+					{ 1, "Heart Checkup", "Comprehensive evaluation of heart health.", 200.00m, 30, 1 },
+					{ 2, "Neurological Consultation", "Assessment of nervous system disorders.", 250.00m, 45, 2 },
+					{ 3, "Bone Fracture Treatment", "Diagnosis and treatment of bone fractures.", 300.00m, 60, 3 },
+					{ 4, "Pediatric General Checkup", "Routine health checkup for children.", 100.00m, 30, 4 },
+					{ 5, "Digestive System Analysis", "Comprehensive analysis of digestive health.", 180.00m, 45, 5 },
+					{ 6, "Skin Condition Diagnosis", "Evaluation of skin issues and conditions.", 120.00m, 30, 6 },
+					{ 7, "Mental Health Therapy", "Therapeutic session for mental well-being.", 150.00m, 60, 7 },
+					{ 8, "Prenatal Checkup", "Regular checkup for pregnant women.", 130.00m, 30, 8 },
+					{ 9, "Hormonal Therapy Session", "Management of hormonal imbalances.", 160.00m, 45, 9 },
+					{ 10, "Cancer Screening", "Early detection and diagnosis of cancer.", 400.00m, 60, 10 },
+					{ 11, "ECG Test", "Electrocardiogram to monitor heart activity.", 80.00m, 15, 1 },
+					{ 12, "EEG Test", "Electroencephalogram for brain activity analysis.", 150.00m, 30, 2 },
+					{ 13, "Physical Therapy Session", "Therapy for musculoskeletal rehabilitation.", 200.00m, 45, 3 },
+					{ 14, "Child Vaccination", "Vaccination for common childhood diseases.", 50.00m, 15, 4 },
+					{ 15, "Endoscopy", "Examination of the digestive tract.", 500.00m, 60, 5 },
+					{ 16, "Acne Treatment", "Comprehensive treatment for acne.", 100.00m, 30, 6 },
+					{ 17, "Psychiatric Evaluation", "Initial evaluation for mental health issues.", 120.00m, 30, 7 },
+					{ 18, "Gynecological Consultation", "Women's health consultation.", 140.00m, 30, 8 },
+					{ 19, "Diabetes Management", "Treatment plan for diabetes patients.", 150.00m, 30, 9 },
+					{ 20, "Chemotherapy Session", "Cancer treatment with chemotherapy.", 1000.00m, 90, 10 },
+					{ 21, "Family Medicine", "Appointment with a family doctor.", 50.00m, 15, 11 }
+				});
 		}
 
 		public static void Down(MigrationBuilder migrationBuilder)
 		{
-			migrationBuilder.DeleteData(
-				table: "RolePermissions",
-				keyColumn: "Id",
-				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-
 			migrationBuilder.DeleteData(
 				table: "Roles",
 				keyColumn: "Id",
@@ -139,14 +163,24 @@ namespace MediCare.Migrations.CustomScripts
 				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
 
 			migrationBuilder.DeleteData(
+				table: "RolePermissions",
+				keyColumn: "Id",
+				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+
+			migrationBuilder.DeleteData(
 				table: "Specialities",
 				keyColumn: "Id",
-				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
 
 			migrationBuilder.DeleteData(
 				table: "Medicaments",
 				keyColumn: "Id",
 				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 });
+
+			migrationBuilder.DeleteData(
+				table: "Services",
+				keyColumn: "Id",
+				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 });
 		}
 	}
 }

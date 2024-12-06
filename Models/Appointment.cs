@@ -12,9 +12,8 @@ namespace MediCare.Models
 		[Required]
 		public AppointmentStatus Status { get; set; }
 
-		[Required]
 		[MaxLength(256)]
-		public string Diagnosis { get; set; }
+		public string? Diagnosis { get; set; }
 
 		[Required]
 		public int PatientId { get; set; }
@@ -28,9 +27,11 @@ namespace MediCare.Models
 		[ForeignKey("DoctorId")]
 		public Doctor Doctor { get; set; }
 
-		public int? ServiceId { get; set; }
+		[Required]
+		public int ServiceId { get; set; }
 
-		public Service? Service { get; set; }
+		[ForeignKey("ServiceId")]
+		public Service Service { get; set; }
 
 		public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 	}
