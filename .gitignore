@@ -1,0 +1,20 @@
+# .NET Core
+MediCareWebApi/bin/
+MediCareWebApi/obj/
+
+# NPM
+MediCareWebSpa/node_modules
+*.angular
+
+# Visual Studio
+*.vs
+*.vscode
+*.idea
+*.csproj.user
+
+# .NET Core build directory
+**/bin/
+**/obj/
+
+# Mac
+.DS_Store
