@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using MediCare.Mapping;
 using MediCare.Middlewares;
 using MediCare.Models;
@@ -49,7 +50,10 @@ builder.WebHost.ConfigureKestrel(options =>
 
 builder.Services.AddScoped<IAccountsService, AccountsService>();
 builder.Services.AddAutoMapper(typeof(MediCareMappingProfile).Assembly);
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+}); ;
 builder.Services.Configure<AppointmentSettings>(builder.Configuration.GetSection("AppointmentSettings"));
 
 var app = builder.Build();

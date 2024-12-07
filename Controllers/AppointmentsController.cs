@@ -90,6 +90,7 @@ namespace MediCare.Controllers
 			}
 
 			ValidateAppointment(appointment);
+			_context.Appointments.Add(appointment);
 			await _context.SaveChangesAsync();
 			return Ok(appointment);
 		}
@@ -98,7 +99,7 @@ namespace MediCare.Controllers
 		{
 			var doctors = await _context.Doctors
 				.Include(x => x.Appointments)
-				.Where(x => x.SpecialtyId == service.SpecialityId)
+				.Where(x => x.SpecialityId == service.SpecialityId)
 				.ToListAsync();
 
 			foreach (var doctor in doctors)
@@ -117,7 +118,7 @@ namespace MediCare.Controllers
 			if (!_appointmentSettings.AvailableDays.Contains(dayOfWeek))
 				throw new ValidationException($"Appointment is not allowed on {dayOfWeek}.");
 
-			if (appointment.Time.Minute % 15 != 0)
+			if (appointment.Time.Minute % 15 != 0 || appointment.Time < DateTime.Now)
 				throw new ValidationException("Appointment time is not correct.");
 
 			if (appointment.Time.TimeOfDay < TimeSpan.FromHours(_appointmentSettings.StartHour) || appointment.Time.TimeOfDay >= TimeSpan.FromHours(_appointmentSettings.EndHour))

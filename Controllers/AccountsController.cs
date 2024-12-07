@@ -48,7 +48,7 @@ namespace MedicalFacility.Controllers
 			var doctor = new Doctor()
 			{
 				EmploymentDate = registerRequest.EmploymentDate,
-				SpecialtyId = registerRequest.SpecialtyId,
+				SpecialityId = registerRequest.SpecialityId,
 				IsAvailable = true,
 				UserId = user.Id,
 			};
@@ -73,7 +73,8 @@ namespace MedicalFacility.Controllers
 				return Unauthorized("Invalid email or password.");
 
 			user.RefreshToken = _accountsService.GenerateSalt();
-			user.RefreshTokenExpiration = DateTime.Now.AddHours(1);
+			user.RefreshTokenExpiration = DateTime.Now.AddMinutes(double.Parse(
+				_configuration.GetSection("JwtSettings:RefreshTokenExpirationMinutes").Value));
 			await _context.SaveChangesAsync();
 
 			return Ok(new

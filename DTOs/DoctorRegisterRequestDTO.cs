@@ -9,6 +9,6 @@ namespace MediCare.DTOs
 		public DateTime EmploymentDate { get; set; }
 
 		[Required(ErrorMessage = "Speciality is required")]
-		public int SpecialtyId { get; set; }
+		public int SpecialityId { get; set; }
 	}
 }

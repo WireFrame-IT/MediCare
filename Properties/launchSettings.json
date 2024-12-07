@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://localhost/MediCareWebApi",
+      "applicationUrl": "http://localhost:5000/MediCareWebApi",
       "sslPort": 5001
     },
     "iisExpress": {

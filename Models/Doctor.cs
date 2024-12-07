@@ -12,9 +12,9 @@ namespace MediCare.Models
 		public bool IsAvailable { get; set; }
 
 		[Required]
-		public int SpecialtyId { get; set; }
+		public int SpecialityId { get; set; }
 
-		[ForeignKey("SpecialtyId")]
+		[ForeignKey("SpecialityId")]
 		public Speciality Speciality { get; set; }
 
 		[Required]
