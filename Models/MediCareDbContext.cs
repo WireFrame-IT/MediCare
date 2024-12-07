@@ -36,6 +36,9 @@ namespace MediCare.Models
 		{
 			base.OnModelCreating(modelBuilder);
 
+			modelBuilder.Entity<Patient>()
+				.ToTable(x => x.HasTrigger("GeneratePatientCard"));
+
 			modelBuilder.Entity<Service>()
 				.Property(x => x.Price)
 				.HasPrecision(18, 2);

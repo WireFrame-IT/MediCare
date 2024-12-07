@@ -148,6 +148,18 @@ namespace MediCare.Migrations.CustomScripts
 					{ 20, "Chemotherapy Session", "Cancer treatment with chemotherapy.", 1000.00m, 90, 10 },
 					{ 21, "Family Medicine", "Appointment with a family doctor.", 50.00m, 15, 11 }
 				});
+
+			migrationBuilder.InsertData(
+				table: "Users",
+				columns: new[] { "Id", "Email", "Password", "Salt", "Name", "Surname", "Pesel", "PhoneNumber", "RoleId" },
+				values: new object[]
+				{ 1, "s26028@pjwstk.edu.pl", "j00yIaNQ94BXwnZCwcc5N2Kxozj02I1p/smVwYQv9/s=", "ieyyjIPvfLt2fH4qxjSxTBQ2LKNf0x5H2EiHgdXsve4=", "Bohdan", "Sternytskyi", "00210816473", "123456789", 3 });
+
+			migrationBuilder.InsertData(
+				table: "Admins",
+				columns: new[] { "Id", "LastLogin", "Status", "UserId" },
+				values: new object[]
+				{ 1, DateTime.Now, (int)AdminStatus.Active, 1 });
 		}
 
 		public static void Down(MigrationBuilder migrationBuilder)
@@ -181,6 +193,16 @@ namespace MediCare.Migrations.CustomScripts
 				table: "Services",
 				keyColumn: "Id",
 				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 });
+
+			migrationBuilder.DeleteData(
+				table: "Users",
+				keyColumn: "Id",
+				keyValues: new object[] { 1 });
+
+			migrationBuilder.DeleteData(
+				table: "Admins",
+				keyColumn: "Id",
+				keyValues: new object[] { 1 });
 		}
 	}
 }

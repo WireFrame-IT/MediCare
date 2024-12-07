@@ -1,5 +1,6 @@
 using System.Text;
 using MediCare.Mapping;
+using MediCare.Middlewares;
 using MediCare.Models;
 using MediCare.ServiceModels;
 using MediCare.Services;
@@ -57,4 +58,5 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<TransactionMiddleware>();
 app.Run();
