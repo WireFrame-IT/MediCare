@@ -2,7 +2,7 @@
 
 namespace MediCare.DTOs
 {
-	public class RegisterRequestDTO
+	public abstract class RegisterRequestDTO
 	{
 		[Required(ErrorMessage = "Name is required")]
 		[StringLength(50, ErrorMessage = "Name must not exceed 50 characters.")]
@@ -29,9 +29,5 @@ namespace MediCare.DTOs
 		[Phone(ErrorMessage = "Invalid phone number")]
 		[StringLength(15, ErrorMessage = "Phone number must not exceed 15 characters.")]
 		public required string PhoneNumber { get; set; }
-
-		[Required(ErrorMessage = "Date of birth is required")]
-		[DataType(DataType.Date, ErrorMessage = "Invalid date format")]
-		public DateTime BirthDate { get; set; }
 	}
 }

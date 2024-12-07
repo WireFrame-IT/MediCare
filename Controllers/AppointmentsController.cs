@@ -4,6 +4,7 @@ using MediCare.DTOs;
 using MediCare.Enums;
 using MediCare.Models;
 using MediCare.ServiceModels;
+using MediCare.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,20 +17,19 @@ namespace MediCare.Controllers
 	[Route("[controller]")]
 	public class AppointmentsController : BaseController
 	{
-		private readonly IMapper _mapper;
 		private readonly AppointmentSettings _appointmentSettings;
 
-		public AppointmentsController(MediCareDbContext context, IConfiguration configuration, IMapper mapper, IOptions<AppointmentSettings> appointmentSettings) : base(context, configuration)
+		public AppointmentsController(MediCareDbContext context, IConfiguration configuration, IMapper mapper, IAccountsService accountsService, IOptions<AppointmentSettings> appointmentSettings)
+			: base(context, configuration, mapper, accountsService)
 		{
-			_mapper = mapper;
 			_appointmentSettings = appointmentSettings.Value;
 		}
 
 		[HttpGet]
 		[Authorize(Roles = "Doctor, Patient")]
-		public async Task<IActionResult> GetAppointments()
+		public async Task<IActionResult> GetAppointmentsAsync()
 		{
-			var user = await GetCurrentUser();
+			var user = await GetCurrentUserAsync();
 			switch (user.Role.RoleType)
 			{
 				case RoleType.Doctor:
@@ -50,7 +50,7 @@ namespace MediCare.Controllers
 
 		[HttpPost]
 		[Authorize(Roles = "Patient")]
-		public async Task<IActionResult> SaveAppointment([FromBody] AppointmentRequestDTO appointmentDTO)
+		public async Task<IActionResult> SaveAppointmentAsync([FromBody] AppointmentRequestDTO appointmentDTO)
 		{
 			var appointment = _mapper.Map<Appointment>(appointmentDTO);
 			var userId = GetCurrentUserId();
@@ -83,7 +83,7 @@ namespace MediCare.Controllers
 			}
 			else
 			{
-				var doctor = await FindAvailableDoctor(appointment.Time, appointment.Service);
+				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service);
 				if (doctor == null)
 					return NotFound("No available doctor for the specified term.");
 				appointment.Doctor = doctor;
@@ -94,7 +94,7 @@ namespace MediCare.Controllers
 			return Ok(appointment);
 		}
 
-		private async Task<Doctor?> FindAvailableDoctor(DateTime time, Service service)
+		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service)
 		{
 			var doctors = await _context.Doctors
 				.Include(x => x.Appointments)

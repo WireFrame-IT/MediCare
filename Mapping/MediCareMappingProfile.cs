@@ -17,6 +17,10 @@ namespace MediCare.Mapping
 				.ForMember(x => x.Role, y => y.Ignore())
 				.ForMember(x => x.Logs, y => y.Ignore());
 
+			CreateMap<PatientRegisterRequestDTO, User>();
+
+			CreateMap<DoctorRegisterRequestDTO, User>();
+
 			CreateMap<AppointmentRequestDTO, Appointment>()
 				.ForMember(x => x.Status, y => y.Ignore())
 				.ForMember(x => x.Diagnosis, y => y.Ignore())

@@ -18,13 +18,6 @@ namespace MediCare.Services
 			_configuration = configuration;
 		}
 
-		public string GeneratePatientCard(string pesel)
-		{
-			var cardBase = pesel.Substring(0, 6);
-			var uniqueSuffix = DateTime.Now.Ticks.ToString().Substring(0, 14);
-			return $"{cardBase}{uniqueSuffix}";
-		}
-
 		public string GenerateSalt()
 		{
 			using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
@@ -67,6 +60,11 @@ namespace MediCare.Services
 				expires: DateTime.Now.AddMinutes(5),
 				signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
 			);
+		}
+
+		public string GetAccessToken(User user)
+		{
+			return new JwtSecurityTokenHandler().WriteToken(GenerateAccessToken(user));
 		}
 	}
 }

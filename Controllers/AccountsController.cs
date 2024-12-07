@@ -2,7 +2,6 @@
 using MediCare.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 using MediCare.Controllers;
 using MediCare.DTOs;
 using MediCare.Enums;
@@ -16,42 +15,55 @@ namespace MedicalFacility.Controllers
 	[Route("[controller]")]
 	public class AccountsController : BaseController
 	{
-		private readonly IMapper _mapper;
-		private readonly IAccountsService _accountsService;
-
-		public AccountsController(MediCareDbContext context, IConfiguration configuration, IMapper mapper, IAccountsService accountsService)
-			: base(context, configuration)
-		{
-			_mapper = mapper;
-			_accountsService = accountsService;
-		}
+		public AccountsController(MediCareDbContext context, IConfiguration configuration, IMapper mapper,
+			IAccountsService accountsService)
+			: base(context, configuration, mapper, accountsService)
+		{ }
 
 		[AllowAnonymous]
 		[HttpPost("register")]
-		public async Task<IActionResult> PatientRegister([FromBody] RegisterRequestDTO registerRequest)
+		public async Task<IActionResult> PatientRegisterAsync([FromBody] PatientRegisterRequestDTO registerRequest)
 		{
-			var user = _mapper.Map<User>(registerRequest);
-			user.Role = await _context.Roles.FirstAsync(x => x.RoleType == RoleType.Patient);
-			user.Password = _accountsService.HashPassword(registerRequest.Password, user.Salt = _accountsService.GenerateSalt());
-			await _context.Users.AddAsync(user);
-			await _context.SaveChangesAsync();
-
+			var user = await RegisterUserAsync(registerRequest, RoleType.Patient);
 			var patient = new Patient()
 			{
 				RegisterDate = DateTime.Now,
 				BirthDate = registerRequest.BirthDate,
-				PatientCard = _accountsService.GeneratePatientCard(registerRequest.Pesel),
 				UserId = user.Id,
-
 			};
 			await _context.Patients.AddAsync(patient);
 			await _context.SaveChangesAsync();
-			return Ok(user.Id);
+			return Ok(new
+			{
+				accessToken = _accountsService.GetAccessToken(user),
+				user.RefreshToken
+			});
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpPost("register-doctor")]
+		public async Task<IActionResult> DoctorRegisterAsync([FromBody] DoctorRegisterRequestDTO registerRequest)
+		{
+			var user = await RegisterUserAsync(registerRequest, RoleType.Doctor);
+			var doctor = new Doctor()
+			{
+				EmploymentDate = registerRequest.EmploymentDate,
+				SpecialtyId = registerRequest.SpecialtyId,
+				IsAvailable = true,
+				UserId = user.Id,
+			};
+			await _context.Doctors.AddAsync(doctor);
+			await _context.SaveChangesAsync();
+			return Ok(new
+			{
+				accessToken = _accountsService.GetAccessToken(user),
+				user.RefreshToken
+			});
 		}
 
 		[AllowAnonymous]
 		[HttpPost("login")]
-		public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequest)
+		public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDTO loginRequest)
 		{
 			var user = await _context.Users
 				.Include(x => x.Role)
@@ -66,14 +78,14 @@ namespace MedicalFacility.Controllers
 
 			return Ok(new
 			{
-				accessToken = new JwtSecurityTokenHandler().WriteToken(_accountsService.GenerateAccessToken(user)),
+				accessToken = _accountsService.GetAccessToken(user),
 				user.RefreshToken
 			});
 		}
 
 		[AllowAnonymous]
 		[HttpPost("refresh")]
-		public async Task<IActionResult> RefreshToken([FromBody] string refreshTokenRequest)
+		public async Task<IActionResult> RefreshTokenAsync([FromBody] string refreshTokenRequest)
 		{
 			var user = await _context.Users
 				.Include(x => x.Role)

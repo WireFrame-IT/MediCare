@@ -14,6 +14,16 @@ namespace MediCare.Migrations
                 name: "FK_Appointments_Services_ServiceId",
                 table: "Appointments");
 
+            migrationBuilder.AlterColumn<string>(
+                name: "PatientCard",
+                table: "Patients",
+                type: "nvarchar(20)",
+                maxLength: 20,
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(20)",
+                oldMaxLength: 20);
+
             migrationBuilder.AlterColumn<int>(
                 name: "ServiceId",
                 table: "Appointments",
@@ -49,6 +59,18 @@ namespace MediCare.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Appointments_Services_ServiceId",
                 table: "Appointments");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "PatientCard",
+                table: "Patients",
+                type: "nvarchar(20)",
+                maxLength: 20,
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(20)",
+                oldMaxLength: 20,
+                oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
                 name: "ServiceId",

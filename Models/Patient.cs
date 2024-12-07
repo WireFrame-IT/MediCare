@@ -11,9 +11,8 @@ namespace MediCare.Models
 		[Required]
 		public DateTime BirthDate { get; set; }
 
-		[Required]
 		[MaxLength(20)]
-		public string PatientCard { get; set; }
+		public string? PatientCard { get; set; }
 
 		[Required]
 		public int UserId { get; set; }
