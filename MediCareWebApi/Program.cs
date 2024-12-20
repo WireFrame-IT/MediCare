@@ -40,6 +40,11 @@ builder.Services.AddAuthentication(options =>
 	};
 });
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowAllOrigins", policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
 builder.WebHost.ConfigureKestrel(options =>
 {
 	options.ConfigureHttpsDefaults(httpsOptions =>
@@ -62,5 +67,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseCors("AllowAllOrigins");
 app.UseMiddleware<TransactionMiddleware>();
 app.Run();

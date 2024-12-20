@@ -1,2 +1,15 @@
-@import '../styles.scss';
 
+.logo {
+  height: 2rem;
+  margin-right: 1rem;
+}
+
+.spacer {
+  margin: 0 0.5rem;
+}
+
+.auth-buttons {
+  margin-left: auto;
+  display: flex;
+  gap: 1rem;
+}
