@@ -114,9 +114,10 @@ namespace MedicalFacility.Controllers
 		[HttpPost("logout")]
 		public async Task<IActionResult> Logout()
 		{
-			Response.Cookies.Append("refreshToken", string.Empty, _accountsService.GetExpiredCookieOptions());
-			Response.Cookies.Append("accessToken", string.Empty, _accountsService.GetExpiredCookieOptions());
-			Response.Cookies.Append("roleType", string.Empty, _accountsService.GetExpiredCookieOptions());
+			var user = await GetCurrentUserAsync();
+			user.RefreshToken = null;
+			user.RefreshTokenExpiration = null;
+			await _context.SaveChangesAsync();
 			return Ok();
 		}
 	}

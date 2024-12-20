@@ -153,7 +153,7 @@ namespace MediCare.Migrations.CustomScripts
 				table: "Users",
 				columns: new[] { "Id", "Email", "Password", "Salt", "Name", "Surname", "Pesel", "PhoneNumber", "RoleId" },
 				values: new object[]
-				{ 1, "s26028@pjwstk.edu.pl", "j00yIaNQ94BXwnZCwcc5N2Kxozj02I1p/smVwYQv9/s=", "ieyyjIPvfLt2fH4qxjSxTBQ2LKNf0x5H2EiHgdXsve4=", "Bohdan", "Sternytskyi", "00210816473", "123456789", 3 });
+				{ 1, "s26028@pjwstk.edu.pl", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Bohdan", "Sternytskyi", "00210816473", "123456789", 3 });
 
 			migrationBuilder.InsertData(
 				table: "Admins",

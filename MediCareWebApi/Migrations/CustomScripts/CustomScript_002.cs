@@ -7,6 +7,13 @@ namespace MediCare.Migrations.CustomScripts
 		public static void Up(MigrationBuilder migrationBuilder)
 		{
 			migrationBuilder.Sql(@"
+				USE MediCare;
+				CREATE USER [IIS APPPOOL\MediCare AppPool] FOR LOGIN [IIS APPPOOL\MediCare AppPool];
+				ALTER ROLE db_datareader ADD MEMBER [IIS APPPOOL\MediCare AppPool];
+				ALTER ROLE db_datawriter ADD MEMBER [IIS APPPOOL\MediCare AppPool];
+
+				GO
+
 				CREATE TRIGGER GeneratePatientCard
 				ON Patients
 				AFTER INSERT
@@ -43,7 +50,20 @@ namespace MediCare.Migrations.CustomScripts
 
 		public static void Down(MigrationBuilder migrationBuilder)
 		{
-			migrationBuilder.Sql(@"DROP TRIGGER IF EXISTS GeneratePatientCard;");
+			migrationBuilder.Sql(@"
+				USE MediCare;
+				ALTER ROLE db_datareader DROP MEMBER [IIS APPPOOL\MediCare AppPool];
+				ALTER ROLE db_datawriter DROP MEMBER [IIS APPPOOL\MediCare AppPool];
+				DROP USER [IIS APPPOOL\MediCare AppPool];
+
+				GO
+
+				DROP TRIGGER IF EXISTS GeneratePatientCard;
+
+				GO
+
+				DROP PROCEDURE IF EXISTS UpdateAppointmentStatus;
+			");
 		}
 	}
 }

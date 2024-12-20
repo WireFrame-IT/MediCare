@@ -3,7 +3,9 @@
   <span>MediCare</span>
   <span class="spacer"></span>
   <button mat-button routerLink="/" routerLinkActive="active">Home</button>
-  <button mat-button routerLink="/admin-panel">Admin panel</button>
+  @if (isAdmin) {
+    <button mat-button routerLink="/admin-panel">Admin panel</button>
+  }
   <button mat-button routerLink="/services">Services</button>
   <button mat-button routerLink="/appointments">Appointments</button>
   <button mat-button routerLink="/about">About Us</button>
