@@ -1,4 +1,4 @@
-import { RegisterRequestDTO } from './register-request.dto';
+import { RegisterRequestDTO } from '../register-request.dto';
 
 export class DoctorRegisterRequestDTO extends RegisterRequestDTO {
   employmentDate: string;

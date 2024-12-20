@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
-using MediCare.DTOs;
+using MediCare.DTOs.Request;
 using MediCare.Enums;
 using MediCare.Models;
 using MediCare.ServiceModels;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace MediCare.Controllers
 {
-	[Authorize]
+    [Authorize]
 	[ApiController]
 	[Route("[controller]")]
 	public class AppointmentsController : BaseController

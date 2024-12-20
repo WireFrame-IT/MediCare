@@ -3,14 +3,15 @@ using MediCare.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediCare.Controllers;
-using MediCare.DTOs;
 using MediCare.Enums;
 using MediCare.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using MediCare.DTOs.Request;
+using MediCare.DTOs.Response;
 
 namespace MedicalFacility.Controllers
 {
-	[Authorize]
+    [Authorize]
 	[ApiController]
 	[Route("[controller]")]
 	public class AccountsController : BaseController
@@ -77,10 +78,11 @@ namespace MedicalFacility.Controllers
 				_configuration.GetSection("JwtSettings:RefreshTokenExpirationMinutes").Value));
 			await _context.SaveChangesAsync();
 
-			return Ok(new
+			return Ok(new LoginResponseDTO
 			{
-				accessToken = _accountsService.GetAccessToken(user),
-				user.RefreshToken
+				AccessToken = _accountsService.GetAccessToken(user),
+				RefreshToken = user.RefreshToken,
+				RoleType = user.Role.RoleType
 			});
 		}
 
@@ -106,6 +108,16 @@ namespace MedicalFacility.Controllers
 				accessToken = _accountsService.GenerateAccessToken(user),
 				refreshToken = user.RefreshToken
 			});
+		}
+
+		[Authorize]
+		[HttpPost("logout")]
+		public async Task<IActionResult> Logout()
+		{
+			Response.Cookies.Append("refreshToken", string.Empty, _accountsService.GetExpiredCookieOptions());
+			Response.Cookies.Append("accessToken", string.Empty, _accountsService.GetExpiredCookieOptions());
+			Response.Cookies.Append("roleType", string.Empty, _accountsService.GetExpiredCookieOptions());
+			return Ok();
 		}
 	}
 }

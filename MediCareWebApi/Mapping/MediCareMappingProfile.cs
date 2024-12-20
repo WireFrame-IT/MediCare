@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using MediCare.DTOs;
+using MediCare.DTOs.Request;
 using MediCare.Models;
 
 namespace MediCare.Mapping
 {
-	public class MediCareMappingProfile : Profile
+    public class MediCareMappingProfile : Profile
 	{
 		public MediCareMappingProfile()
 		{

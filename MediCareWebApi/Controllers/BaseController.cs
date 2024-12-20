@@ -1,15 +1,15 @@
-﻿using MediCare.DTOs;
-using MediCare.Enums;
+﻿using MediCare.Enums;
 using MediCare.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using AutoMapper;
 using MediCare.Services.Interfaces;
+using MediCare.DTOs.Request;
 
 namespace MediCare.Controllers
 {
-	public class BaseController : Controller
+    public class BaseController : Controller
 	{
 
 		protected readonly MediCareDbContext _context;

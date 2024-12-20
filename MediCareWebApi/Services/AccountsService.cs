@@ -66,5 +66,16 @@ namespace MediCare.Services
 		{
 			return new JwtSecurityTokenHandler().WriteToken(GenerateAccessToken(user));
 		}
+
+		public CookieOptions GetExpiredCookieOptions()
+		{
+			return new CookieOptions()
+			{
+				Expires = DateTime.Now.AddDays(-1),
+				HttpOnly = true,
+				Secure = true,
+				SameSite = SameSiteMode.Strict
+			};
+		}
 	}
 }
