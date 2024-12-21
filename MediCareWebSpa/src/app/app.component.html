@@ -9,9 +9,21 @@
   <button mat-button routerLink="/services">Services</button>
   <button mat-button routerLink="/appointments">Appointments</button>
   <button mat-button routerLink="/about">About Us</button>
-  <div class="auth-buttons">
-    <button mat-raised-button routerLink="/login">Login</button>
-    <button mat-raised-button routerLink="/register">Register</button>
-  </div>
+  @if(isLoggedIn) {
+    <div class="auth-buttons">
+      @if (isAdmin) {
+        <button mat-raised-button routerLink="/register-doctor">Doctor Register</button>
+      }
+      <button mat-raised-button (click)="logout()">Log out</button>
+    </div>
+  } @else {
+    <div class="auth-buttons">
+      <button mat-raised-button routerLink="/login">Login</button>
+      <button mat-raised-button routerLink="/register">Register</button>
+    </div>
+  }
 </mat-toolbar>
+@if(isLoading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
 <router-outlet></router-outlet>

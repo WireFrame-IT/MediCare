@@ -12,7 +12,10 @@ export class AuthInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private ignoreUrls: string[] = [];
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.ignoreUrls = [
       `${this.authService.apiUrl}/accounts/login`,
       `${this.authService.apiUrl}/accounts/register`

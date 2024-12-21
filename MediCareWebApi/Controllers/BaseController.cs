@@ -38,12 +38,17 @@ namespace MediCare.Controllers
 			var userId = GetCurrentUserId();
 			var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 			if (user == null)
-				throw new InvalidOperationException("User not found");
+				throw new InvalidOperationException("User not found.");
 			return user;
 		}
 
 		protected async Task<User> RegisterUserAsync(RegisterRequestDTO registerRequest, RoleType roleType)
 		{
+			var existingUser = await _context.Users
+				.Where(x => x.Email == registerRequest.Email || x.Pesel == registerRequest.Pesel).FirstOrDefaultAsync();
+			if (existingUser != null)
+				throw new InvalidOperationException("User with the same email or PESEL already exists.");
+
 			var user = _mapper.Map<User>(registerRequest);
 			user.Role = await _context.Roles.FirstAsync(x => x.RoleType == roleType);
 			user.Password = _accountsService.HashPassword(registerRequest.Password, user.Salt = _accountsService.GenerateSalt());

@@ -1,27 +1,34 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { RegisterRequestDTO } from '../DTOs/request/register-request.dto';
 import { PatientRegisterRequestDTO } from '../DTOs/request/patient-register-request.dto';
 import { LoginRequestDTO } from '../DTOs/request/login-request.dto';
 import { RefreshResponseDTO } from '../DTOs/response/refresh-response.dto';
 import { RoleType } from '../enums/role-type';
 import { Router } from '@angular/router';
+import { LoadingService } from './loading.service';
+import { Speciality } from '../DTOs/models/speciality';
+import { DoctorRegisterRequestDTO } from '../DTOs/request/doctor-register-request.dto';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnDestroy {
-  private subscriptions: Subscription[] = [];
-  private _isAdmin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+export class AuthService {
   readonly apiUrl = 'https://localhost:5001/MediCareWebApi';
+
+  private _isAdmin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private _isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private _specialities: BehaviorSubject<Speciality[]> = new BehaviorSubject<Speciality[]>([]);
+
   isAdmin$: Observable<boolean> = this._isAdmin.asObservable();
+  isLoggedIn$: Observable<boolean> = this._isLoggedIn.asObservable();
+  specialities$: Observable<Speciality[]> = this._specialities.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
-  }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private loadingService: LoadingService
+  ) {}
 
   login(loginRequest: LoginRequestDTO): Observable<any> {
     return this.http.post<LoginRequestDTO>(`${this.apiUrl}/accounts/login`, loginRequest);
@@ -29,6 +36,10 @@ export class AuthService implements OnDestroy {
 
   register(registerRequest: PatientRegisterRequestDTO): Observable<any> {
     return this.http.post<PatientRegisterRequestDTO>(`${this.apiUrl}/accounts/register`, registerRequest);
+  }
+
+  registerDoctor(registerRequest: DoctorRegisterRequestDTO): Observable<any> {
+    return this.http.post<DoctorRegisterRequestDTO>(`${this.apiUrl}/accounts/register-doctor`, registerRequest);
   }
 
   refreshAccessToken(): Observable<RefreshResponseDTO> {
@@ -57,16 +68,33 @@ export class AuthService implements OnDestroy {
     localStorage.setItem('refreshToken', refreshToken);
     sessionStorage.setItem('roleType', roleType?.toString() ?? RoleType.Patient.toString());
     this._isAdmin.next(roleType === RoleType.Admin);
+    this._isLoggedIn.next(true);
+  }
+
+  loadSpecialities(): void {
+    this.http.post(`${this.apiUrl}/accounts/specialities`, null).subscribe(specialities =>
+      this._specialities.next(specialities as Speciality[])
+    );
   }
 
   logout(): void {
-    this.subscriptions.push(this.http.post(`${this.apiUrl}/accounts/logout`, {}).subscribe({
+    this.loadingService.show();
+    this.http.post(`${this.apiUrl}/accounts/logout`, {}).subscribe({
       next: () => {
+        this._isAdmin.next(false);
+        this._isLoggedIn.next(false);
         sessionStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('roleType');
         this.router.navigate(['/login']);
       },
-      error: err => err
-    }))
+      error: err => {
+        this.loadingService.hide();
+        return err;
+      },
+      complete: () => {
+        this.loadingService.hide();
+      }
+    })
   };
 }

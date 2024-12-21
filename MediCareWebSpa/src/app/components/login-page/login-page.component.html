@@ -1,4 +1,4 @@
-<form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+<form [formGroup]="loginForm" (ngSubmit)="login()" class="form">
   <mat-form-field class="form-field">
     <mat-label>Email</mat-label>
     <input matInput formControlName="email" type="email" required/>
@@ -7,6 +7,6 @@
     <mat-label>Password</mat-label>
     <input matInput formControlName="password" type="password" required/>
   </mat-form-field>
-  <app-error-message [message]="errorHandlerService.errorMessage$ | async"></app-error-message>
+  <app-error-message [message]="errorMessage"></app-error-message>
   <button mat-raised-button type="submit" [disabled]="loginForm.invalid" class="submit-button">Login</button>
 </form>

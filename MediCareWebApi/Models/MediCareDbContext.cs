@@ -74,6 +74,14 @@ namespace MediCare.Models
 				.HasOne(x => x.Prescription)
 				.WithMany(x => x.PrescriptionMedicaments)
 				.HasForeignKey(x => x.PrescriptionId);
+
+			modelBuilder.Entity<User>()
+				.HasIndex(u => u.Email)
+				.IsUnique();
+
+			modelBuilder.Entity<User>()
+				.HasIndex(u => u.Pesel)
+				.IsUnique();
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

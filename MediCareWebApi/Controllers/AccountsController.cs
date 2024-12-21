@@ -55,11 +55,7 @@ namespace MedicalFacility.Controllers
 			};
 			await _context.Doctors.AddAsync(doctor);
 			await _context.SaveChangesAsync();
-			return Ok(new
-			{
-				accessToken = _accountsService.GetAccessToken(user),
-				user.RefreshToken
-			});
+			return Ok();
 		}
 
 		[AllowAnonymous]
@@ -119,6 +115,13 @@ namespace MedicalFacility.Controllers
 			user.RefreshTokenExpiration = null;
 			await _context.SaveChangesAsync();
 			return Ok();
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpPost("specialities")]
+		public async Task<IActionResult> GetSpecialities()
+		{
+			return Ok(await _context.Specialities.ToListAsync());
 		}
 	}
 }

@@ -1,0 +1,23 @@
+@use '../../../variables' as variables;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 400px;
+  margin: 1rem auto;
+  padding: 1rem;
+  background-color: variables.$background-color;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
+  .form-field {
+    width: 100%;
+  }
+
+  .submit-button {
+    width: 100%;
+    font-size: 1.2rem;
+  }
+}
