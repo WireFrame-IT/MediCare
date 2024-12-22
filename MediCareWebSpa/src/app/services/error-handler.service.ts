@@ -17,4 +17,17 @@ export class ErrorHandlerService {
   clearErrorMessage() {
     this._errorMessageSubject.next(null);
   }
+
+  extractErrorMessage(error: any): string | null {
+    if (!error) return null;
+    if (typeof error.error === 'string') {
+      const match = error.error.match(/ValidationException:\s(.+?)\r\n/);
+      return match ? match[1] : error.error;
+    } else if (error.error && error.error.message) {
+      return error.error.message;
+    } else if (error.message) {
+      return error.message;
+    }
+    return null;
+  }
 }

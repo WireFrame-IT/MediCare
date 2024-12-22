@@ -57,9 +57,10 @@ builder.Services.AddScoped<IAccountsService, AccountsService>();
 builder.Services.AddAutoMapper(typeof(MediCareMappingProfile).Assembly);
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-}); ;
+	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 builder.Services.Configure<AppointmentSettings>(builder.Configuration.GetSection("AppointmentSettings"));
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
@@ -69,4 +70,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseCors("AllowAllOrigins");
 app.UseMiddleware<TransactionMiddleware>();
+app.UseMiddleware<TokenValidationMiddleware>();
 app.Run();

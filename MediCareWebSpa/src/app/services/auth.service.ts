@@ -73,7 +73,8 @@ export class AuthService {
 
   loadSpecialities(): void {
     this.http.post(`${this.apiUrl}/accounts/specialities`, null).subscribe(specialities =>
-      this._specialities.next(specialities as Speciality[])
+      this._specialities.next(specialities as Speciality[]),
+      error => console.error(error)
     );
   }
 

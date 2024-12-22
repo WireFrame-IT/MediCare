@@ -1,6 +1,7 @@
 ﻿using MediCare.Models;
 using MediCare.Services.Interfaces;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,10 +13,12 @@ namespace MediCare.Services
 	public class AccountsService : IAccountsService
 	{
 		private readonly IConfiguration _configuration;
+		private readonly IMemoryCache _memoryCache;
 
-		public AccountsService(IConfiguration configuration)
+		public AccountsService(IConfiguration configuration, IMemoryCache memoryCache)
 		{
 			_configuration = configuration;
+			_memoryCache = memoryCache;
 		}
 
 		public string GenerateSalt()
@@ -50,14 +53,15 @@ namespace MediCare.Services
 			var claims = new List<Claim>
 			{
 				new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-				new(ClaimTypes.Role, user.Role.RoleType.ToString())
+				new(ClaimTypes.Role, user.Role.RoleType.ToString()),
+				new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
 			};
 
 			return new JwtSecurityToken(
 				issuer: _configuration.GetSection("JwtSettings:ValidIssuer").Value,
 				audience: _configuration.GetSection("JwtSettings:ValidAudience").Value,
 				claims: claims,
-				expires: DateTime.Now.AddMinutes(5),
+				expires: DateTime.Now.AddMinutes(double.Parse(_configuration.GetSection("JwtSettings:AccessTokenExpirationMinutes").Value)),
 				signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
 			);
 		}
@@ -65,6 +69,17 @@ namespace MediCare.Services
 		public string GetAccessToken(User user)
 		{
 			return new JwtSecurityTokenHandler().WriteToken(GenerateAccessToken(user));
+		}
+
+		public void BlacklistToken(string jti)
+		{
+			var expirationMinutes = TimeSpan.FromMinutes(double.Parse(_configuration.GetSection("JwtSettings:AccessTokenExpirationMinutes").Value));
+			_memoryCache.Set(jti, true, expirationMinutes);
+		}
+
+		public bool IsTokenBlacklisted(string jti)
+		{
+			return _memoryCache.TryGetValue(jti, out _);
 		}
 	}
 }

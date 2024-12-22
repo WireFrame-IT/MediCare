@@ -31,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy{
     this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
     this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
     this.subscriptions.push(this.loadingService.isLoading$.subscribe(isLoading => this.isLoading = isLoading));
+    this.authService.loadSpecialities();
   }
 
   ngOnDestroy(): void {

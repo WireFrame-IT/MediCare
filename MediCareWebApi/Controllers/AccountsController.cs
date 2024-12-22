@@ -8,6 +8,7 @@ using MediCare.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using MediCare.DTOs.Request;
 using MediCare.DTOs.Response;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace MedicalFacility.Controllers
 {
@@ -114,6 +115,17 @@ namespace MedicalFacility.Controllers
 			user.RefreshToken = null;
 			user.RefreshTokenExpiration = null;
 			await _context.SaveChangesAsync();
+
+			var accessToken = Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+			if (!string.IsNullOrEmpty(accessToken))
+			{
+				var tokenHandler = new JwtSecurityTokenHandler();
+				var jwtToken = tokenHandler.ReadJwtToken(accessToken);
+				var jti = jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+				if (!string.IsNullOrEmpty(jti))
+					_accountsService.BlacklistToken(jti);
+			}
 			return Ok();
 		}
 
