@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs';
 import { LoadingService } from './services/loading.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SuccessDialogComponent } from './shared/components/success-dialog/success-dialog.component';
-import { SuccessDialogService } from './services/success-dialog.service';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +30,6 @@ export class AppComponent implements OnInit, OnDestroy{
   constructor(
     private authService: AuthService,
     private loadingService: LoadingService,
-    private successDialogService: SuccessDialogService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +44,6 @@ export class AppComponent implements OnInit, OnDestroy{
 
   logout(): void {
     this.authService.logout();
-    this.successDialogService.showMessage('Logged out successfully.');
+    this.loadingService.showMessage('Logged out successfully.');
   }
 }

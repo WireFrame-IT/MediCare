@@ -33,6 +33,10 @@ namespace MedicalFacility.Controllers
 				BirthDate = registerRequest.BirthDate,
 				UserId = user.Id,
 			};
+
+			if (patient.BirthDate > DateTime.Now)
+				throw new InvalidOperationException("Wrong birth date.");
+
 			await _context.Patients.AddAsync(patient);
 			await _context.SaveChangesAsync();
 			return Ok(new

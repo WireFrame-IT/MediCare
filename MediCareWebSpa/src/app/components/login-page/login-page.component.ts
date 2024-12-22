@@ -6,11 +6,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LoginResponseDTO } from '../../DTOs/response/login-response.dto';
-import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { Subscription } from 'rxjs';
 import { LoadingService } from '../../services/loading.service';
-import { SuccessDialogService } from '../../services/success-dialog.service';
 
 @Component({
   selector: 'app-login-page',
@@ -33,9 +31,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private errorHandlerService: ErrorHandlerService,
     private loadingService: LoadingService,
-    private successDialogService: SuccessDialogService
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -44,7 +40,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.errorHandlerService.errorMessage$.subscribe(msg => this.errorMessage = msg));
+    this.subscriptions.push(this.loadingService.errorMessage$.subscribe(msg => this.errorMessage = msg));
   }
 
   ngOnDestroy(): void {
@@ -58,13 +54,13 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
       this.authService.login(loginRequest).subscribe({
         next: (response: LoginResponseDTO) => {
-          this.errorHandlerService.clearErrorMessage();
-          this.successDialogService.showMessage('Logged in successfully.');
+          this.loadingService.clearErrorMessage();
+          this.loadingService.showMessage('Logged in successfully.');
           this.authService.storeUserData(response.accessToken, response.refreshToken, response.roleType);
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.errorHandlerService.setErrorMessage(this.errorHandlerService.extractErrorMessage(error));
+          this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
           console.error(error);
           this.loadingService.hide();
         },
@@ -74,7 +70,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       });
     }
     else {
-      this.errorHandlerService.setErrorMessage('Please fill in all fields correctly.');
+      this.loadingService.setErrorMessage('Please fill in all fields correctly.');
     }
   }
 }

@@ -6,7 +6,11 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class LoadingService {
   private _isLoading = new BehaviorSubject<boolean>(false);
-  public isLoading$ = this._isLoading.asObservable();
+  private _messageSubject = new BehaviorSubject<string>('');
+  private _errorMessageSubject = new BehaviorSubject<string | null>(null);
+  isLoading$ = this._isLoading.asObservable();
+  message$ = this._messageSubject.asObservable();
+  errorMessage$ = this._errorMessageSubject.asObservable();
 
   show() {
     this._isLoading.next(true);
@@ -14,5 +18,31 @@ export class LoadingService {
 
   hide() {
     this._isLoading.next(false);
+  }
+
+  showMessage(message: string) {
+    this._messageSubject.next(message);
+    setTimeout(() => this._messageSubject.next(''), 3000);
+  }
+
+  setErrorMessage(message: string) {
+    this._errorMessageSubject.next(message);
+  }
+
+  clearErrorMessage() {
+    this._errorMessageSubject.next(null);
+  }
+
+  extractErrorMessage(error: any): string {
+    if (error?.error && typeof error.error === 'string') {
+      return error.error;
+    }
+    if (error?.error && error?.error?.message) {
+      return error.error.message;
+    }
+    if (error?.message) {
+      return error.message;
+    }
+    return 'Something went wrong.';
   }
 }

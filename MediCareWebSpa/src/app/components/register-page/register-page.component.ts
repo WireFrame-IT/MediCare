@@ -9,8 +9,8 @@ import { AuthService } from '../../services/auth.service';
 import { PatientRegisterRequestDTO } from '../../DTOs/request/patient-register-request.dto';
 import { RefreshResponseDTO } from '../../DTOs/response/refresh-response.dto';
 import { Subscription } from 'rxjs';
-import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-register-page',
@@ -34,13 +34,13 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private errorHandlerService: ErrorHandlerService
+    private loadingService: LoadingService
   ) {
     this.registerForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
       surname: ['', [Validators.required, Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
-      password: ['', [Validators.required, Validators.maxLength(256)]],
+      password: ['', [Validators.required, Validators.maxLength(256), Validators.minLength(6)]],
       pesel: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
       phoneNumber: ['', [Validators.required, Validators.maxLength(15)]],
       birthDate: ['', [Validators.required]],
@@ -48,7 +48,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.errorHandlerService.errorMessage$.subscribe(msg => this.errorMessage = msg));
+    this.subscriptions.push(this.loadingService.errorMessage$.subscribe(msg => this.errorMessage = msg));
   }
 
   ngOnDestroy(): void {
@@ -69,17 +69,18 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
 
       this.authService.register(registerRequest).subscribe({
         next: (response: RefreshResponseDTO) => {
-          this.errorHandlerService.clearErrorMessage();
+          this.loadingService.clearErrorMessage();
           this.authService.storeUserData(response.accessToken, response.refreshToken);
+          this.loadingService.showMessage('Registered successfully.');
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.errorHandlerService.setErrorMessage(this.errorHandlerService.extractErrorMessage(error));
+          this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
           console.error(error);
         }
       });
     } else {
-      this.errorHandlerService.setErrorMessage('Please fill in all fields correctly.');
+      this.loadingService.setErrorMessage('Please fill in all fields correctly.');
     }
   }
 }

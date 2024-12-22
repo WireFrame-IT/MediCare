@@ -95,6 +95,13 @@ namespace MediCare.Controllers
 			return Ok(appointment);
 		}
 
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> GetServices()
+		{
+			return Ok(await _context.Services.ToListAsync());
+		}
+
 		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service)
 		{
 			var doctors = await _context.Doctors

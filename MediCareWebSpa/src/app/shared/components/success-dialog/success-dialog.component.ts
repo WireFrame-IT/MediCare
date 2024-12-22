@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { SuccessDialogService } from '../../../services/success-dialog.service';
 import { Subscription } from 'rxjs';
+import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-success-dialog',
@@ -13,10 +13,10 @@ export class SuccessDialogComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public message: string = '';
 
-  constructor(private successDialogService: SuccessDialogService) {}
+  constructor(private loadingService: LoadingService) {}
 
   ngOnInit(): void {
-    this.subscriptions.push(this.successDialogService.message$.subscribe(message => {
+    this.subscriptions.push(this.loadingService.message$.subscribe(message => {
       this.message = message;
     }));
   }

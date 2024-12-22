@@ -8,11 +8,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
-import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { DoctorRegisterRequestDTO } from '../../DTOs/request/doctor-register-request.dto';
 import { Speciality } from '../../DTOs/models/speciality';
-import { SuccessDialogService } from '../../services/success-dialog.service';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-doctor-register-page',
@@ -38,8 +37,7 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private errorHandlerService: ErrorHandlerService,
-    private successDialogService: SuccessDialogService
+    private loadingService: LoadingService
   ) {
     this.registerForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
@@ -54,7 +52,7 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.errorHandlerService.errorMessage$.subscribe(msg => this.errorMessage = msg));
+    this.subscriptions.push(this.loadingService.errorMessage$.subscribe(msg => this.errorMessage = msg));
     this.subscriptions.push(this.authService.specialities$.subscribe(specialities => this.specialities = specialities));
     this.authService.loadSpecialities();
   }
@@ -78,17 +76,17 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
 
         this.authService.registerDoctor(registerRequest).subscribe({
           next: () => {
-            this.errorHandlerService.clearErrorMessage();
-            this.successDialogService.showMessage('The doctor has been registered successfully.');
+            this.loadingService.clearErrorMessage();
+            this.loadingService.showMessage('The doctor has been registered successfully.');
             this.router.navigate(['/']);
           },
           error: (error) => {
-            this.errorHandlerService.setErrorMessage(this.errorHandlerService.extractErrorMessage(error));
+            this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
             console.error(error);
           }
         });
     } else {
-      this.errorHandlerService.setErrorMessage('Please fill in all fields correctly.');
+      this.loadingService.setErrorMessage('Please fill in all fields correctly.');
     }
   }
 }
