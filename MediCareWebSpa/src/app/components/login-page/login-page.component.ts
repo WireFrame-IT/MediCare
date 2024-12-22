@@ -61,7 +61,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.errorHandlerService.setErrorMessage('Something went wrong, please try again.');
+          this.errorHandlerService.setErrorMessage(this.errorHandlerService.extractErrorMessage(error));
           console.error(error);
           this.loadingService.hide();
         },

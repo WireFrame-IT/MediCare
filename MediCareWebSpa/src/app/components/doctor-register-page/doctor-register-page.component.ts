@@ -58,6 +58,7 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.push(this.errorHandlerService.errorMessage$.subscribe(msg => this.errorMessage = msg));
     this.subscriptions.push(this.authService.specialities$.subscribe(specialities => this.specialities = specialities));
+    this.authService.loadSpecialities();
   }
 
   ngOnDestroy(): void {
@@ -84,7 +85,7 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
             this.router.navigate(['/']);
           },
           error: (error) => {
-            this.errorHandlerService.setErrorMessage(this.errorHandlerService.extractErrorMessage(error) || 'Something went wrong, please try again.');
+            this.errorHandlerService.setErrorMessage(this.errorHandlerService.extractErrorMessage(error));
             console.error(error);
           }
         });

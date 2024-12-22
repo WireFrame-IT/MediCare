@@ -18,16 +18,16 @@ export class ErrorHandlerService {
     this._errorMessageSubject.next(null);
   }
 
-  extractErrorMessage(error: any): string | null {
-    if (!error) return null;
-    if (typeof error.error === 'string') {
-      const match = error.error.match(/ValidationException:\s(.+?)\r\n/);
-      return match ? match[1] : error.error;
-    } else if (error.error && error.error.message) {
+  extractErrorMessage(error: any): string {
+    if (error?.error && typeof error.error === 'string') {
+      return error.error;
+    }
+    if (error?.error && error?.error?.message) {
       return error.error.message;
-    } else if (error.message) {
+    }
+    if (error?.message) {
       return error.message;
     }
-    return null;
+    return 'Something went wrong.';
   }
 }

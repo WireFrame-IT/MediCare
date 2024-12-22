@@ -71,4 +71,5 @@ app.MapControllers();
 app.UseCors("AllowAllOrigins");
 app.UseMiddleware<TransactionMiddleware>();
 app.UseMiddleware<TokenValidationMiddleware>();
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.Run();

@@ -74,7 +74,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.errorHandlerService.setErrorMessage(this.errorHandlerService.extractErrorMessage(error) || 'Something went wrong, please try again.');
+          this.errorHandlerService.setErrorMessage(this.errorHandlerService.extractErrorMessage(error));
           console.error(error);
         }
       });
