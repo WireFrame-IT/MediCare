@@ -26,7 +26,7 @@ namespace MediCare.Controllers
 		}
 
 		[HttpGet]
-		[Authorize(Roles = "Doctor, Patient")]
+		[Authorize]
 		public async Task<IActionResult> GetAppointmentsAsync()
 		{
 			var user = await GetCurrentUserAsync();
@@ -49,7 +49,7 @@ namespace MediCare.Controllers
 		}
 
 		[HttpPost]
-		[Authorize(Roles = "Patient")]
+		[Authorize(Roles = "Admin, Patient")]
 		public async Task<IActionResult> SaveAppointmentAsync([FromBody] AppointmentRequestDTO appointmentDTO)
 		{
 			var appointment = _mapper.Map<Appointment>(appointmentDTO);
@@ -95,8 +95,8 @@ namespace MediCare.Controllers
 			return Ok(appointment);
 		}
 
-		[HttpPost]
 		[Authorize]
+		[HttpGet("services")]
 		public async Task<IActionResult> GetServices()
 		{
 			return Ok(await _context.Services.ToListAsync());

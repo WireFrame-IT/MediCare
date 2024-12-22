@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, Observable } from 'rxjs';
 import { PatientRegisterRequestDTO } from '../DTOs/request/patient-register-request.dto';
 import { LoginRequestDTO } from '../DTOs/request/login-request.dto';
 import { RefreshResponseDTO } from '../DTOs/response/refresh-response.dto';
@@ -10,12 +10,8 @@ import { LoadingService } from './loading.service';
 import { Speciality } from '../DTOs/models/speciality';
 import { DoctorRegisterRequestDTO } from '../DTOs/request/doctor-register-request.dto';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  readonly apiUrl = 'https://localhost:5001/MediCareWebApi';
-
   private _isAdmin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _specialities: BehaviorSubject<Speciality[]> = new BehaviorSubject<Speciality[]>([]);
@@ -24,6 +20,8 @@ export class AuthService {
   isLoggedIn$: Observable<boolean> = this._isLoggedIn.asObservable();
   specialities$: Observable<Speciality[]> = this._specialities.asObservable();
 
+  readonly apiUrl = 'https://localhost:5001/MediCareWebApi/accounts';
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -31,20 +29,20 @@ export class AuthService {
   ) {}
 
   login(loginRequest: LoginRequestDTO): Observable<any> {
-    return this.http.post<LoginRequestDTO>(`${this.apiUrl}/accounts/login`, loginRequest);
+    return this.http.post<LoginRequestDTO>(`${this.apiUrl}/login`, loginRequest);
   }
 
   register(registerRequest: PatientRegisterRequestDTO): Observable<any> {
-    return this.http.post<PatientRegisterRequestDTO>(`${this.apiUrl}/accounts/register`, registerRequest);
+    return this.http.post<PatientRegisterRequestDTO>(`${this.apiUrl}/register`, registerRequest);
   }
 
   registerDoctor(registerRequest: DoctorRegisterRequestDTO): Observable<any> {
-    return this.http.post<DoctorRegisterRequestDTO>(`${this.apiUrl}/accounts/register-doctor`, registerRequest);
+    return this.http.post<DoctorRegisterRequestDTO>(`${this.apiUrl}/register-doctor`, registerRequest);
   }
 
   refreshAccessToken(): Observable<RefreshResponseDTO> {
     const refreshToken = localStorage.getItem('refreshToken');
-    return this.http.post<any>(`${this.apiUrl}/accounts/refresh`, { refreshToken });
+    return this.http.post<any>(`${this.apiUrl}/refresh`, { refreshToken });
   }
 
   getAccessToken(): string | null {
@@ -72,15 +70,17 @@ export class AuthService {
   }
 
   loadSpecialities(): void {
-    this.http.post(`${this.apiUrl}/accounts/specialities`, null).subscribe(specialities =>
-      this._specialities.next(specialities as Speciality[]),
-      error => console.error(error)
-    );
+    this.http.get(`${this.apiUrl}/specialities`)
+    .pipe(catchError(error => {
+      console.error(error);
+      return [];
+    }))
+    .subscribe(specialities => this._specialities.next(specialities as Speciality[]));
   }
 
   logout(): void {
     this.loadingService.show();
-    this.http.post(`${this.apiUrl}/accounts/logout`, {}).subscribe({
+    this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
       next: () => {
         this._isAdmin.next(false);
         this._isLoggedIn.next(false);

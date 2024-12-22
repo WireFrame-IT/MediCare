@@ -134,7 +134,7 @@ namespace MedicalFacility.Controllers
 		}
 
 		[Authorize(Roles = "Admin")]
-		[HttpPost("specialities")]
+		[HttpGet("specialities")]
 		public async Task<IActionResult> GetSpecialities()
 		{
 			return Ok(await _context.Specialities.ToListAsync());

@@ -1,0 +1,23 @@
+export const ICON_MAP: { [key: string]: string } = {
+  'Heart Checkup': 'favorite',
+  'Neurological Consultation': 'psychology',
+  'Bone Fracture Treatment': 'accessible',
+  'Pediatric General Checkup': 'child_care',
+  'Digestive System Analysis': 'restaurant',
+  'Skin Condition Diagnosis': 'palette',
+  'Mental Health Therapy': 'self_improvement',
+  'Prenatal Checkup': 'pregnant_woman',
+  'Hormonal Therapy Session': 'science',
+  'Cancer Screening': 'coronavirus',
+  'ECG Test': 'monitor_heart',
+  'EEG Test': 'device_hub',
+  'Physical Therapy Session': 'sports_kabaddi',
+  'Child Vaccination': 'vaccines',
+  'Endoscopy': 'search',
+  'Acne Treatment': 'healing',
+  'Psychiatric Evaluation': 'support',
+  'Gynecological Consultation': 'female',
+  'Diabetes Management': 'insights',
+  'Chemotherapy Session': 'biotech',
+  'Family Medicine': 'home'
+};
