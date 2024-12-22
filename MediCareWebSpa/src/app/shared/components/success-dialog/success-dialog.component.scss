@@ -1,0 +1,44 @@
+@use '../../../../variables.scss' as variables;
+
+.success-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: variables.$success-color;
+  height: 100%;
+  border-radius: 5px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: fadeInOut 3s ease-in-out forwards;
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      visibility: hidden;
+    }
+    10% {
+      opacity: 1;
+      visibility: visible;
+    }
+    80% {
+      opacity: 1;
+      visibility: visible;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  .icon {
+    margin: 0 0.5rem;
+    vertical-align: middle;
+  }
+
+  .message {
+    margin-right: 0.5rem;
+    padding: 0;
+    font-size: 1rem;
+    text-align: center;
+  }
+}

@@ -6,6 +6,8 @@ import { AuthService } from './services/auth.service';
 import { Subscription } from 'rxjs';
 import { LoadingService } from './services/loading.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { SuccessDialogComponent } from './shared/components/success-dialog/success-dialog.component';
+import { SuccessDialogService } from './services/success-dialog.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     RouterModule,
     MatToolbarModule,
     MatButtonModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    SuccessDialogComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -25,7 +28,11 @@ export class AppComponent implements OnInit, OnDestroy{
   public isLoggedIn: boolean = false;
   public isLoading: boolean = false;
 
-  constructor(private authService: AuthService, private loadingService: LoadingService) {}
+  constructor(
+    private authService: AuthService,
+    private loadingService: LoadingService,
+    private successDialogService: SuccessDialogService
+  ) {}
 
   ngOnInit(): void {
     this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
@@ -39,5 +46,6 @@ export class AppComponent implements OnInit, OnDestroy{
 
   logout(): void {
     this.authService.logout();
+    this.successDialogService.showMessage('Logged out successfully.');
   }
 }

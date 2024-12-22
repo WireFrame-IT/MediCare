@@ -10,6 +10,7 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { Subscription } from 'rxjs';
 import { LoadingService } from '../../services/loading.service';
+import { SuccessDialogService } from '../../services/success-dialog.service';
 
 @Component({
   selector: 'app-login-page',
@@ -33,7 +34,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private errorHandlerService: ErrorHandlerService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private successDialogService: SuccessDialogService
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -57,6 +59,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       this.authService.login(loginRequest).subscribe({
         next: (response: LoginResponseDTO) => {
           this.errorHandlerService.clearErrorMessage();
+          this.successDialogService.showMessage('Logged in successfully.');
           this.authService.storeUserData(response.accessToken, response.refreshToken, response.roleType);
           this.router.navigate(['/']);
         },

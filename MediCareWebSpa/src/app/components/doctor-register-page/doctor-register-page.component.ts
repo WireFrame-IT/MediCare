@@ -13,7 +13,6 @@ import { ErrorMessageComponent } from '../../shared/components/error-message/err
 import { DoctorRegisterRequestDTO } from '../../DTOs/request/doctor-register-request.dto';
 import { Speciality } from '../../DTOs/models/speciality';
 import { SuccessDialogService } from '../../services/success-dialog.service';
-import { SuccessDialogComponent } from '../../shared/components/success-dialog/success-dialog.component';
 
 @Component({
   selector: 'app-doctor-register-page',
@@ -24,8 +23,7 @@ import { SuccessDialogComponent } from '../../shared/components/success-dialog/s
     MatFormFieldModule,
     ErrorMessageComponent,
     MatDatepickerModule,
-    MatSelectModule,
-    SuccessDialogComponent
+    MatSelectModule
   ],
   templateUrl: './doctor-register-page.component.html',
   styleUrl: './doctor-register-page.component.scss'
