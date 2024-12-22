@@ -7,8 +7,7 @@ namespace MediCare.Services.Interfaces
     {
 	    string GenerateSalt();
 	    string HashPassword(string password, string salt);
-	    JwtSecurityToken GenerateAccessToken(User user);
-	    string GetAccessToken(User user);
+	    string GenerateAccessToken(User user);
 	    void BlacklistToken(string jti);
 	    bool IsTokenBlacklisted(string jti);
 	}

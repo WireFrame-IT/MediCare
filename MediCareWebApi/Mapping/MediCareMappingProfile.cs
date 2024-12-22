@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediCare.DTOs.Request;
+using MediCare.DTOs.ViewModels;
 using MediCare.Models;
 
 namespace MediCare.Mapping
@@ -18,8 +19,10 @@ namespace MediCare.Mapping
 				.ForMember(x => x.Logs, y => y.Ignore());
 
 			CreateMap<PatientRegisterRequestDTO, User>();
-
 			CreateMap<DoctorRegisterRequestDTO, User>();
+			CreateMap<Speciality, SpecialityDTO>();
+			CreateMap<Service, ServiceDTO>();
+			CreateMap<Appointment, AppointmentDTO>();
 
 			CreateMap<AppointmentRequestDTO, Appointment>()
 				.ForMember(x => x.Status, y => y.Ignore())

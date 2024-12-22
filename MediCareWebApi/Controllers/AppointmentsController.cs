@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using MediCare.DTOs.Request;
+using MediCare.DTOs.ViewModels;
 using MediCare.Enums;
 using MediCare.Models;
 using MediCare.ServiceModels;
@@ -36,13 +37,13 @@ namespace MediCare.Controllers
 					var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (doctor == null)
 						return NotFound("Doctor not found.");
-					return Ok(await _context.Appointments.Where(x => x.DoctorId == doctor.Id).ToListAsync());
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await _context.Appointments.Where(x => x.DoctorId == doctor.Id).ToListAsync()));
 
 				case RoleType.Patient:
 					var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (patient == null)
 						return NotFound("Patient not found.");
-					return Ok(await _context.Appointments.Where(x => x.PatientId == patient.Id).ToListAsync());
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await _context.Appointments.Where(x => x.PatientId == patient.Id).ToListAsync()));
 			}
 
 			return NotFound();
@@ -92,14 +93,14 @@ namespace MediCare.Controllers
 			ValidateAppointment(appointment);
 			_context.Appointments.Add(appointment);
 			await _context.SaveChangesAsync();
-			return Ok(appointment);
+			return Ok(_mapper.Map<AppointmentDTO>(appointment));
 		}
 
 		[Authorize]
 		[HttpGet("services")]
 		public async Task<IActionResult> GetServices()
 		{
-			return Ok(await _context.Services.ToListAsync());
+			return Ok(_mapper.Map<ServiceDTO>(await _context.Services.ToListAsync()));
 		}
 
 		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service)

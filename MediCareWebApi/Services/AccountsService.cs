@@ -41,7 +41,7 @@ namespace MediCare.Services
 				numBytesRequested: 32));
 		}
 
-		public JwtSecurityToken GenerateAccessToken(User user)
+		public string GenerateAccessToken(User user)
 		{
 			var secretKey = _configuration.GetSection("JwtSettings:SecretKey").Value;
 			if (string.IsNullOrEmpty(secretKey))
@@ -57,18 +57,13 @@ namespace MediCare.Services
 				new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
 			};
 
-			return new JwtSecurityToken(
+			return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
 				issuer: _configuration.GetSection("JwtSettings:ValidIssuer").Value,
 				audience: _configuration.GetSection("JwtSettings:ValidAudience").Value,
 				claims: claims,
 				expires: DateTime.Now.AddMinutes(double.Parse(_configuration.GetSection("JwtSettings:AccessTokenExpirationMinutes").Value)),
 				signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
-			);
-		}
-
-		public string GetAccessToken(User user)
-		{
-			return new JwtSecurityTokenHandler().WriteToken(GenerateAccessToken(user));
+			));
 		}
 
 		public void BlacklistToken(string jti)

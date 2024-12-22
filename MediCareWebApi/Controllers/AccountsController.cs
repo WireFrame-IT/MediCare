@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using MediCare.DTOs.Request;
 using MediCare.DTOs.Response;
 using System.IdentityModel.Tokens.Jwt;
+using MediCare.DTOs.ViewModels;
 
 namespace MedicalFacility.Controllers
 {
@@ -39,10 +40,10 @@ namespace MedicalFacility.Controllers
 
 			await _context.Patients.AddAsync(patient);
 			await _context.SaveChangesAsync();
-			return Ok(new
+			return Ok(new RegisterResponseDTO()
 			{
-				accessToken = _accountsService.GetAccessToken(user),
-				user.RefreshToken
+				AccessToken = _accountsService.GenerateAccessToken(user),
+				RefreshToken = user.RefreshToken
 			});
 		}
 
@@ -81,7 +82,7 @@ namespace MedicalFacility.Controllers
 
 			return Ok(new LoginResponseDTO
 			{
-				AccessToken = _accountsService.GetAccessToken(user),
+				AccessToken = _accountsService.GenerateAccessToken(user),
 				RefreshToken = user.RefreshToken,
 				RoleType = user.Role.RoleType
 			});
@@ -104,10 +105,10 @@ namespace MedicalFacility.Controllers
 			user.RefreshToken = _accountsService.GenerateSalt();
 			await _context.SaveChangesAsync();
 
-			return Ok(new
+			return Ok(new RegisterResponseDTO()
 			{
-				accessToken = _accountsService.GenerateAccessToken(user),
-				refreshToken = user.RefreshToken
+				AccessToken = _accountsService.GenerateAccessToken(user),
+				RefreshToken = user.RefreshToken
 			});
 		}
 
@@ -137,7 +138,7 @@ namespace MedicalFacility.Controllers
 		[HttpGet("specialities")]
 		public async Task<IActionResult> GetSpecialities()
 		{
-			return Ok(await _context.Specialities.ToListAsync());
+			return Ok(_mapper.Map<SpecialityDTO>(await _context.Specialities.ToListAsync()));
 		}
 	}
 }
