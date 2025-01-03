@@ -1,0 +1,116 @@
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AppointmentService } from '../../services/appointment.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { Service } from '../../DTOs/models/service';
+import { Doctor } from '../../DTOs/models/doctor';
+import { Subscription } from 'rxjs';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { AuthService } from '../../services/auth.service';
+import { Appointment } from '../../DTOs/models/appointment';
+import { AppointmentRequestDTO } from '../../DTOs/request/appointment-request.dto';
+import { LoadingService } from '../../services/loading.service';
+
+@Component({
+  selector: 'app-appointment-dialog',
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatOptionModule,
+    MatDatepickerModule,
+    MatTimepickerModule,
+    ReactiveFormsModule
+  ],
+  providers: [ provideNativeDateAdapter() ],
+  templateUrl: './appointment-dialog.component.html',
+  styleUrl: './appointment-dialog.component.scss'
+})
+export class AppointmentDialogComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+
+  appointmentForm: FormGroup;
+  isDoctor: boolean = false;
+  services: Service[] = [];
+  doctors: Doctor[] = [];
+  doctorsBySpeciality: Doctor[] = [];
+  minDate: Date = new Date();
+
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private appointmentService: AppointmentService,
+    private loadingService: LoadingService,
+    public dialogRef: MatDialogRef<AppointmentDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: Service
+  ) {
+    this.appointmentForm = this.fb.group({
+      serviceId: [data?.id || null, Validators.required],
+      doctorId: ['', Validators.required],
+      date: ['', Validators.required],
+      time: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.appointmentService.loadDoctors();
+    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
+    this.subscriptions.push(this.appointmentService.services$.subscribe(services => this.services = services));
+    this.subscriptions.push(this.appointmentService.doctors$.subscribe(doctors => {
+      this.doctors = doctors;
+      this.doctorsBySpeciality = doctors.filter(x => x.specialityId === this.data?.id);
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
+  onServiceChange(event: any) {
+    this.doctorsBySpeciality = this.doctors.filter(x => x.specialityId === event.value);
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close();
+  }
+
+  onSubmit() {
+    if (this.appointmentForm.valid) {
+      const appointment = new AppointmentRequestDTO (
+        this.appointmentForm.value.date,
+        this.appointmentForm.value.doctorId,
+        this.appointmentForm.value.serviceId
+      );
+      appointment.time.setHours(this.appointmentForm.value.time.getHours(), this.appointmentForm.value.time.getMinutes());
+      this.loadingService.show();
+      this.dialogRef.close(appointment);
+      this.appointmentService.saveAppointment(appointment).subscribe({
+        next: (response: Appointment) => {
+          this.loadingService.clearErrorMessage();
+          this.loadingService.showMessage('Appointment booked successfully');
+        },
+        error: (error) => {
+          this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
+          console.error(error);
+          this.loadingService.hide();
+        },
+        complete: () => {
+          this.loadingService.hide();
+        }
+      });
+    }
+  }
+
+  dateFilter(d: Date | null): boolean {
+    const day = (d || new Date()).getDay();
+    return day !== 0;
+  };
+}

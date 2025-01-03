@@ -13,10 +13,12 @@ import { DoctorRegisterRequestDTO } from '../DTOs/request/doctor-register-reques
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private _isAdmin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private _isDoctor: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _specialities: BehaviorSubject<Speciality[]> = new BehaviorSubject<Speciality[]>([]);
 
   isAdmin$: Observable<boolean> = this._isAdmin.asObservable();
+  isDoctor$: Observable<boolean> = this._isDoctor.asObservable();
   isLoggedIn$: Observable<boolean> = this._isLoggedIn.asObservable();
   specialities$: Observable<Speciality[]> = this._specialities.asObservable();
 
@@ -66,6 +68,7 @@ export class AuthService {
     localStorage.setItem('refreshToken', refreshToken);
     sessionStorage.setItem('roleType', roleType?.toString() ?? RoleType.Patient.toString());
     this._isAdmin.next(roleType === RoleType.Admin);
+    this._isDoctor.next(roleType === RoleType.Doctor);
     this._isLoggedIn.next(true);
   }
 
@@ -83,6 +86,7 @@ export class AuthService {
     this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
       next: () => {
         this._isAdmin.next(false);
+        this._isDoctor.next(false);
         this._isLoggedIn.next(false);
         sessionStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');

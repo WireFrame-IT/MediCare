@@ -30,7 +30,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   constructor(private appointmentService: AppointmentService) {}
 
   ngOnInit(): void {
-    this.appointmentService.loadSpecialities();
+    this.appointmentService.loadServices();
     this.subscriptions.push(this.appointmentService.services$.subscribe(services => this.services = services));
   }
 

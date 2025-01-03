@@ -138,7 +138,7 @@ namespace MedicalFacility.Controllers
 		[HttpGet("specialities")]
 		public async Task<IActionResult> GetSpecialities()
 		{
-			return Ok(_mapper.Map<SpecialityDTO>(await _context.Specialities.ToListAsync()));
+			return Ok(_mapper.Map<List<SpecialityDTO>>(await _context.Specialities.ToListAsync()));
 		}
 	}
 }

@@ -6,6 +6,8 @@ export class LoadingService {
   private _isLoading = new BehaviorSubject<boolean>(false);
   private _messageSubject = new BehaviorSubject<string>('');
   private _errorMessageSubject = new BehaviorSubject<string | null>(null);
+  private errorTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
   isLoading$ = this._isLoading.asObservable();
   message$ = this._messageSubject.asObservable();
   errorMessage$ = this._errorMessageSubject.asObservable();
@@ -24,10 +26,23 @@ export class LoadingService {
   }
 
   setErrorMessage(message: string) {
+    if (this.errorTimeoutId) {
+      clearTimeout(this.errorTimeoutId);
+    }
+
     this._errorMessageSubject.next(message);
+    this.errorTimeoutId = setTimeout(() => {
+      this._errorMessageSubject.next(null);
+      this.errorTimeoutId = null;
+    }, 3000);
   }
 
   clearErrorMessage() {
+    if (this.errorTimeoutId) {
+      clearTimeout(this.errorTimeoutId);
+      this.errorTimeoutId = null;
+    }
+
     this._errorMessageSubject.next(null);
   }
 

@@ -1,10 +1,12 @@
 <div class="services">
   <h1>Our Services</h1>
   <div class="grid">
-    <mat-card *ngFor="let service of services" class="service-card">
-      <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
-      <h3 class="service-title">{{ service.name }}</h3>
-      <p class="service-description">{{ service.description }}</p>
-    </mat-card>
+    @for (service of services; track service.id) {
+      <mat-card class="service-card" (click)="openAppointmentDialog(service)">
+        <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
+        <h3 class="service-title">{{ service.name }}</h3>
+        <p class="service-description">{{ service.description }}</p>
+      </mat-card>
+    }
   </div>
 </div>

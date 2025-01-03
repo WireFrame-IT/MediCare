@@ -1,9 +1,9 @@
 export class AppointmentRequestDTO {
-  time: string;
+  time: Date;
   doctorId?: number;
   serviceId?: number;
 
-  constructor(time: string, doctorId?: number, serviceId?: number) {
+  constructor(time: Date, doctorId?: number, serviceId?: number) {
     this.time = time;
     this.doctorId = doctorId;
     this.serviceId = serviceId;

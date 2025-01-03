@@ -23,6 +23,8 @@ namespace MediCare.Mapping
 			CreateMap<Speciality, SpecialityDTO>();
 			CreateMap<Service, ServiceDTO>();
 			CreateMap<Appointment, AppointmentDTO>();
+			CreateMap<User, UserDTO>();
+			CreateMap<Doctor, DoctorDTO>();
 
 			CreateMap<AppointmentRequestDTO, Appointment>()
 				.ForMember(x => x.Status, y => y.Ignore())

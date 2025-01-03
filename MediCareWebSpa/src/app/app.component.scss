@@ -1,15 +1,19 @@
+.sticky-container {
+  position: sticky;
+  top: 0;
 
-.logo {
-  height: 2rem;
-  margin-right: 1rem;
-}
+  .logo {
+    height: 2rem;
+    margin-right: 1rem;
+  }
 
-.spacer {
-  margin: 0 0.5rem;
-}
+  .spacer {
+    margin: 0 0.5rem;
+  }
 
-.auth-buttons {
-  margin-left: auto;
-  display: flex;
-  gap: 1rem;
+  .auth-buttons {
+    margin-left: auto;
+    display: flex;
+    gap: 1rem;
+  }
 }

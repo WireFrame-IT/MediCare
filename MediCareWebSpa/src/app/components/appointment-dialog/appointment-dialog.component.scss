@@ -1,0 +1,39 @@
+@use '../../../variables' as variables;
+
+.title {
+  padding: 1rem;
+  margin: 0;
+  text-align: center;
+  color: variables.$primary-color;
+}
+
+.form {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1rem;
+  border-radius: 5px;
+
+  .form-field {
+    width: 100%;
+    height: 4.4rem;
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .submit-button, .cancel-button {
+      width: 100%;
+      font-size: 1.2rem;
+      margin: 0.5rem 1rem;
+    }
+  }
+
+}

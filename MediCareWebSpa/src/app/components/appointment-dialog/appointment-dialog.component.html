@@ -1,0 +1,41 @@
+<h2 class="title" mat-dialog-title>Book Appointment</h2>
+<form class="form" [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="form-field">
+    <mat-label>Service</mat-label>
+    <mat-select formControlName="serviceId" (selectionChange)="onServiceChange($event)">
+      @for (service of services; track service.id) {
+        <mat-option [value]="service.id">{{ service.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Doctor</mat-label>
+    <mat-select formControlName="doctorId">
+      @for (doctor of doctorsBySpeciality; track doctor.id) {
+        <mat-option [value]="doctor.id">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Date</mat-label>
+    <input matInput [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" formControlName="date" [min]="minDate"/>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Time</mat-label>
+    <input matInput [matTimepicker]="timePicker" formControlName="time">
+    <mat-timepicker-toggle matIconSuffix [for]="timePicker"/>
+    <mat-timepicker #timePicker/>
+  </mat-form-field>
+  @if(isDoctor) {
+    <mat-form-field class="form-field">
+      <mat-label>Diagnosis</mat-label>
+      <textarea matInput formControlName="diagnosis"></textarea>
+    </mat-form-field>
+  }
+  <div class="buttons" mat-dialog-actions>
+    <button class="cancel-button" mat-button mat-dialog-close (click)="closeDialog()">Cancel</button>
+    <button class="submit-button" mat-raised-button type="submit" [disabled]="appointmentForm.invalid">Book</button>
+  </div>
+</form>

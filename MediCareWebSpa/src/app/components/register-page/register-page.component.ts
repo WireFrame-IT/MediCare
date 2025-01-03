@@ -9,7 +9,6 @@ import { AuthService } from '../../services/auth.service';
 import { PatientRegisterRequestDTO } from '../../DTOs/request/patient-register-request.dto';
 import { RefreshResponseDTO } from '../../DTOs/response/refresh-response.dto';
 import { Subscription } from 'rxjs';
-import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingService } from '../../services/loading.service';
 
 @Component({
@@ -19,7 +18,6 @@ import { LoadingService } from '../../services/loading.service';
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,
-    ErrorMessageComponent,
     MatDatepickerModule
   ],
   templateUrl: './register-page.component.html',
@@ -28,7 +26,6 @@ import { LoadingService } from '../../services/loading.service';
 export class RegisterPageComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public registerForm: FormGroup;
-  public errorMessage: string | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -47,9 +44,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.subscriptions.push(this.loadingService.errorMessage$.subscribe(msg => this.errorMessage = msg));
-  }
+  ngOnInit(): void { }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
@@ -71,7 +66,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
         next: (response: RefreshResponseDTO) => {
           this.loadingService.clearErrorMessage();
           this.authService.storeUserData(response.accessToken, response.refreshToken);
-          this.loadingService.showMessage('Registered successfully.');
+          this.loadingService.showMessage('Registered successfully');
           this.router.navigate(['/']);
         },
         error: (error) => {
@@ -80,7 +75,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      this.loadingService.setErrorMessage('Please fill in all fields correctly.');
+      this.loadingService.setErrorMessage('Please fill in all fields correctly');
     }
   }
 }

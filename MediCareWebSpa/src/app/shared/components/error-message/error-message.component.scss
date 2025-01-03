@@ -1,7 +1,12 @@
+@use '../../../../variables.scss' as variables;
+
 .error-message {
+  background-color: variables.$background-color;
+  padding: 0.5rem;
+  text-align: center;
   color: red;
   font-size: 1rem;
-  margin-bottom: 1rem;
+
   & > p {
     margin: 0;
   }

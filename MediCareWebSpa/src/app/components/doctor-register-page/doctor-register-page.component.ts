@@ -8,7 +8,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
-import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { DoctorRegisterRequestDTO } from '../../DTOs/request/doctor-register-request.dto';
 import { Speciality } from '../../DTOs/models/speciality';
 import { LoadingService } from '../../services/loading.service';
@@ -20,7 +19,6 @@ import { LoadingService } from '../../services/loading.service';
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,
-    ErrorMessageComponent,
     MatDatepickerModule,
     MatSelectModule
   ],
@@ -30,7 +28,6 @@ import { LoadingService } from '../../services/loading.service';
 export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public registerForm: FormGroup;
-  public errorMessage: string | null = null;
   public specialities: Speciality[] = [];
 
   constructor(
@@ -52,7 +49,6 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.loadingService.errorMessage$.subscribe(msg => this.errorMessage = msg));
     this.subscriptions.push(this.authService.specialities$.subscribe(specialities => this.specialities = specialities));
     this.authService.loadSpecialities();
   }
@@ -77,7 +73,7 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
         this.authService.registerDoctor(registerRequest).subscribe({
           next: () => {
             this.loadingService.clearErrorMessage();
-            this.loadingService.showMessage('The doctor has been registered successfully.');
+            this.loadingService.showMessage('The doctor has been registered successfully');
             this.router.navigate(['/']);
           },
           error: (error) => {
@@ -86,7 +82,7 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
           }
         });
     } else {
-      this.loadingService.setErrorMessage('Please fill in all fields correctly.');
+      this.loadingService.setErrorMessage('Please fill in all fields correctly');
     }
   }
 }

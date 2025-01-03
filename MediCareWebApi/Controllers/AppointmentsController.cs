@@ -97,10 +97,21 @@ namespace MediCare.Controllers
 		}
 
 		[Authorize]
+		[HttpGet("doctors")]
+		public async Task<IActionResult> GetDoctors()
+		{
+			return Ok(_mapper.Map<List<DoctorDTO>>(await _context.Doctors
+				.Include(x => x.User)
+				.Include(x => x.Speciality)
+				.Where(x => x.IsAvailable)
+				.ToListAsync()));
+		}
+
+		[AllowAnonymous]
 		[HttpGet("services")]
 		public async Task<IActionResult> GetServices()
 		{
-			return Ok(_mapper.Map<ServiceDTO>(await _context.Services.ToListAsync()));
+			return Ok(_mapper.Map<List<ServiceDTO>>(await _context.Services.ToListAsync()));
 		}
 
 		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service)

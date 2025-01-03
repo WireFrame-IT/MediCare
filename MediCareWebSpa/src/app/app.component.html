@@ -1,28 +1,31 @@
-<mat-toolbar color="primary">
-  <img src="assets/logo.svg" alt="MediCare Logo" class="logo">
-  <span>MediCare</span>
-  <span class="spacer"></span>
-  <button mat-button routerLink="/" routerLinkActive="active">Home</button>
-  @if (isAdmin) {
-    <button mat-button routerLink="/admin-panel">Admin panel</button>
-  }
-  <button mat-button routerLink="/services">Services</button>
-  <button mat-button routerLink="/appointments">Appointments</button>
-  <button mat-button routerLink="/about">About Us</button>
-  <div class="auth-buttons">
-    <app-success-dialog></app-success-dialog>
-    @if(isLoggedIn) {
-      @if (isAdmin) {
-        <button mat-raised-button routerLink="/register-doctor">Doctor Registration</button>
-      }
-      <button mat-raised-button (click)="logout()">Log out</button>
-    } @else {
-        <button mat-raised-button routerLink="/login">Login</button>
-        <button mat-raised-button routerLink="/register">Register</button>
+<div class="sticky-container">
+  <mat-toolbar color="primary">
+    <img src="assets/logo.svg" alt="MediCare Logo" class="logo">
+    <span>MediCare</span>
+    <span class="spacer"></span>
+    <button mat-button routerLink="/" routerLinkActive="active">Home</button>
+    @if (isAdmin) {
+      <button mat-button routerLink="/admin-panel">Admin panel</button>
     }
-  </div>
-</mat-toolbar>
-@if(isLoading) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-}
+    <button mat-button routerLink="/services">Services</button>
+    <button mat-button routerLink="/appointments">Appointments</button>
+    <button mat-button routerLink="/about">About Us</button>
+    <div class="auth-buttons">
+      <app-success-dialog></app-success-dialog>
+      @if(isLoggedIn) {
+        @if (isAdmin) {
+          <button mat-raised-button routerLink="/register-doctor">Doctor Registration</button>
+        }
+        <button mat-raised-button (click)="logout()">Log out</button>
+      } @else {
+          <button mat-raised-button routerLink="/login">Login</button>
+          <button mat-raised-button routerLink="/register">Register</button>
+      }
+    </div>
+  </mat-toolbar>
+  @if(isLoading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+  <app-error-message [message]="errorMessage"></app-error-message>
+</div>
 <router-outlet></router-outlet>

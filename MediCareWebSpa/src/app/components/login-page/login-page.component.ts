@@ -6,7 +6,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LoginResponseDTO } from '../../DTOs/response/login-response.dto';
-import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { Subscription } from 'rxjs';
 import { LoadingService } from '../../services/loading.service';
 
@@ -16,8 +15,7 @@ import { LoadingService } from '../../services/loading.service';
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
-    MatFormFieldModule,
-    ErrorMessageComponent
+    MatFormFieldModule
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss'
@@ -25,7 +23,6 @@ import { LoadingService } from '../../services/loading.service';
 export class LoginPageComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public loginForm: FormGroup;
-  public errorMessage: string | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,9 +36,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.subscriptions.push(this.loadingService.errorMessage$.subscribe(msg => this.errorMessage = msg));
-  }
+  ngOnInit(): void { }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
@@ -55,7 +50,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       this.authService.login(loginRequest).subscribe({
         next: (response: LoginResponseDTO) => {
           this.loadingService.clearErrorMessage();
-          this.loadingService.showMessage('Logged in successfully.');
+          this.loadingService.showMessage('Logged in successfully');
           this.authService.storeUserData(response.accessToken, response.refreshToken, response.roleType);
           this.router.navigate(['/']);
         },
@@ -70,7 +65,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       });
     }
     else {
-      this.loadingService.setErrorMessage('Please fill in all fields correctly.');
+      this.loadingService.setErrorMessage('Please fill in all fields correctly');
     }
   }
 }

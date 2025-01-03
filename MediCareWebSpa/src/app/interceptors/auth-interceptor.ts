@@ -17,8 +17,8 @@ export class AuthInterceptor implements HttpInterceptor {
     private router: Router
   ) {
     this.ignoreUrls = [
-      `${this.authService.apiUrl}/accounts/login`,
-      `${this.authService.apiUrl}/accounts/register`
+      `${this.authService.apiUrl}/login`,
+      `${this.authService.apiUrl}/register`
     ]
   }
 
