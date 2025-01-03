@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
   private _isLoading = new BehaviorSubject<boolean>(false);
-  private _messageSubject = new BehaviorSubject<string>('');
+  private _messageSubject = new BehaviorSubject<string | null>(null);
   private _errorMessageSubject = new BehaviorSubject<string | null>(null);
   private errorTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -22,7 +22,7 @@ export class LoadingService {
 
   showMessage(message: string) {
     this._messageSubject.next(message);
-    setTimeout(() => this._messageSubject.next(''), 3000);
+    setTimeout(() => this._messageSubject.next(null), 5000);
   }
 
   setErrorMessage(message: string) {
@@ -34,7 +34,7 @@ export class LoadingService {
     this.errorTimeoutId = setTimeout(() => {
       this._errorMessageSubject.next(null);
       this.errorTimeoutId = null;
-    }, 3000);
+    }, 5000);
   }
 
   clearErrorMessage() {

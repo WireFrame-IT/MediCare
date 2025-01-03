@@ -1,15 +1,37 @@
 <div class="hero">
   <h1>Welcome to MediCare</h1>
   <p>Your health, our priority. We provide top-notch medical care for everyone.</p>
-  <button mat-raised-button>Get Started</button>
+  <button mat-raised-button routerLink="/services">Get Started</button>
 </div>
 <div class="services">
-  <h1>Our Services</h1>
   <div class="grid">
-    <mat-card *ngFor="let service of services" class="service-card">
-      <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
-      <h3 class="service-title">{{ service.name }}</h3>
-      <p class="service-description">{{ service.description }}</p>
-    </mat-card>
+    @for (service of services; track service.id) {
+      <mat-card class="service-card">
+        <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
+        <div>
+          <h3 class="service-title">{{ service.name }}</h3>
+          <p class="service-description">{{ service.description }}</p>
+        </div>
+      </mat-card>
+    }
   </div>
+  <button mat-raised-button routerLink="/services">See more...</button>
+</div>
+<div class="description">
+  <p>
+    Our clinic is a modern medical center that combines the expertise of specialists with advanced technology.
+    We offer comprehensive diagnostic and therapeutic services tailored to the individual needs of every patient.
+    We specialize in cardiology, neurology, pediatrics, dermatology, and many other medical fields.
+    Our priority is to care for the health and well-being of our patients in a welcoming environment.
+  </p>
+</div>
+<div id="gallery" class="image-gallery">
+  @for (doubleUrl of getImageUrls(6); track $index) {
+    <div class="image-container">
+      <div class="double-image">
+        <img [src]="doubleUrl.first" alt="image" class="image"/>
+        <img [src]="doubleUrl.second" alt="image" class="image"/>
+      </div>
+    </div>
+  }
 </div>

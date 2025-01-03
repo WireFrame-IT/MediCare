@@ -3,10 +3,9 @@
 .services {
   text-align: center;
   padding: 1rem;
-  background-color: #f9f9f9;
 
   h1 {
-    color: variables.$primary-color;
+    color: white;
   }
 
   .grid {
@@ -18,7 +17,7 @@
     .service-card {
       padding: 1rem;
       text-align: center;
-      background: white;
+      background-color: variables.$background-color;
       border: 1px solid #ddd;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

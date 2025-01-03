@@ -14,8 +14,8 @@ mat-toolbar {
 .hero {
   background: linear-gradient(
     to right,
-    variables.$primary-color,
-    color.scale(variables.$primary-color, $lightness: 20%)
+    rgba(variables.$primary-color, 0.6),
+    color.scale(rgba(variables.$primary-color, 0.6), $lightness: 20%)
   );
   color: white;
   text-align: center;
@@ -34,7 +34,6 @@ mat-toolbar {
 .services {
   text-align: center;
   padding: 1rem;
-  background-color: #f9f9f9;
 
   h1 {
     color: variables.$primary-color;
@@ -43,13 +42,15 @@ mat-toolbar {
   .grid {
     display: grid;
     gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
     padding: 0 1rem;
+    margin-bottom: 1rem;
 
     .service-card {
+      display: flex;
+      flex-direction: row;
       padding: 1rem;
-      text-align: center;
-      background: white;
+      background-color: variables.$background-color;
       border: 1px solid #ddd;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -61,24 +62,60 @@ mat-toolbar {
       }
 
       .service-icon {
-        font-size: 4rem;
-        height: 80%;
-        width: 100%;
+        font-size: 3rem;
+        height: 100%;
+        width: 20%;
         color: variables.$accent-color;
+        text-align: left;
       }
 
       .service-title {
-        margin: 1rem 0;
         font-size: 1.25rem;
         font-weight: bold;
         color: variables.$primary-color;
+        text-align: left;
       }
 
       .service-description {
-        margin: 0;
         color: #555;
       }
     }
   }
 }
 
+.description {
+  background-color: variables.$background-color;
+  padding: 4rem 8rem;
+  margin: 1rem 0;
+  font-size: 1.2rem;
+  text-align: center;
+  line-height: 1.6rem;
+}
+
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: space-evenly;
+  gap: 2rem;
+
+  .image-container .double-image {
+    .image {
+      width: 100%;
+      margin-top: 2rem;
+      transition: all 0.2s;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    .image:nth-child(odd) {
+      height: 100%;
+    }
+
+    .image:nth-child(even) {
+      height: 50%;
+    }
+  }
+}

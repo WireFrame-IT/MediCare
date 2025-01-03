@@ -1,2 +1,16 @@
 html, body { height: 100%; }
-body { box-sizing: border-box; margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  user-select: none;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../public/assets/medical-facility/7.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}

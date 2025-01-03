@@ -11,7 +11,7 @@ import { LoadingService } from '../../../services/loading.service';
 })
 export class SuccessDialogComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
-  public message: string = '';
+  public message: string | null = null;
 
   constructor(private loadingService: LoadingService) {}
 

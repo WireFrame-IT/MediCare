@@ -1,6 +1,9 @@
+@use '../variables.scss' as variables;
+
 .sticky-container {
   position: sticky;
   top: 0;
+  z-index: 1000;
 
   .logo {
     height: 2rem;
@@ -15,5 +18,15 @@
     margin-left: auto;
     display: flex;
     gap: 1rem;
+  }
+}
+
+.footer {
+  background-color: variables.$background-color;
+  margin-top: 1rem;
+  padding: 1rem;
+
+  .footer-info {
+    text-align: center;
   }
 }
