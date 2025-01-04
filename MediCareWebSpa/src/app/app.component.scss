@@ -22,6 +22,8 @@
 }
 
 .footer {
+  position: sticky;
+  top: 100vh;
   background-color: variables.$background-color;
   margin-top: 1rem;
   padding: 1rem;

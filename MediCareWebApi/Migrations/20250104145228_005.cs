@@ -24,6 +24,18 @@ namespace MediCare.Migrations
                 table: "Doctors",
                 newName: "IX_Doctors_SpecialityId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Pesel",
+                table: "Users",
+                column: "Pesel",
+                unique: true);
+
             migrationBuilder.AddForeignKey(
                 name: "FK_Doctors_Specialities_SpecialityId",
                 table: "Doctors",
@@ -39,6 +51,14 @@ namespace MediCare.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Doctors_Specialities_SpecialityId",
                 table: "Doctors");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Email",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Pesel",
+                table: "Users");
 
             migrationBuilder.RenameColumn(
                 name: "SpecialityId",

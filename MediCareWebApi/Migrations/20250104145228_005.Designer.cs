@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20241207133604_005")]
+    [Migration("20250104145228_005")]
     partial class _005
     {
         /// <inheritdoc />
@@ -505,6 +505,12 @@ namespace MediCare.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Pesel")
+                        .IsUnique();
 
                     b.HasIndex("RoleId");
 

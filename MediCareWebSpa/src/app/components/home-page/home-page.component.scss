@@ -36,7 +36,8 @@ mat-toolbar {
   padding: 1rem;
 
   h1 {
-    color: variables.$primary-color;
+    color: white;
+    margin-bottom: 1rem;
   }
 
   .grid {
@@ -96,12 +97,12 @@ mat-toolbar {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   justify-content: space-evenly;
-  gap: 2rem;
 
   .image-container .double-image {
     .image {
+      box-sizing: border-box;
       width: 100%;
-      margin-top: 2rem;
+      padding: 2rem;
       transition: all 0.2s;
 
       &:hover {

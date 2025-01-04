@@ -503,6 +503,12 @@ namespace MediCare.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Pesel")
+                        .IsUnique();
+
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
