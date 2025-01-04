@@ -5,7 +5,7 @@ import { Service } from '../../DTOs/models/service';
 import { ICON_MAP } from '../../shared/icon-map';
 import { MatCard } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -23,6 +23,7 @@ export class ServicePageComponent {
 private subscriptions: Subscription[] = [];
   services: Service[] = [];
   isLoggedIn: boolean = false;
+  private dialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -34,11 +35,17 @@ private subscriptions: Subscription[] = [];
   ngOnInit(): void {
     this.appointmentService.loadServices();
     this.subscriptions.push(this.appointmentService.services$.subscribe(services => this.services = services));
-    this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
+    this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn;
+      if(!this.isLoggedIn && this.dialogRef)
+        this.dialogRef.close();
+    }));
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscriotion => subscriotion.unsubscribe());
+    if(this.dialogRef)
+      this.dialogRef.close();
   }
 
   openAppointmentDialog(service: Service): void {
@@ -47,7 +54,7 @@ private subscriptions: Subscription[] = [];
       return;
     }
 
-    this.dialog.open(AppointmentDialogComponent, {
+    this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
       width: '600px',
       data: service
     });

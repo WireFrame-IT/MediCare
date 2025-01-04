@@ -90,11 +90,11 @@ namespace MedicalFacility.Controllers
 
 		[AllowAnonymous]
 		[HttpPost("refresh")]
-		public async Task<IActionResult> RefreshTokenAsync([FromBody] string refreshTokenRequest)
+		public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshRequestDTO refreshRequest)
 		{
 			var user = await _context.Users
 				.Include(x => x.Role)
-				.SingleOrDefaultAsync(x => x.RefreshToken == refreshTokenRequest);
+				.SingleOrDefaultAsync(x => x.RefreshToken == refreshRequest.RefreshToken);
 
 			if (user == null)
 				return Unauthorized("Invalid refresh token.");

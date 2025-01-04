@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private refreshTokenSubject: BehaviorSubject<RefreshResponseDTO | null> = new BehaviorSubject<RefreshResponseDTO | null>(null);
   private ignoreUrls: string[] = [];
 
   constructor(
@@ -18,6 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {
     this.ignoreUrls = [
       `${this.authService.apiUrl}/login`,
+      `${this.authService.apiUrl}/refresh`,
       `${this.authService.apiUrl}/register`
     ]
   }
@@ -52,29 +53,30 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private handleAuthError(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-      this.refreshTokenSubject.next(null);
-
-      return this.authService.refreshAccessToken().pipe(
-        switchMap((newTokens: RefreshResponseDTO) => {
-          this.isRefreshing = false;
-          this.refreshTokenSubject.next(newTokens.refreshToken);
-          return next.handle(this.addAuthorizationHeader(request, newTokens.accessToken));
-        }),
-        catchError((err) => {
-          this.isRefreshing = false;
-          this.authService.logout();
-          this.router.navigate(['/login']);
-          return throwError(() => err);
-        })
-      );
-    }
-
-    return this.refreshTokenSubject.pipe(
-      filter((token) => token != null),
+    if (this.isRefreshing) {
+      return this.refreshTokenSubject.pipe(
+      filter((tokens) => tokens != null),
       take(1),
       switchMap(() => next.handle(this.addAuthorizationHeader(request, this.authService.getAccessToken()!)))
+    );
+    }
+
+    this.isRefreshing = true;
+    this.refreshTokenSubject.next(null);
+
+    return this.authService.refreshAccessToken().pipe(
+      switchMap((newTokens: RefreshResponseDTO) => {
+        this.isRefreshing = false;
+        sessionStorage.setItem('accessToken', newTokens.accessToken);
+        this.refreshTokenSubject.next(newTokens);
+        return next.handle(this.addAuthorizationHeader(request, newTokens.accessToken));
+      }),
+      catchError((error) => {
+        this.isRefreshing = false;
+        this.authService.cleanCredentials();
+        this.router.navigate(['/login']);
+        return throwError(() => error);
+      })
     );
   }
 }

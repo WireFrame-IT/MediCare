@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppointmentService } from '../../services/appointment.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -66,7 +66,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.appointmentService.services$.subscribe(services => this.services = services));
     this.subscriptions.push(this.appointmentService.doctors$.subscribe(doctors => {
       this.doctors = doctors;
-      this.doctorsBySpeciality = doctors.filter(x => x.specialityId === this.data?.id);
+      this.doctorsBySpeciality = doctors.filter(x => x.specialityId === this.data?.specialityId);
     }));
   }
 
@@ -75,7 +75,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
   }
 
   onServiceChange(event: any) {
-    this.doctorsBySpeciality = this.doctors.filter(x => x.specialityId === event.value);
+    this.doctorsBySpeciality = this.doctors.filter(x => x.specialityId === this.findSpecialityIdByServiceId(event.value));
   }
 
   closeDialog(): void {
@@ -107,6 +107,13 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  findSpecialityIdByServiceId(serviceId: number): number | null {
+    const specialityId = this.services.find(service => service.id === serviceId)?.specialityId;
+    if (specialityId)
+      return specialityId
+    return null;
   }
 
   dateFilter(d: Date | null): boolean {

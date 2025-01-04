@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, Observable, throwError } from 'rxjs';
 import { PatientRegisterRequestDTO } from '../DTOs/request/patient-register-request.dto';
 import { LoginRequestDTO } from '../DTOs/request/login-request.dto';
 import { RefreshResponseDTO } from '../DTOs/response/refresh-response.dto';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { LoadingService } from './loading.service';
 import { Speciality } from '../DTOs/models/speciality';
 import { DoctorRegisterRequestDTO } from '../DTOs/request/doctor-register-request.dto';
+import { RefreshRequestDTO } from '../DTOs/request/refresh-request.dto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -43,8 +44,8 @@ export class AuthService {
   }
 
   refreshAccessToken(): Observable<RefreshResponseDTO> {
-    const refreshToken = localStorage.getItem('refreshToken');
-    return this.http.post<any>(`${this.apiUrl}/refresh`, { refreshToken });
+    const refreshRequestDTO = new RefreshRequestDTO(localStorage.getItem('refreshToken') ?? '');
+    return this.http.post<RefreshResponseDTO>(`${this.apiUrl}/refresh`, refreshRequestDTO);
   }
 
   getAccessToken(): string | null {
@@ -81,24 +82,27 @@ export class AuthService {
     .subscribe(specialities => this._specialities.next(specialities as Speciality[]));
   }
 
+  cleanCredentials(): void {
+    this._isAdmin.next(false);
+    this._isDoctor.next(false);
+    this._isLoggedIn.next(false);
+    sessionStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('roleType');
+  }
+
   logout(): void {
     this.loadingService.show();
-    this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
-      next: () => {
-        this._isAdmin.next(false);
-        this._isDoctor.next(false);
-        this._isLoggedIn.next(false);
-        sessionStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        sessionStorage.removeItem('roleType');
-        this.router.navigate(['/login']);
-      },
+    this.http.post(`${this.apiUrl}/logout`, {})
+    .pipe(finalize(() => {
+      this.loadingService.hide();
+      this.cleanCredentials();
+      this.router.navigate(['/login']);
+    }))
+    .subscribe({
+      next: () => {},
       error: err => {
-        this.loadingService.hide();
-        return err;
-      },
-      complete: () => {
-        this.loadingService.hide();
+        this.loadingService.setErrorMessage(err);
       }
     })
   };

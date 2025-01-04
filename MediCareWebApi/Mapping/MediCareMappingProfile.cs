@@ -25,6 +25,7 @@ namespace MediCare.Mapping
 			CreateMap<Appointment, AppointmentDTO>();
 			CreateMap<User, UserDTO>();
 			CreateMap<Doctor, DoctorDTO>();
+			CreateMap<Patient, PatientDTO>();
 
 			CreateMap<AppointmentRequestDTO, Appointment>()
 				.ForMember(x => x.Status, y => y.Ignore())

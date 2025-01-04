@@ -64,11 +64,11 @@ builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
+app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseCors("AllowAllOrigins");
 app.UseMiddleware<TransactionMiddleware>();
 app.UseMiddleware<TokenValidationMiddleware>();
 app.UseMiddleware<ErrorHandlingMiddleware>();
