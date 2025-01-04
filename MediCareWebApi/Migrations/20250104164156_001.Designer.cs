@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20241116171422_002")]
-    partial class _002
+    [Migration("20250104164156_001")]
+    partial class _001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,7 +58,6 @@ namespace MediCare.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Diagnosis")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -68,7 +67,7 @@ namespace MediCare.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ServiceId")
+                    b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -102,7 +101,7 @@ namespace MediCare.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SpecialtyId")
+                    b.Property<int>("SpecialityId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -110,7 +109,7 @@ namespace MediCare.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SpecialtyId");
+                    b.HasIndex("SpecialityId");
 
                     b.HasIndex("UserId");
 
@@ -228,7 +227,6 @@ namespace MediCare.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PatientCard")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -242,7 +240,12 @@ namespace MediCare.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", t =>
+                        {
+                            t.HasTrigger("GeneratePatientCard");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("MediCare.Models.Permission", b =>
@@ -503,6 +506,12 @@ namespace MediCare.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Pesel")
+                        .IsUnique();
+
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
@@ -535,7 +544,9 @@ namespace MediCare.Migrations
 
                     b.HasOne("MediCare.Models.Service", "Service")
                         .WithMany()
-                        .HasForeignKey("ServiceId");
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Doctor");
 
@@ -548,7 +559,7 @@ namespace MediCare.Migrations
                 {
                     b.HasOne("MediCare.Models.Speciality", "Speciality")
                         .WithMany()
-                        .HasForeignKey("SpecialtyId")
+                        .HasForeignKey("SpecialityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

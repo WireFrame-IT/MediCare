@@ -152,14 +152,89 @@ namespace MediCare.Migrations.CustomScripts
 			migrationBuilder.InsertData(
 				table: "Users",
 				columns: new[] { "Id", "Email", "Password", "Salt", "Name", "Surname", "Pesel", "PhoneNumber", "RoleId" },
-				values: new object[]
-				{ 1, "s26028@pjwstk.edu.pl", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Bohdan", "Sternytskyi", "00210816473", "123456789", 3 });
+				values: new object[,]
+				{
+					{ 1, "s26028@pjwstk.edu.pl", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Bohdan", "Sternytskyi", "00210816473", "+123456789", 3 },
+					{ 2, "john.smith@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "John", "Smith", "12345678901", "+48123456789", 2 },
+					{ 3, "emily.brown@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Emily", "Brown", "98765432109", "+48111222333", 2 },
+					{ 4, "michael.green@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Michael", "Green", "56789012345", "+48765432101", 2 },
+					{ 5, "sophia.wilson@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Sophia", "Wilson", "12309876543", "+48234567890", 2 },
+					{ 6, "james.taylor@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "James", "Taylor", "90123456789", "+48987654321", 2 },
+					{ 7, "olivia.miller@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Olivia", "Miller", "65432198700", "+48555222334", 2 },
+					{ 8, "william.moore@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "William", "Moore", "34567290123", "+48770011223", 2 },
+					{ 9, "ava.johnson@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Ava", "Johnson", "12309865789", "+48660123456", 2 },
+					{ 10, "logan.white@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Logan", "White", "89012345678", "+48770033445", 2 },
+					{ 11, "isabella.anderson@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Isabella", "Anderson", "67890123456", "+48555444678", 2 },
+					{ 12, "lucas.king@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Lucas", "King", "45678907234", "+48990011223", 2 },
+					{ 13, "mia.scott@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Mia", "Scott", "23456783012", "+48123499900", 2 },
+					{ 14, "ethan.clark@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Ethan", "Clark", "79901234567", "+48765543322", 2 },
+					{ 15, "emma.lewis@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Emma", "Lewis", "56789012340", "+48660077888", 2 },
+					{ 16, "alexander.young@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Alexander", "Young", "89012346789", "+48778999001", 2 },
+					{ 17, "sophie.wright@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Sophie", "Wright", "45612378900", "+48550123456", 2 },
+					{ 18, "benjamin.hall@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Benjamin", "Hall", "12345678090", "+48660112233", 2 },
+					{ 19, "lily.harris@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Lily", "Harris", "78945612345", "+48559988444", 2 },
+					{ 20, "noah.robinson@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Noah", "Robinson", "65432198765", "+48990044556", 2 },
+					{ 21, "charlotte.walker@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Charlotte", "Walker", "12389045678", "+48771122334", 2 },
+					{ 22, "daniel.thompson@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Daniel", "Thompson", "98765432111", "+48667899811", 2 },
+					{ 23, "john.doe@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "John", "Doe", "12345678912", "+48123456790", 2 },
+					{ 24, "mary.jones@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Mary", "Jones", "23456789012", "+48234567891", 2 },
+					{ 25, "james.brown@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "James", "Brown", "34567890163", "+48345678902", 2 },
+					{ 26, "patricia.smith@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Patricia", "Smith", "45678901234", "+48456789013", 2 },
+					{ 27, "robert.johnson@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Robert", "Johnson", "56789012245", "+48567890124", 2 },
+					{ 28, "linda.miller@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Linda", "Miller", "67890193456", "+48678901235", 2 },
+					{ 29, "michael.garcia@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Michael", "Garcia", "78901234567", "+48789012346", 2 },
+					{ 30, "elizabeth.rodriguez@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Elizabeth", "Rodriguez", "89012325678", "+48890123457", 2 },
+					{ 31, "william.davis@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "William", "Davis", "90128456789", "+48901234568", 2 },
+					{ 32, "susan.martinez@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Susan", "Martinez", "12345678921", "+48012345679", 2 },
+					{ 33, "charles.hernandez@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Charles", "Hernandez", "23456789022", "+48123456780", 2 },
+					{ 34, "joseph.lopez@outlook.com", "jZs/vfkieZcdBngxPAHzXuEDi5XZg0tOXXdtUooa1ag=", "mZ5bf60ttVt+4Xx6FHpvFHx+Vx/pPUoYql9QO+G9t3Y=", "Joseph", "Lopez", "33567890123", "+48234567881", 2 }
+				});
 
 			migrationBuilder.InsertData(
 				table: "Admins",
 				columns: new[] { "Id", "LastLogin", "Status", "UserId" },
 				values: new object[]
 				{ 1, DateTime.Now, (int)AdminStatus.Active, 1 });
+
+			migrationBuilder.InsertData(
+				table: "Doctors",
+				columns: new[] { "Id", "EmploymentDate", "IsAvailable", "SpecialityId", "UserId" },
+				values: new object[,]
+				{
+					{ 1, new DateTime(2023, 7, 15), true, 1, 2 },
+					{ 2, new DateTime(2024, 3, 22), true, 2, 3 },
+					{ 3, new DateTime(2022, 5, 10), true, 3, 4 },
+					{ 4, new DateTime(2021, 8, 25), true, 4, 5 },
+					{ 5, new DateTime(2023, 12, 30), true, 5, 6 },
+					{ 6, new DateTime(2020, 2, 17), true, 6, 7 },
+					{ 7, new DateTime(2024, 1, 9), true, 7, 8 },
+					{ 8, new DateTime(2023, 6, 1), true, 8, 9 },
+					{ 9, new DateTime(2022, 9, 12), true, 9, 10 },
+					{ 10, new DateTime(2021, 11, 5), true, 10, 11 },
+					{ 11, new DateTime(2023, 4, 19), true, 11, 12 },
+					{ 12, new DateTime(2020, 7, 22), true, 1, 13 },
+					{ 13, new DateTime(2022, 3, 15), true, 2, 14 },
+					{ 14, new DateTime(2024, 5, 6), true, 3, 15 },
+					{ 15, new DateTime(2021, 10, 11), true, 4, 16 },
+					{ 16, new DateTime(2023, 8, 30), true, 5, 17 },
+					{ 17, new DateTime(2022, 12, 18), true, 6, 18 },
+					{ 18, new DateTime(2020, 4, 14), true, 7, 19 },
+					{ 19, new DateTime(2024, 2, 27), true, 8, 20 },
+					{ 20, new DateTime(2021, 9, 9), true, 9, 21 },
+					{ 21, new DateTime(2023, 1, 20), true, 10, 22 },
+					{ 22, new DateTime(2024, 3, 5), true, 11, 23 },
+					{ 23, new DateTime(2023, 5, 17), true, 1, 24 },
+					{ 24, new DateTime(2022, 11, 9), true, 2, 25 },
+					{ 25, new DateTime(2023, 7, 10), true, 3, 26 },
+					{ 26, new DateTime(2021, 10, 25), true, 4, 27 },
+					{ 27, new DateTime(2024, 1, 8), true, 5, 28 },
+					{ 28, new DateTime(2023, 2, 13), true, 6, 29 },
+					{ 29, new DateTime(2021, 6, 18), true, 7, 30 },
+					{ 30, new DateTime(2022, 9, 3), true, 8, 31 },
+					{ 31, new DateTime(2024, 4, 14), true, 9, 32 },
+					{ 32, new DateTime(2021, 5, 7), true, 10, 33 },
+					{ 33, new DateTime(2022, 12, 23), true, 11, 34 }
+				});
 		}
 
 		public static void Down(MigrationBuilder migrationBuilder)
@@ -197,12 +272,17 @@ namespace MediCare.Migrations.CustomScripts
 			migrationBuilder.DeleteData(
 				table: "Users",
 				keyColumn: "Id",
-				keyValues: new object[] { 1 });
+				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 });
 
 			migrationBuilder.DeleteData(
 				table: "Admins",
 				keyColumn: "Id",
 				keyValues: new object[] { 1 });
+
+			migrationBuilder.DeleteData(
+				table: "Doctors",
+				keyColumn: "Id",
+				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 });
 		}
 	}
 }

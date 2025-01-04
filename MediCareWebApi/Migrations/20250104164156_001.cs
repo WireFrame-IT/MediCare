@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -173,15 +172,15 @@ namespace MediCare.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmploymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    SpecialtyId = table.Column<int>(type: "int", nullable: false),
+                    SpecialityId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Doctors", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Doctors_Specialities_SpecialtyId",
-                        column: x => x.SpecialtyId,
+                        name: "FK_Doctors_Specialities_SpecialityId",
+                        column: x => x.SpecialityId,
                         principalTable: "Specialities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -225,7 +224,7 @@ namespace MediCare.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PatientCard = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    PatientCard = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -269,10 +268,10 @@ namespace MediCare.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Diagnosis = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Diagnosis = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     PatientId = table.Column<int>(type: "int", nullable: false),
                     DoctorId = table.Column<int>(type: "int", nullable: false),
-                    ServiceId = table.Column<int>(type: "int", nullable: true)
+                    ServiceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -291,7 +290,8 @@ namespace MediCare.Migrations
                         name: "FK_Appointments_Services_ServiceId",
                         column: x => x.ServiceId,
                         principalTable: "Services",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -394,9 +394,9 @@ namespace MediCare.Migrations
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctors_SpecialtyId",
+                name: "IX_Doctors_SpecialityId",
                 table: "Doctors",
-                column: "SpecialtyId");
+                column: "SpecialityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Doctors_UserId",
@@ -457,6 +457,18 @@ namespace MediCare.Migrations
                 name: "IX_Services_SpecialityId",
                 table: "Services",
                 column: "SpecialityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Pesel",
+                table: "Users",
+                column: "Pesel",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
