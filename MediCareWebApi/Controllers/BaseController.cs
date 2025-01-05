@@ -36,7 +36,9 @@ namespace MediCare.Controllers
 		protected async Task<User> GetCurrentUserAsync()
 		{
 			var userId = GetCurrentUserId();
-			var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+			var user = await _context.Users
+				.Include(x => x.Role)
+				.FirstOrDefaultAsync(x => x.Id == userId);
 			if (user == null)
 				throw new InvalidOperationException("User not found.");
 			return user;

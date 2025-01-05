@@ -17,7 +17,7 @@
   max-width: 400px;
   margin: 0 auto;
   padding: 1rem;
-  border-radius: 5px;
+  border-radius: variables.$border-radius;
 
   .form-field {
     width: 100%;

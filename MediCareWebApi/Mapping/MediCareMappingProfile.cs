@@ -18,15 +18,6 @@ namespace MediCare.Mapping
 				.ForMember(x => x.Role, y => y.Ignore())
 				.ForMember(x => x.Logs, y => y.Ignore());
 
-			CreateMap<PatientRegisterRequestDTO, User>();
-			CreateMap<DoctorRegisterRequestDTO, User>();
-			CreateMap<Speciality, SpecialityDTO>();
-			CreateMap<Service, ServiceDTO>();
-			CreateMap<Appointment, AppointmentDTO>();
-			CreateMap<User, UserDTO>();
-			CreateMap<Doctor, DoctorDTO>();
-			CreateMap<Patient, PatientDTO>();
-
 			CreateMap<AppointmentRequestDTO, Appointment>()
 				.ForMember(x => x.Status, y => y.Ignore())
 				.ForMember(x => x.Diagnosis, y => y.Ignore())
@@ -35,6 +26,20 @@ namespace MediCare.Mapping
 				.ForMember(x => x.Doctor, y => y.Ignore())
 				.ForMember(x => x.Service, y => y.Ignore())
 				.ForMember(x => x.Feedbacks, y => y.Ignore());
+
+			CreateMap<PatientRegisterRequestDTO, User>();
+			CreateMap<DoctorRegisterRequestDTO, User>();
+
+			CreateMap<Appointment, AppointmentDTO>();
+			CreateMap<Doctor, DoctorDTO>();
+			CreateMap<Feedback, FeedbackDTO>();
+			CreateMap<Patient, PatientDTO>();
+			CreateMap<Permission, PermissionDTO>();
+			CreateMap<Role, RoleDTO>();
+			CreateMap<RolePermission, RolePermissionDTO>();
+			CreateMap<Service, ServiceDTO>();
+			CreateMap<Speciality, SpecialityDTO>();
+			CreateMap<User, UserDTO>();
 		}
 	}
 }

@@ -6,9 +6,9 @@
   justify-content: center;
   background-color: variables.$primary-color;
   height: 100%;
-  border-radius: 5px;
+  border-radius: variables.$border-radius;
   color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: variables.$box-shadow;
   animation: fadeInOut 3s ease-in-out forwards;
 
   @keyframes fadeInOut {

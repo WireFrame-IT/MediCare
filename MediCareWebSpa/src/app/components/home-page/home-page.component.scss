@@ -53,13 +53,13 @@ mat-toolbar {
       padding: 1rem;
       background-color: variables.$background-color;
       border: 1px solid #ddd;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: variables.$border-radius;
+      box-shadow: variables.$box-shadow;
       transition: all 0.2s;
 
       &:hover {
         transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        box-shadow: variables.$box-shadow-hover;
       }
 
       .service-icon {
@@ -78,7 +78,7 @@ mat-toolbar {
       }
 
       .service-description {
-        color: #555;
+        color: variables.$grey-color;
       }
     }
   }
@@ -107,7 +107,7 @@ mat-toolbar {
 
       &:hover {
         transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        box-shadow: variables.$box-shadow;
       }
     }
 

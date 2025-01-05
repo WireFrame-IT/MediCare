@@ -1,0 +1,88 @@
+@use '../../../variables.scss' as variables;
+
+.appointments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+.appointment-card {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  box-shadow: variables.$box-shadow-hover;
+  border-radius: variables.$border-radius;
+  background-color: #fff;
+
+  .header {
+    width: 35%;
+
+    .title {
+      color: variables.$primary-color;
+      font-size: 1.3rem;
+    }
+
+    .time {
+      color: variables.$grey-color;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1rem;
+    font-size: 1.1rem;
+    color: variables.$grey-color;
+    width: 35%;
+
+    .doctor-name {
+      width: 50%;
+    }
+
+    .doctor-speciality {
+      width: 50%;
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: end;
+    gap: 1rem;
+    width: 30%;
+
+    .status {
+      cursor: default;
+
+      &-accepted {
+        background-color: variables.$accepted-color;
+        color: black;
+      }
+      &-confirmed {
+        background-color: variables.$primary-color;
+        color: white;
+      }
+      &-canceled {
+        background-color: rgba(variables.$grey-color, 0.2);
+        color: black;
+      }
+      &-absent {
+        background-color: variables.$absent-color;
+        color: black;
+      }
+    }
+  }
+}
+
+.no-appointments {
+  text-align: center;
+  color: white;
+
+  p {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+}

@@ -1,0 +1,40 @@
+<div class="appointments-container">
+  @for (appointment of appointments; track appointment.id) {
+    <mat-card class="appointment-card">
+      <mat-card-header class="header">
+        <mat-card-title class="title">{{ appointment.service.name }}</mat-card-title>
+        <mat-card-subtitle class="time">{{ appointment.time | date: 'yyyy-MM-dd HH:mm' }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="content">
+        @if(isDoctor) {
+          <p>{{ appointment.patient.user.name }} {{ appointment.patient.user.surname }}</p>
+        } @else {
+          <p class="doctor-name">{{ appointment.doctor.user.name }} {{ appointment.doctor.user.surname }}</p>
+          <p class="doctor-speciality">{{ appointment.doctor.speciality.name }}</p>
+        }
+      </mat-card-content>
+      <mat-card-actions class="actions">
+        <button class="status" [class]="getStatusClass(appointment)" mat-raised-button>{{ getStatus(appointment) }}</button>
+        @if (canCancel(appointment)) {
+          <button mat-raised-button (click)="onCancel(appointment)">Cancel</button>
+        }
+        @if (isDoctor && canAccept(appointment)) {
+          <button mat-flat-button (click)="onAccept(appointment)">Accept</button>
+        }
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>
+@if (!appointments || appointments.length === 0) {
+  <div class="no-appointments">
+    @if (!isLoggedIn) {
+      <p>You should log in first.</p>
+      <button mat-flat-button routerLink="/login">Log In</button>
+    } @else {
+      <p>You don't have any appointments.</p>
+      @if (!isDoctor) {
+        <button mat-flat-button routerLink="/services">Book Appointment</button>
+      }
+    }
+  </div>
+}

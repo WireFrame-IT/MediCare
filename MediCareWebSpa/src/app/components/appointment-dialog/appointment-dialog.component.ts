@@ -118,6 +118,6 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
 
   dateFilter(d: Date | null): boolean {
     const day = (d || new Date()).getDay();
-    return day !== 0;
+    return day !== 0 && day !== 6;
   };
 }

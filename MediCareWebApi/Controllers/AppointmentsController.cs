@@ -37,13 +37,13 @@ namespace MediCare.Controllers
 					var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (doctor == null)
 						return NotFound("Doctor not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await _context.Appointments.Where(x => x.DoctorId == doctor.Id).ToListAsync()));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsByDoctorOrPatientId(doctor.Id, true)));
 
 				case RoleType.Patient:
 					var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (patient == null)
 						return NotFound("Patient not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await _context.Appointments.Where(x => x.PatientId == patient.Id).ToListAsync()));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsByDoctorOrPatientId(patient.Id)));
 			}
 
 			return NotFound();
@@ -114,6 +114,37 @@ namespace MediCare.Controllers
 			return Ok(_mapper.Map<List<ServiceDTO>>(await _context.Services.ToListAsync()));
 		}
 
+		[HttpPost("accept")]
+		public async Task<IActionResult> AcceptAppointment([FromQuery] int id)
+		{
+			var appointment = await GetAppointmentAsync(id);
+			if (appointment == null)
+				return NotFound();
+			appointment.Status = AppointmentStatus.Accepted;
+			await _context.SaveChangesAsync();
+			return Ok();
+		} 
+
+		[HttpPost("cancel")]
+		public async Task<IActionResult> CancelAppointment([FromQuery] int id)
+		{
+			var appointment = await GetAppointmentAsync(id);
+			if (appointment == null)
+				return NotFound();
+			appointment.Status = AppointmentStatus.Canceled;
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+
+		private async Task<Appointment> GetAppointmentAsync(int id)
+		{
+			var userId = GetCurrentUserId();
+			return await _context.Appointments
+				.Include(x => x.Doctor)
+				.Include(x => x.Patient)
+				.FirstOrDefaultAsync(x => x.Id == id && (x.Doctor.UserId == userId || x.Patient.UserId == userId));
+		}
+
 		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service)
 		{
 			var doctors = await _context.Doctors
@@ -129,6 +160,20 @@ namespace MediCare.Controllers
 					return doctor;
 			}
 			return null;
+		}
+
+		private async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorOrPatientId(int id, bool doctor = false)
+		{
+			return await _context.Appointments
+				.Include(x => x.Doctor)
+					.ThenInclude(x => x.User)
+				.Include(x => x.Doctor)
+					.ThenInclude(x => x.Speciality)
+				.Include(x => x.Patient)
+					.ThenInclude(x => x.User)
+				.Include(x => x.Service)
+				.Where(x => (doctor ? x.DoctorId : x.PatientId) == id)
+				.ToListAsync();
 		}
 
 		private void ValidateAppointment(Appointment appointment)

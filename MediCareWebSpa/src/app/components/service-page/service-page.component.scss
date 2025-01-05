@@ -20,14 +20,14 @@
       text-align: center;
       background-color: variables.$background-color;
       border: 1px solid #ddd;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: variables.$border-radius;
+      box-shadow: variables.$box-shadow;
       transition: all 0.2s;
       cursor: pointer;
 
       &:hover {
         transform: translateY(-5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        box-shadow: variables.$box-shadow-hover;
       }
 
       .service-icon {

@@ -2,8 +2,6 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, Observable } from "rxjs";
 import { Service } from "../DTOs/models/service";
 import { HttpClient } from "@angular/common/http";
-import { Router } from "@angular/router";
-import { LoadingService } from "./loading.service";
 import { Doctor } from "../DTOs/models/doctor";
 import { Appointment } from "../DTOs/models/appointment";
 import { AppointmentRequestDTO } from "../DTOs/request/appointment-request.dto";
@@ -12,15 +10,15 @@ import { AppointmentRequestDTO } from "../DTOs/request/appointment-request.dto";
 export class AppointmentService {
   private _services: BehaviorSubject<Service[]> = new BehaviorSubject<Service[]>([]);
   private _doctors: BehaviorSubject<Doctor[]> = new BehaviorSubject<Doctor[]>([]);
+  private _appointments: BehaviorSubject<Appointment[]> = new BehaviorSubject<Appointment[]>([]);
   services$: Observable<Service[]> = this._services.asObservable();
   doctors$: Observable<Doctor[]> = this._doctors.asObservable();
+  appointments$: Observable<Appointment[]> = this._appointments.asObservable();
 
   readonly apiUrl = 'https://localhost:5001/MediCareWebApi/appointments';
 
   constructor(
-      private http: HttpClient,
-      private router: Router,
-      private loadingService: LoadingService,
+      private http: HttpClient
     ) {}
 
   loadServices(): void {
@@ -37,7 +35,22 @@ export class AppointmentService {
     })).subscribe(doctors => this._doctors.next(doctors as Doctor[]));
   }
 
+  loadAppointments(): void {
+    this.http.get<Appointment[]>(`${this.apiUrl}`).pipe(catchError(error => {
+      console.error(error);
+      return [];
+    })).subscribe(appointments => this._appointments.next(appointments as Appointment[]));
+  }
+
   saveAppointment(appointmentData: AppointmentRequestDTO): Observable<Appointment> {
     return this.http.post<Appointment>(`${this.apiUrl}`, appointmentData);
+  }
+
+  acceptAppointment(id: number): Observable<null> {
+    return this.http.post<null>(`${this.apiUrl}/accept?id=${id}`, null);
+  }
+
+  cancelAppointment(id: number): Observable<null> {
+    return this.http.post<null>(`${this.apiUrl}/cancel?id=${id}`, null);
   }
 }
