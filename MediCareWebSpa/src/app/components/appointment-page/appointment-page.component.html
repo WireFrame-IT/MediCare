@@ -6,6 +6,7 @@
         <mat-card-subtitle class="time">{{ appointment.time | date: 'yyyy-MM-dd HH:mm' }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content class="content">
+        <button class="status" [class]="getStatusClass(appointment)" mat-raised-button>{{ getStatus(appointment) }}</button>
         @if(isDoctor) {
           <p>{{ appointment.patient.user.name }} {{ appointment.patient.user.surname }}</p>
         } @else {
@@ -14,7 +15,6 @@
         }
       </mat-card-content>
       <mat-card-actions class="actions">
-        <button class="status" [class]="getStatusClass(appointment)" mat-raised-button>{{ getStatus(appointment) }}</button>
         @if (canCancel(appointment)) {
           <button mat-raised-button (click)="onCancel(appointment)">Cancel</button>
         }

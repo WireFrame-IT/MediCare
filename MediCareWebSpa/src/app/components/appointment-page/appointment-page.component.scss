@@ -18,7 +18,7 @@
   background-color: #fff;
 
   .header {
-    width: 35%;
+    width: 30%;
 
     .title {
       color: variables.$primary-color;
@@ -34,27 +34,22 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 1rem;
     padding: 1rem;
     font-size: 1.1rem;
     color: variables.$grey-color;
-    width: 35%;
+    width: 45%;
 
     .doctor-name {
-      width: 50%;
+      width: 40%;
     }
 
     .doctor-speciality {
-      width: 50%;
+      width: 35%;
     }
-  }
-
-  .actions {
-    display: flex;
-    justify-content: end;
-    gap: 1rem;
-    width: 30%;
 
     .status {
+      width: 25%;
       cursor: default;
 
       &-accepted {
@@ -74,6 +69,13 @@
         color: black;
       }
     }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: end;
+    gap: 1rem;
+    width: 25%;
   }
 }
 
