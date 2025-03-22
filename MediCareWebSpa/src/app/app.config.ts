@@ -5,6 +5,7 @@ import { provideHttpClient, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@a
 import { BrowserAnimationsModule  } from '@angular/platform-browser/animations';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_TIMEPICKER_CONFIG } from '@angular/material/timepicker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     importProvidersFrom(BrowserAnimationsModule),
     provideNativeDateAdapter(),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: MAT_TIMEPICKER_CONFIG, useValue: { interval: '15 minutes'}}
   ]
 };

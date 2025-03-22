@@ -1,5 +1,5 @@
 import { RoleType } from "../../enums/role-type";
-import { RolePermission } from "./rolePermission";
+import { RolePermission } from "./role-permission";
 
 export class Role {
   id: number;

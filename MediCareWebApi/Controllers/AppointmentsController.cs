@@ -37,13 +37,16 @@ namespace MediCare.Controllers
 					var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (doctor == null)
 						return NotFound("Doctor not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsByDoctorOrPatientUserId(doctor.UserId, true)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments(doctor.UserId, true)));
 
 				case RoleType.Patient:
 					var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (patient == null)
 						return NotFound("Patient not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsByDoctorOrPatientUserId(patient.UserId)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments(patient.UserId)));
+
+				case RoleType.Admin:
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments(null)));
 			}
 
 			return NotFound();
@@ -102,7 +105,6 @@ namespace MediCare.Controllers
 			return Ok(_mapper.Map<List<DoctorDTO>>(await _context.Doctors
 				.Include(x => x.User)
 				.Include(x => x.Speciality)
-				//.Where(x => x.IsAvailable)
 				.ToListAsync()));
 		}
 
@@ -135,7 +137,7 @@ namespace MediCare.Controllers
 			return Ok();
 		}
 
-		private async Task<Appointment> GetAppointmentAsync(int id)
+		private async Task<Appointment?> GetAppointmentAsync(int id)
 		{
 			var userId = GetCurrentUserId();
 			return await _context.Appointments
@@ -161,18 +163,23 @@ namespace MediCare.Controllers
 			return null;
 		}
 
-		private async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorOrPatientUserId(int userId, bool doctor = false)
+		private async Task<IEnumerable<Appointment>> GetAppointments(int? userId, bool doctor = false)
 		{
-			return await _context.Appointments
+			var query = _context.Appointments
 				.Include(x => x.Doctor)
 					.ThenInclude(x => x.User)
 				.Include(x => x.Doctor)
 					.ThenInclude(x => x.Speciality)
 				.Include(x => x.Patient)
 					.ThenInclude(x => x.User)
-				.Include(x => x.Service)
-				.Where(x => (doctor ? x.DoctorsUserId : x.PatientsUserId) == userId)
-				.ToListAsync();
+				.Include(x => x.Service);
+
+			if (userId.HasValue)
+			{
+				query.Where(x => (doctor ? x.DoctorsUserId : x.PatientsUserId) == userId);
+			}
+				
+			return await query.ToListAsync();
 		}
 
 		private void ValidateAppointment(Appointment appointment)

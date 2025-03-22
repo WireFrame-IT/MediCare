@@ -11,8 +11,8 @@
   <mat-form-field class="form-field">
     <mat-label>Doctor</mat-label>
     <mat-select formControlName="doctorId">
-      @for (doctor of doctorsBySpeciality; track doctor.id) {
-        <mat-option [value]="doctor.id">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
+      @for (doctor of doctorsBySpeciality; track doctor.userId) {
+        <mat-option [value]="doctor.userId">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
       }
     </mat-select>
   </mat-form-field>
@@ -24,7 +24,7 @@
   </mat-form-field>
   <mat-form-field class="form-field">
     <mat-label>Time</mat-label>
-    <input matInput [matTimepicker]="timePicker" formControlName="time">
+    <input matInput [matTimepicker]="timePicker" formControlName="time" matTimepickerMin="08:00" matTimepickerMax="15:45">
     <mat-timepicker-toggle matIconSuffix [for]="timePicker"/>
     <mat-timepicker #timePicker/>
   </mat-form-field>

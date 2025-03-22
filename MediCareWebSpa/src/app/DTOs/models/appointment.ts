@@ -9,9 +9,9 @@ export class Appointment {
   time: Date;
   status: AppointmentStatus;
   diagnosis: string;
-  patientId: number;
+  patientsUserId: number;
   patient: Patient;
-  doctorId: number;
+  doctorsUserId: number;
   doctor: Doctor;
   serviceId: number;
   service: Service;
@@ -22,9 +22,9 @@ export class Appointment {
     time: Date,
     status: AppointmentStatus,
     diagnosis: string,
-    patientId: number,
+    patientsUserId: number,
     patient: Patient,
-    doctorId: number,
+    doctorsUserId: number,
     doctor: Doctor,
     serviceId: number,
     service: Service
@@ -33,9 +33,9 @@ export class Appointment {
     this.time = time;
     this.status = status;
     this.diagnosis = diagnosis;
-    this.patientId = patientId;
+    this.patientsUserId = patientsUserId;
     this.patient = patient;
-    this.doctorId = doctorId;
+    this.doctorsUserId = doctorsUserId;
     this.doctor = doctor;
     this.serviceId = serviceId;
     this.service = service;

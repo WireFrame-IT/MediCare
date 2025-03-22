@@ -1,4 +1,4 @@
-import { RolePermission } from "./rolePermission";
+import { RolePermission } from "./role-permission";
 
 export class Permission {
   id: number;
