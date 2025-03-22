@@ -8,9 +8,9 @@ namespace MediCare.DTOs.ViewModels
 		public DateTime Time { get; set; }
 		public AppointmentStatus Status { get; set; }
 		public string Diagnosis { get; set; }
-		public int PatientId { get; set; }
+		public int PatientsUserId { get; set; }
 		public PatientDTO Patient { get; set; }
-		public int DoctorId { get; set; }
+		public int DoctorsUserId { get; set; }
 		public DoctorDTO Doctor { get; set; }
 		public int ServiceId { get; set; }
 		public ServiceDTO Service { get; set; }

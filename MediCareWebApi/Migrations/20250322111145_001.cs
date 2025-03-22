@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -70,14 +71,12 @@ namespace MediCare.Migrations
                 name: "RolePermissions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<int>(type: "int", nullable: false),
                     PermissionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RolePermissions", x => x.Id);
+                    table.PrimaryKey("PK_RolePermissions", x => new { x.RoleId, x.PermissionId });
                     table.ForeignKey(
                         name: "FK_RolePermissions_Permissions_PermissionId",
                         column: x => x.PermissionId,
@@ -147,15 +146,13 @@ namespace MediCare.Migrations
                 name: "Admins",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Admins", x => x.Id);
+                    table.PrimaryKey("PK_Admins", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_Admins_Users_UserId",
                         column: x => x.UserId,
@@ -168,16 +165,13 @@ namespace MediCare.Migrations
                 name: "Doctors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     EmploymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    SpecialityId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    SpecialityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Doctors", x => x.Id);
+                    table.PrimaryKey("PK_Doctors", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_Doctors_Specialities_SpecialityId",
                         column: x => x.SpecialityId,
@@ -220,16 +214,14 @@ namespace MediCare.Migrations
                 name: "Patients",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PatientCard = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    PatientCard = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.PrimaryKey("PK_Patients", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_Patients_Users_UserId",
                         column: x => x.UserId,
@@ -239,24 +231,23 @@ namespace MediCare.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reports",
+                name: "DoctorsAvailabilities",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AdminId = table.Column<int>(type: "int", nullable: false),
-                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    From = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    To = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DoctorsUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reports", x => x.Id);
+                    table.PrimaryKey("PK_DoctorsAvailabilities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reports_Admins_AdminId",
-                        column: x => x.AdminId,
-                        principalTable: "Admins",
-                        principalColumn: "Id",
+                        name: "FK_DoctorsAvailabilities_Doctors_DoctorsUserId",
+                        column: x => x.DoctorsUserId,
+                        principalTable: "Doctors",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -269,23 +260,23 @@ namespace MediCare.Migrations
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Diagnosis = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    PatientsUserId = table.Column<int>(type: "int", nullable: false),
+                    DoctorsUserId = table.Column<int>(type: "int", nullable: false),
                     ServiceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Appointments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Appointments_Doctors_DoctorId",
-                        column: x => x.DoctorId,
+                        name: "FK_Appointments_Doctors_DoctorsUserId",
+                        column: x => x.DoctorsUserId,
                         principalTable: "Doctors",
-                        principalColumn: "Id");
+                        principalColumn: "UserId");
                     table.ForeignKey(
-                        name: "FK_Appointments_Patients_PatientId",
-                        column: x => x.PatientId,
+                        name: "FK_Appointments_Patients_PatientsUserId",
+                        column: x => x.PatientsUserId,
                         principalTable: "Patients",
-                        principalColumn: "Id");
+                        principalColumn: "UserId");
                     table.ForeignKey(
                         name: "FK_Appointments_Services_ServiceId",
                         column: x => x.ServiceId,
@@ -319,7 +310,7 @@ namespace MediCare.Migrations
                         name: "FK_Feedbacks_Patients_PatientId",
                         column: x => x.PatientId,
                         principalTable: "Patients",
-                        principalColumn: "Id",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -348,17 +339,15 @@ namespace MediCare.Migrations
                 name: "PrescriptionMedicaments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PrescriptionId = table.Column<int>(type: "int", nullable: false),
+                    MedicamentId = table.Column<int>(type: "int", nullable: false),
                     Dosage = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrescriptionId = table.Column<int>(type: "int", nullable: false),
-                    MedicamentId = table.Column<int>(type: "int", nullable: false)
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrescriptionMedicaments", x => x.Id);
+                    table.PrimaryKey("PK_PrescriptionMedicaments", x => new { x.PrescriptionId, x.MedicamentId });
                     table.ForeignKey(
                         name: "FK_PrescriptionMedicaments_Medicaments_MedicamentId",
                         column: x => x.MedicamentId,
@@ -374,19 +363,14 @@ namespace MediCare.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Admins_UserId",
-                table: "Admins",
-                column: "UserId");
+                name: "IX_Appointments_DoctorsUserId",
+                table: "Appointments",
+                column: "DoctorsUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_DoctorId",
+                name: "IX_Appointments_PatientsUserId",
                 table: "Appointments",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Appointments_PatientId",
-                table: "Appointments",
-                column: "PatientId");
+                column: "PatientsUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_ServiceId",
@@ -399,9 +383,9 @@ namespace MediCare.Migrations
                 column: "SpecialityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctors_UserId",
-                table: "Doctors",
-                column: "UserId");
+                name: "IX_DoctorsAvailabilities_DoctorsUserId",
+                table: "DoctorsAvailabilities",
+                column: "DoctorsUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Feedbacks_AppointmentId",
@@ -419,19 +403,9 @@ namespace MediCare.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Patients_UserId",
-                table: "Patients",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PrescriptionMedicaments_MedicamentId",
                 table: "PrescriptionMedicaments",
                 column: "MedicamentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionMedicaments_PrescriptionId",
-                table: "PrescriptionMedicaments",
-                column: "PrescriptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prescriptions_AppointmentId",
@@ -439,19 +413,9 @@ namespace MediCare.Migrations
                 column: "AppointmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reports_AdminId",
-                table: "Reports",
-                column: "AdminId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RolePermissions_PermissionId",
                 table: "RolePermissions",
                 column: "PermissionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RolePermissions_RoleId",
-                table: "RolePermissions",
-                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Services_SpecialityId",
@@ -480,6 +444,12 @@ namespace MediCare.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Admins");
+
+            migrationBuilder.DropTable(
+                name: "DoctorsAvailabilities");
+
+            migrationBuilder.DropTable(
                 name: "Feedbacks");
 
             migrationBuilder.DropTable(
@@ -489,9 +459,6 @@ namespace MediCare.Migrations
                 name: "PrescriptionMedicaments");
 
             migrationBuilder.DropTable(
-                name: "Reports");
-
-            migrationBuilder.DropTable(
                 name: "RolePermissions");
 
             migrationBuilder.DropTable(
@@ -499,9 +466,6 @@ namespace MediCare.Migrations
 
             migrationBuilder.DropTable(
                 name: "Prescriptions");
-
-            migrationBuilder.DropTable(
-                name: "Admins");
 
             migrationBuilder.DropTable(
                 name: "Permissions");

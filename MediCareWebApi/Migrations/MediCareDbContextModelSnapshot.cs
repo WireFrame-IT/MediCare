@@ -24,11 +24,8 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.Admin", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("LastLogin")
                         .HasColumnType("datetime2");
@@ -36,12 +33,7 @@ namespace MediCare.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId");
 
                     b.ToTable("Admins");
                 });
@@ -58,10 +50,10 @@ namespace MediCare.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("DoctorId")
+                    b.Property<int>("DoctorsUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PatientId")
+                    b.Property<int>("PatientsUserId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
@@ -75,9 +67,9 @@ namespace MediCare.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("DoctorsUserId");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("PatientsUserId");
 
                     b.HasIndex("ServiceId");
 
@@ -86,31 +78,44 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.Doctor", b =>
                 {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EmploymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SpecialityId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("SpecialityId");
+
+                    b.ToTable("Doctors");
+                });
+
+            modelBuilder.Entity("MediCare.Models.DoctorsAvailability", b =>
+                {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("EmploymentDate")
+                    b.Property<int>("DoctorsUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("From")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("SpecialityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("To")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SpecialityId");
+                    b.HasIndex("DoctorsUserId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Doctors");
+                    b.ToTable("DoctorsAvailabilities");
                 });
 
             modelBuilder.Entity("MediCare.Models.Feedback", b =>
@@ -214,11 +219,8 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.Patient", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
@@ -230,12 +232,7 @@ namespace MediCare.Migrations
                     b.Property<DateTime>("RegisterDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId");
 
                     b.ToTable("Patients", t =>
                         {
@@ -290,67 +287,31 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.PrescriptionMedicament", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("MedicamentId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(2);
 
                     b.Property<string>("Dosage")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("MedicamentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PrescriptionId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("PrescriptionId", "MedicamentId");
 
                     b.HasIndex("MedicamentId");
 
-                    b.HasIndex("PrescriptionId");
-
                     b.ToTable("PrescriptionMedicaments");
-                });
-
-            modelBuilder.Entity("MediCare.Models.Report", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AdminId")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("Content")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdminId");
-
-                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("MediCare.Models.Role", b =>
@@ -371,23 +332,17 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.RolePermission", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
                     b.Property<int>("PermissionId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(2);
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
+                    b.HasKey("RoleId", "PermissionId");
 
                     b.HasIndex("PermissionId");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("RolePermissions");
                 });
@@ -529,13 +484,13 @@ namespace MediCare.Migrations
                 {
                     b.HasOne("MediCare.Models.Doctor", "Doctor")
                         .WithMany("Appointments")
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("DoctorsUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("MediCare.Models.Patient", "Patient")
                         .WithMany("Appointments")
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("PatientsUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -569,6 +524,17 @@ namespace MediCare.Migrations
                     b.Navigation("Speciality");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MediCare.Models.DoctorsAvailability", b =>
+                {
+                    b.HasOne("MediCare.Models.Doctor", "Doctor")
+                        .WithMany("DoctorsAvailabilities")
+                        .HasForeignKey("DoctorsUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("MediCare.Models.Feedback", b =>
@@ -642,17 +608,6 @@ namespace MediCare.Migrations
                     b.Navigation("Prescription");
                 });
 
-            modelBuilder.Entity("MediCare.Models.Report", b =>
-                {
-                    b.HasOne("MediCare.Models.Admin", "Admin")
-                        .WithMany("Reports")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Admin");
-                });
-
             modelBuilder.Entity("MediCare.Models.RolePermission", b =>
                 {
                     b.HasOne("MediCare.Models.Permission", "Permission")
@@ -694,11 +649,6 @@ namespace MediCare.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("MediCare.Models.Admin", b =>
-                {
-                    b.Navigation("Reports");
-                });
-
             modelBuilder.Entity("MediCare.Models.Appointment", b =>
                 {
                     b.Navigation("Feedbacks");
@@ -707,6 +657,8 @@ namespace MediCare.Migrations
             modelBuilder.Entity("MediCare.Models.Doctor", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("DoctorsAvailabilities");
                 });
 
             modelBuilder.Entity("MediCare.Models.Medicament", b =>

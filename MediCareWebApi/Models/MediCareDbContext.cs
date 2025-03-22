@@ -22,7 +22,6 @@ namespace MediCare.Models
 		public DbSet<Log> Logs { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<Permission> Permissions { get; set; }
-		public DbSet<Report> Reports { get; set; }
 		public DbSet<Speciality> Specialities { get; set; }
 		public DbSet<Feedback> Feedbacks { get; set; }
 		public DbSet<Appointment> Appointments { get; set; }
@@ -31,6 +30,7 @@ namespace MediCare.Models
 		public DbSet<Medicament> Medicaments { get; set; }
 		public DbSet<PrescriptionMedicament> PrescriptionMedicaments { get; set; }
 		public DbSet<RolePermission> RolePermissions { get; set; }
+		public DbSet<DoctorsAvailability> DoctorsAvailabilities { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -46,14 +46,17 @@ namespace MediCare.Models
 			modelBuilder.Entity<Appointment>()
 				.HasOne(x => x.Doctor)
 				.WithMany(x => x.Appointments)
-				.HasForeignKey(x => x.DoctorId)
+				.HasForeignKey(x => x.DoctorsUserId)
 				.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Appointment>()
 				.HasOne(x => x.Patient)
 				.WithMany(x => x.Appointments)
-				.HasForeignKey(x => x.PatientId)
+				.HasForeignKey(x => x.PatientsUserId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+			modelBuilder.Entity<RolePermission>()
+				.HasKey(x => new { x.RoleId, x.PermissionId });
 
 			modelBuilder.Entity<RolePermission>()
 				.HasOne(x => x.Role)
@@ -64,6 +67,9 @@ namespace MediCare.Models
 				.HasOne(x => x.Permission)
 				.WithMany(x => x.PermissionRoles)
 				.HasForeignKey(x => x.PermissionId);
+
+			modelBuilder.Entity<PrescriptionMedicament>()
+				.HasKey(x => new { x.PrescriptionId, x.MedicamentId });
 
 			modelBuilder.Entity<PrescriptionMedicament>()
 				.HasOne(x => x.Medicament)
@@ -82,6 +88,11 @@ namespace MediCare.Models
 			modelBuilder.Entity<User>()
 				.HasIndex(u => u.Pesel)
 				.IsUnique();
+
+			modelBuilder.Entity<DoctorsAvailability>()
+				.HasOne(x => x.Doctor)
+				.WithMany(x => x.DoctorsAvailabilities)
+				.HasForeignKey(x => x.DoctorsUserId);
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

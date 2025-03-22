@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
 using MediCare.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,6 @@ using MediCare.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using MediCare.DTOs.Request;
 using MediCare.DTOs.Response;
-using System.IdentityModel.Tokens.Jwt;
 using MediCare.DTOs.ViewModels;
 
 namespace MedicalFacility.Controllers
@@ -56,7 +56,6 @@ namespace MedicalFacility.Controllers
 			{
 				EmploymentDate = registerRequest.EmploymentDate,
 				SpecialityId = registerRequest.SpecialityId,
-				IsAvailable = true,
 				UserId = user.Id,
 			};
 			await _context.Doctors.AddAsync(doctor);

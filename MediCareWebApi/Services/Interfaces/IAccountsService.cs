@@ -1,5 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using MediCare.Models;
+﻿using MediCare.Models;
 
 namespace MediCare.Services.Interfaces
 {

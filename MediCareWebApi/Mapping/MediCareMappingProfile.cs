@@ -21,7 +21,7 @@ namespace MediCare.Mapping
 			CreateMap<AppointmentRequestDTO, Appointment>()
 				.ForMember(x => x.Status, y => y.Ignore())
 				.ForMember(x => x.Diagnosis, y => y.Ignore())
-				.ForMember(x => x.PatientId, y => y.Ignore())
+				.ForMember(x => x.PatientsUserId, y => y.Ignore())
 				.ForMember(x => x.Patient, y => y.Ignore())
 				.ForMember(x => x.Doctor, y => y.Ignore())
 				.ForMember(x => x.Service, y => y.Ignore())

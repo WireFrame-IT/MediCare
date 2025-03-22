@@ -30,7 +30,7 @@ namespace MediCare.Migrations.CustomScripts
 				    UPDATE p
 				    SET p.PatientCard = LEFT(CONCAT(SUBSTRING(u.Pesel, 1, 6), @RandomString), 20)
 				    FROM Patients p
-				    INNER JOIN inserted i ON p.Id = i.Id
+				    INNER JOIN inserted i ON p.UserId = i.UserId
 				    INNER JOIN Users u ON u.Id = i.UserId;
 				END;
 

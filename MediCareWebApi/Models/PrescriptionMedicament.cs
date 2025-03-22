@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MediCare.Models
 {
-	public class PrescriptionMedicament : Entity
+	public class PrescriptionMedicament
 	{
 		[Required]
 		[MaxLength(256)]
@@ -15,13 +15,15 @@ namespace MediCare.Models
 		[Required]
 		public string Notes { get; set; }
 
-		[Required]
+		[Key]
+		[Column(Order = 1)]
 		public int PrescriptionId { get; set; }
 
 		[ForeignKey("PrescriptionId")]
 		public Prescription Prescription { get; set; }
 
-		[Required]
+		[Key]
+		[Column(Order = 2)]
 		public int MedicamentId { get; set; }
 
 		[ForeignKey("MedicamentId")]

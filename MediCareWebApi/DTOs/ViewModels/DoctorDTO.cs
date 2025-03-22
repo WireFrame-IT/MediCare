@@ -7,7 +7,6 @@
 		public UserDTO User { get; set; }
 		public int SpecialityId { get; set; }
 		public SpecialityDTO Speciality { get; set; }
-		public bool IsAvailable { get; set; }
 		public DateTime EmploymentDate { get; set; }
 	}
 }

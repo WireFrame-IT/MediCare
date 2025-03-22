@@ -3,13 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MediCare.Models
 {
-	public class Doctor : Entity
+	public class Doctor
 	{
-		[Required]
-		public DateTime EmploymentDate { get; set; }
+		[Key]
+		public int UserId { get; set; }
+
+		[ForeignKey("UserId")]
+		public User User { get; set; }
 
 		[Required]
-		public bool IsAvailable { get; set; }
+		public DateTime EmploymentDate { get; set; }
 
 		[Required]
 		public int SpecialityId { get; set; }
@@ -17,12 +20,8 @@ namespace MediCare.Models
 		[ForeignKey("SpecialityId")]
 		public Speciality Speciality { get; set; }
 
-		[Required]
-		public int UserId { get; set; }
-
-		[ForeignKey("UserId")]
-		public User User { get; set; }
-
 		public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+		public ICollection<DoctorsAvailability> DoctorsAvailabilities { get; set; } = new List<DoctorsAvailability>();
 	}
 }

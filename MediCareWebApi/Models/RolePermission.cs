@@ -3,15 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MediCare.Models
 {
-	public class RolePermission : Entity
+	public class RolePermission
 	{
-		[Required]
+		[Key]
+		[Column(Order = 1)]
 		public int RoleId { get; set; }
 
 		[ForeignKey("RoleId")]
 		public Role Role { get; set; }
 
-		[Required]
+		[Key]
+		[Column(Order = 2)]
 		public int PermissionId { get; set; }
 
 		[ForeignKey("PermissionId")]

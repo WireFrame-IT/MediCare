@@ -16,15 +16,15 @@ namespace MediCare.Models
 		public string? Diagnosis { get; set; }
 
 		[Required]
-		public int PatientId { get; set; }
+		public int PatientsUserId { get; set; }
 
-		[ForeignKey("PatientId")]
+		[ForeignKey("PatientsUserId")]
 		public Patient Patient { get; set; }
 
 		[Required]
-		public int DoctorId { get; set; }
+		public int DoctorsUserId { get; set; }
 
-		[ForeignKey("DoctorId")]
+		[ForeignKey("DoctorsUserId")]
 		public Doctor Doctor { get; set; }
 
 		[Required]

@@ -42,28 +42,28 @@ namespace MediCare.Migrations.CustomScripts
 
 			migrationBuilder.InsertData(
 				table: "RolePermissions",
-				columns: new [] { "Id", "RoleId", "PermissionId" },
+				columns: new [] { "RoleId", "PermissionId" },
 				values: new object[,]
 				{
-					{ 1, 1, 1 },
-					{ 2, 1, 2 },
-					{ 3, 1, 4 },
-					{ 4, 1, 6 },
-					{ 5, 1, 7 },
-					{ 6, 2, 2 },
-					{ 7, 2, 4 },
-					{ 8, 2, 5 },
-					{ 9, 2, 6 },
-					{ 10, 2, 9 },
-					{ 11, 2, 10 },
-					{ 12, 3, 3 },
-					{ 13, 3, 4 },
-					{ 14, 3, 11 },
-					{ 15, 3, 12 },
-					{ 16, 3, 13 },
-					{ 17, 3, 14 },
-					{ 18, 3, 15 },
-					{ 19, 3, 16 },
+					{ 1, 1 },
+					{ 1, 2 },
+					{ 1, 4 },
+					{ 1, 6 },
+					{ 1, 7 },
+					{ 2, 2 },
+					{ 2, 4 },
+					{ 2, 5 },
+					{ 2, 6 },
+					{ 2, 9 },
+					{ 2, 10 },
+					{ 3, 3 },
+					{ 3, 4 },
+					{ 3, 11 },
+					{ 3, 12 },
+					{ 3, 13 },
+					{ 3, 14 },
+					{ 3, 15 },
+					{ 3, 16 },
 				});
 
 			migrationBuilder.InsertData(
@@ -192,48 +192,48 @@ namespace MediCare.Migrations.CustomScripts
 
 			migrationBuilder.InsertData(
 				table: "Admins",
-				columns: new[] { "Id", "LastLogin", "Status", "UserId" },
+				columns: new[] { "UserId", "LastLogin", "Status" },
 				values: new object[]
-				{ 1, DateTime.Now, (int)AdminStatus.Active, 1 });
+				{ 1, DateTime.Now, (int)AdminStatus.Active });
 
 			migrationBuilder.InsertData(
 				table: "Doctors",
-				columns: new[] { "Id", "EmploymentDate", "IsAvailable", "SpecialityId", "UserId" },
+				columns: new[] { "UserId", "EmploymentDate", "SpecialityId" },
 				values: new object[,]
 				{
-					{ 1, new DateTime(2023, 7, 15), true, 1, 2 },
-					{ 2, new DateTime(2024, 3, 22), true, 2, 3 },
-					{ 3, new DateTime(2022, 5, 10), true, 3, 4 },
-					{ 4, new DateTime(2021, 8, 25), true, 4, 5 },
-					{ 5, new DateTime(2023, 12, 30), true, 5, 6 },
-					{ 6, new DateTime(2020, 2, 17), true, 6, 7 },
-					{ 7, new DateTime(2024, 1, 9), true, 7, 8 },
-					{ 8, new DateTime(2023, 6, 1), true, 8, 9 },
-					{ 9, new DateTime(2022, 9, 12), true, 9, 10 },
-					{ 10, new DateTime(2021, 11, 5), true, 10, 11 },
-					{ 11, new DateTime(2023, 4, 19), true, 11, 12 },
-					{ 12, new DateTime(2020, 7, 22), true, 1, 13 },
-					{ 13, new DateTime(2022, 3, 15), true, 2, 14 },
-					{ 14, new DateTime(2024, 5, 6), true, 3, 15 },
-					{ 15, new DateTime(2021, 10, 11), true, 4, 16 },
-					{ 16, new DateTime(2023, 8, 30), true, 5, 17 },
-					{ 17, new DateTime(2022, 12, 18), true, 6, 18 },
-					{ 18, new DateTime(2020, 4, 14), true, 7, 19 },
-					{ 19, new DateTime(2024, 2, 27), true, 8, 20 },
-					{ 20, new DateTime(2021, 9, 9), true, 9, 21 },
-					{ 21, new DateTime(2023, 1, 20), true, 10, 22 },
-					{ 22, new DateTime(2024, 3, 5), true, 11, 23 },
-					{ 23, new DateTime(2023, 5, 17), true, 1, 24 },
-					{ 24, new DateTime(2022, 11, 9), true, 2, 25 },
-					{ 25, new DateTime(2023, 7, 10), true, 3, 26 },
-					{ 26, new DateTime(2021, 10, 25), true, 4, 27 },
-					{ 27, new DateTime(2024, 1, 8), true, 5, 28 },
-					{ 28, new DateTime(2023, 2, 13), true, 6, 29 },
-					{ 29, new DateTime(2021, 6, 18), true, 7, 30 },
-					{ 30, new DateTime(2022, 9, 3), true, 8, 31 },
-					{ 31, new DateTime(2024, 4, 14), true, 9, 32 },
-					{ 32, new DateTime(2021, 5, 7), true, 10, 33 },
-					{ 33, new DateTime(2022, 12, 23), true, 11, 34 }
+					{ 2, new DateTime(2023, 7, 15), 1 },
+					{ 3, new DateTime(2024, 3, 22), 2 },
+					{ 4, new DateTime(2022, 5, 10), 3 },
+					{ 5, new DateTime(2021, 8, 25), 4 },
+					{ 6, new DateTime(2023, 12, 30), 5 },
+					{ 7, new DateTime(2020, 2, 17), 6 },
+					{ 8, new DateTime(2024, 1, 9), 7 },
+					{ 9, new DateTime(2023, 6, 1), 8 },
+					{ 10, new DateTime(2022, 9, 12), 9 },
+					{ 11, new DateTime(2021, 11, 5), 10 },
+					{ 12, new DateTime(2023, 4, 19), 11 },
+					{ 13, new DateTime(2020, 7, 22), 1 },
+					{ 14, new DateTime(2022, 3, 15), 2 },
+					{ 15, new DateTime(2024, 5, 6), 3 },
+					{ 16, new DateTime(2021, 10, 11), 4 },
+					{ 17, new DateTime(2023, 8, 30), 5 },
+					{ 18, new DateTime(2022, 12, 18), 6 },
+					{ 19, new DateTime(2020, 4, 14), 7 },
+					{ 20, new DateTime(2024, 2, 27), 8 },
+					{ 21, new DateTime(2021, 9, 9), 9 },
+					{ 22, new DateTime(2023, 1, 20), 10 },
+					{ 23, new DateTime(2024, 3, 5), 11 },
+					{ 24, new DateTime(2023, 5, 17), 1 },
+					{ 25, new DateTime(2022, 11, 9), 2 },
+					{ 26, new DateTime(2023, 7, 10), 3 },
+					{ 27, new DateTime(2021, 10, 25), 4 },
+					{ 28, new DateTime(2024, 1, 8), 5 },
+					{ 29, new DateTime(2023, 2, 13), 6 },
+					{ 30, new DateTime(2021, 6, 18), 7 },
+					{ 31, new DateTime(2022, 9, 3), 8 },
+					{ 32, new DateTime(2024, 4, 14), 9 },
+					{ 33, new DateTime(2021, 5, 7), 10 },
+					{ 34, new DateTime(2022, 12, 23), 11 }
 				});
 		}
 
@@ -251,8 +251,29 @@ namespace MediCare.Migrations.CustomScripts
 
 			migrationBuilder.DeleteData(
 				table: "RolePermissions",
-				keyColumn: "Id",
-				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+				keyColumns: new[] { "RoleId", "PermissionId" },
+				keyValues: new object[,]
+				{
+					{ 1, 1 },
+					{ 1, 2 },
+					{ 1, 4 },
+					{ 1, 6 },
+					{ 1, 7 },
+					{ 2, 2 },
+					{ 2, 4 },
+					{ 2, 5 },
+					{ 2, 6 },
+					{ 2, 9 },
+					{ 2, 10 },
+					{ 3, 3 },
+					{ 3, 4 },
+					{ 3, 11 },
+					{ 3, 12 },
+					{ 3, 13 },
+					{ 3, 14 },
+					{ 3, 15 },
+					{ 3, 16 }
+				});
 
 			migrationBuilder.DeleteData(
 				table: "Specialities",
@@ -276,13 +297,13 @@ namespace MediCare.Migrations.CustomScripts
 
 			migrationBuilder.DeleteData(
 				table: "Admins",
-				keyColumn: "Id",
+				keyColumn: "UserId",
 				keyValues: new object[] { 1 });
 
 			migrationBuilder.DeleteData(
 				table: "Doctors",
-				keyColumn: "Id",
-				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 });
+				keyColumn: "UserId",
+				keyValues: new object[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 });
 		}
 	}
 }

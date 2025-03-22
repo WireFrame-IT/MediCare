@@ -37,13 +37,13 @@ namespace MediCare.Controllers
 					var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (doctor == null)
 						return NotFound("Doctor not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsByDoctorOrPatientId(doctor.Id, true)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsByDoctorOrPatientUserId(doctor.UserId, true)));
 
 				case RoleType.Patient:
 					var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (patient == null)
 						return NotFound("Patient not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsByDoctorOrPatientId(patient.Id)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsByDoctorOrPatientUserId(patient.UserId)));
 			}
 
 			return NotFound();
@@ -61,7 +61,7 @@ namespace MediCare.Controllers
 				return BadRequest("Only patient can make the appointment.");
 
 			appointment.Status = AppointmentStatus.New;
-			appointment.PatientId = patient.Id;
+			appointment.PatientsUserId = patient.UserId;
 
 			if (appointmentDTO.ServiceId.HasValue)
 			{
@@ -71,13 +71,12 @@ namespace MediCare.Controllers
 			}
 			else
 			{
-				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Name == _appointmentSettings.FamilyMedicineServiceName
-					&& x.Description == _appointmentSettings.FamilyMedicineServiceDescription);
+				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Name == _appointmentSettings.FamilyMedicineServiceName && x.Description == _appointmentSettings.FamilyMedicineServiceDescription);
 			}
 
-			if (appointmentDTO.DoctorId.HasValue)
+			if (appointmentDTO.DoctorsUserId.HasValue)
 			{
-				var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.Id == appointmentDTO.DoctorId.Value);
+				var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == appointmentDTO.DoctorsUserId.Value);
 				if (doctor == null)
 					return NotFound("Doctor not found.");
 				appointment.Doctor = doctor;
@@ -103,7 +102,7 @@ namespace MediCare.Controllers
 			return Ok(_mapper.Map<List<DoctorDTO>>(await _context.Doctors
 				.Include(x => x.User)
 				.Include(x => x.Speciality)
-				.Where(x => x.IsAvailable)
+				//.Where(x => x.IsAvailable)
 				.ToListAsync()));
 		}
 
@@ -162,7 +161,7 @@ namespace MediCare.Controllers
 			return null;
 		}
 
-		private async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorOrPatientId(int id, bool doctor = false)
+		private async Task<IEnumerable<Appointment>> GetAppointmentsByDoctorOrPatientUserId(int userId, bool doctor = false)
 		{
 			return await _context.Appointments
 				.Include(x => x.Doctor)
@@ -172,7 +171,7 @@ namespace MediCare.Controllers
 				.Include(x => x.Patient)
 					.ThenInclude(x => x.User)
 				.Include(x => x.Service)
-				.Where(x => (doctor ? x.DoctorId : x.PatientId) == id)
+				.Where(x => (doctor ? x.DoctorsUserId : x.PatientsUserId) == userId)
 				.ToListAsync();
 		}
 

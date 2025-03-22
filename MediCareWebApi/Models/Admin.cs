@@ -4,20 +4,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MediCare.Models
 {
-	public class Admin : Entity
+	public class Admin
 	{
-		[Required]
-		public DateTime LastLogin { get; set; }
-
-		[Required]
-		public AdminStatus Status { get; set; }
-
-		[Required]
+		[Key]
 		public int UserId { get; set; }
 
 		[ForeignKey("UserId")]
 		public User User { get; set; }
 
-		public ICollection<Report> Reports { get; set; } = new List<Report>();
+		[Required]
+		public DateTime LastLogin { get; set; }
+
+		[Required]
+		public AdminStatus Status { get; set; }
 	}
 }
