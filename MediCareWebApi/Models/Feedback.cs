@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MediCare.Models
 {
-	public class Feedback : Entity
+	public class Feedback
 	{
 		[Required]
 		public DateTime CreatedAt { get; set; }
@@ -14,13 +14,13 @@ namespace MediCare.Models
 		[Range(1, 5, ErrorMessage = "Rate must be between 1 and 5.")]
 		public byte Rate { get; set; }
 
-		[Required]
-		public int PatientId { get; set; }
+		[Key]
+		public int PatientsUserId { get; set; }
 
-		[ForeignKey("PatientId")]
+		[ForeignKey("PatientsUserId")]
 		public Patient Patient { get; set; }
 
-		[Required]
+		[Key]
 		public int AppointmentId { get; set; }
 
 		[ForeignKey("AppointmentId")]

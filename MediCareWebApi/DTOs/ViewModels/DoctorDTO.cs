@@ -2,7 +2,6 @@
 {
 	public class DoctorDTO
 	{
-		public int Id { get; set; }
 		public int UserId { get; set; }
 		public UserDTO User { get; set; }
 		public int SpecialityId { get; set; }

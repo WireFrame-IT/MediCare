@@ -2,7 +2,6 @@
 {
 	public class PatientDTO
 	{
-		public int Id { get; set; }
 		public int UserId { get; set; }
 		public UserDTO User { get; set; }
 		public DateTime RegisterDate { get; set; }

@@ -289,17 +289,15 @@ namespace MediCare.Migrations
                 name: "Feedbacks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientsUserId = table.Column<int>(type: "int", nullable: false),
+                    AppointmentId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rate = table.Column<byte>(type: "tinyint", nullable: false),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    AppointmentId = table.Column<int>(type: "int", nullable: false)
+                    Rate = table.Column<byte>(type: "tinyint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Feedbacks", x => x.Id);
+                    table.PrimaryKey("PK_Feedbacks", x => new { x.PatientsUserId, x.AppointmentId });
                     table.ForeignKey(
                         name: "FK_Feedbacks_Appointments_AppointmentId",
                         column: x => x.AppointmentId,
@@ -307,8 +305,8 @@ namespace MediCare.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Feedbacks_Patients_PatientId",
-                        column: x => x.PatientId,
+                        name: "FK_Feedbacks_Patients_PatientsUserId",
+                        column: x => x.PatientsUserId,
                         principalTable: "Patients",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -391,11 +389,6 @@ namespace MediCare.Migrations
                 name: "IX_Feedbacks_AppointmentId",
                 table: "Feedbacks",
                 column: "AppointmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_PatientId",
-                table: "Feedbacks",
-                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Logs_UserId",

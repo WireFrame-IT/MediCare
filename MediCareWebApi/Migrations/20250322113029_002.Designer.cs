@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20250322111145_001")]
-    partial class _001
+    [Migration("20250322113029_002")]
+    partial class _002
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,11 +123,8 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.Feedback", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("PatientsUserId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AppointmentId")
                         .HasColumnType("int");
@@ -139,17 +136,12 @@ namespace MediCare.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
                     b.Property<byte>("Rate")
                         .HasColumnType("tinyint");
 
-                    b.HasKey("Id");
+                    b.HasKey("PatientsUserId", "AppointmentId");
 
                     b.HasIndex("AppointmentId");
-
-                    b.HasIndex("PatientId");
 
                     b.ToTable("Feedbacks");
                 });
@@ -550,7 +542,7 @@ namespace MediCare.Migrations
 
                     b.HasOne("MediCare.Models.Patient", "Patient")
                         .WithMany("Feedbacks")
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("PatientsUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
