@@ -4,7 +4,7 @@ import { routes } from './app.routes';
 import { provideHttpClient, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserAnimationsModule  } from '@angular/platform-browser/animations';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { MAT_TIMEPICKER_CONFIG } from '@angular/material/timepicker';
 
 export const appConfig: ApplicationConfig = {
@@ -15,6 +15,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(BrowserAnimationsModule),
     provideNativeDateAdapter(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: MAT_TIMEPICKER_CONFIG, useValue: { interval: '15 minutes'}}
+    { provide: MAT_TIMEPICKER_CONFIG, useValue: { interval: '15 minutes'}},
+    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL'}
   ]
 };

@@ -1,0 +1,21 @@
+<div class="admin-panel-container">
+  <div class="left">
+    @for (doctor of doctors; track doctor.userId) {
+      <mat-card class="doctors-card">
+        <mat-card-header class="header">
+          <mat-card-title class="fullname">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-card-title>
+          <mat-card-subtitle class="speciality">{{ doctor.speciality.name }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="content">
+
+        </mat-card-content>
+        <mat-card-actions class="actions">
+          <button mat-raised-button (click)="openEditUserDialog(doctor)">Edit</button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+  <div class="right">
+
+  </div>
+</div>

@@ -10,6 +10,7 @@ import { LoadingService } from './loading.service';
 import { Speciality } from '../DTOs/models/speciality';
 import { DoctorRegisterRequestDTO } from '../DTOs/request/doctor-register-request.dto';
 import { RefreshRequestDTO } from '../DTOs/request/refresh-request.dto';
+import { UserRequestDTO } from '../DTOs/request/user-request.dto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -62,6 +63,10 @@ export class AuthService {
       return roleType as RoleType;
     }
     return null;
+  }
+
+  saveUser(user: UserRequestDTO): Observable<boolean> {
+    return this.http.post<boolean>(`${this.apiUrl}/user`, user);
   }
 
   storeUserData(accessToken: string, refreshToken: string, roleType?: RoleType): void {

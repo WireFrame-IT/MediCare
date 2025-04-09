@@ -46,7 +46,7 @@ namespace MediCare.Controllers
 					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments(patient.UserId)));
 
 				case RoleType.Admin:
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments(null)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments()));
 			}
 
 			return NotFound();
@@ -77,11 +77,11 @@ namespace MediCare.Controllers
 				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Name == _appointmentSettings.FamilyMedicineServiceName && x.Description == _appointmentSettings.FamilyMedicineServiceDescription);
 			}
 
-			if (appointmentDTO.DoctorsUserId.HasValue)
+			if (appointmentDTO.DoctorsUserId.HasValue && appointmentDTO.DoctorsUserId.Value > 0)
 			{
-				var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == appointmentDTO.DoctorsUserId.Value);
+				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service, appointment.DoctorsUserId);
 				if (doctor == null)
-					return NotFound("Doctor not found.");
+					return NotFound("The selected doctor is not available at the provided time. If you don't choose a specific doctor, we'll automatically assign an available one for you.");
 				appointment.Doctor = doctor;
 			}
 			else
@@ -146,24 +146,18 @@ namespace MediCare.Controllers
 				.FirstOrDefaultAsync(x => x.Id == id && (x.Doctor.UserId == userId || x.Patient.UserId == userId));
 		}
 
-		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service)
+		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service, int? doctorsUserId = null)
 		{
-			var doctors = await _context.Doctors
-				.Include(x => x.Appointments)
-				.Where(x => x.SpecialityId == service.SpecialityId)
-				.ToListAsync();
-
-			foreach (var doctor in doctors)
-			{
-				if (!doctor.Appointments
-					    .Where(x => x.Status != AppointmentStatus.Absent && x.Status != AppointmentStatus.Canceled)
-					    .Any(x => x.Time < time.AddMinutes(service.DurationMinutes) && time < x.Time.AddMinutes(x.Service.DurationMinutes)))
-					return doctor;
-			}
-			return null;
+			var appointmentEndTime = time.AddMinutes(service.DurationMinutes);
+			return await _context.Doctors
+				.Where(x => x.SpecialityId == service.SpecialityId && (doctorsUserId == null || x.UserId == doctorsUserId)
+				    && x.DoctorsAvailabilities.Any(y => y.From <= time && appointmentEndTime <= y.To)
+					&& !x.Appointments.Any(y => y.Status != AppointmentStatus.Absent && y.Status != AppointmentStatus.Canceled
+					&& y.Time < appointmentEndTime && time < y.Time.AddMinutes(y.Service.DurationMinutes)))
+				.FirstOrDefaultAsync();
 		}
 
-		private async Task<IEnumerable<Appointment>> GetAppointments(int? userId, bool doctor = false)
+		private async Task<IEnumerable<Appointment>> GetAppointments(int? userId = null, bool doctor = false)
 		{
 			var query = _context.Appointments
 				.Include(x => x.Doctor)

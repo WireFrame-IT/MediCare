@@ -4,6 +4,8 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   user-select: none;
+  height: max-content;
+  min-height: 100vh;
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../public/assets/medical-facility/7.svg');
   background-size: cover;
   background-repeat: no-repeat;

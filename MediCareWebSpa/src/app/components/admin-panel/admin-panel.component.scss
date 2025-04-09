@@ -1,0 +1,37 @@
+@use '../../../variables.scss' as variables;
+
+.admin-panel-container {
+  display: flex;
+  justify-content: center;
+
+  .left, .right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    width: 40rem;
+    margin: 0 auto;
+  }
+
+  .doctors-card {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+    box-shadow: variables.$box-shadow-hover;
+    border-radius: variables.$border-radius;
+    background-color: #fff;
+
+    .header {
+      width: 60%;
+
+      .fullname {
+        color: variables.$primary-color;
+        font-size: 1.3rem;
+      }
+
+      .speciality {
+        color: variables.$grey-color;
+      }
+    }
+  }
+}

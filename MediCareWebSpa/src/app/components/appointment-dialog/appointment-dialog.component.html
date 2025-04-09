@@ -10,7 +10,8 @@
   </mat-form-field>
   <mat-form-field class="form-field">
     <mat-label>Doctor</mat-label>
-    <mat-select formControlName="doctorId">
+    <mat-select formControlName="doctorsUserId">
+      <mat-option [value]="0">Auto-assign</mat-option>
       @for (doctor of doctorsBySpeciality; track doctor.userId) {
         <mat-option [value]="doctor.userId">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
       }
@@ -35,7 +36,7 @@
     </mat-form-field>
   }
   <div class="buttons" mat-dialog-actions>
-    <button class="cancel-button" mat-button mat-dialog-close (click)="closeDialog()">Cancel</button>
     <button class="submit-button" mat-raised-button type="submit" [disabled]="appointmentForm.invalid">Book</button>
+    <button class="cancel-button" mat-button mat-dialog-close type="button" (click)="closeDialog()">Cancel</button>
   </div>
 </form>

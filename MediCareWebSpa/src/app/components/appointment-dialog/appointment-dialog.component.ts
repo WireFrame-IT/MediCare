@@ -53,8 +53,8 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: Service
   ) {
     this.appointmentForm = this.fb.group({
-      serviceId: [data?.id || null, Validators.required],
-      doctorId: ['', Validators.required],
+      serviceId: [data?.id || ''],
+      doctorsUserId: [0],
       date: ['', Validators.required],
       time: ['', Validators.required]
     });
@@ -86,12 +86,12 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
     if (this.appointmentForm.valid) {
       const appointment = new AppointmentRequestDTO (
         this.appointmentForm.value.date,
-        this.appointmentForm.value.doctorId,
+        this.appointmentForm.value.doctorsUserId,
         this.appointmentForm.value.serviceId
       );
       appointment.time.setHours(this.appointmentForm.value.time.getHours(), this.appointmentForm.value.time.getMinutes());
       this.loadingService.show();
-      this.dialogRef.close(appointment);
+      this.dialogRef.close();
       this.appointmentService.saveAppointment(appointment).subscribe({
         next: (response: Appointment) => {
           this.loadingService.clearErrorMessage();
