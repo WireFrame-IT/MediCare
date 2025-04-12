@@ -24,6 +24,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy{
   subscriptions: Subscription[] = [];
   appointments: Appointment[] = [];
   isDoctor: boolean = false;
+  isAdmin: boolean = false;
   isLoggedIn: boolean = false;
 
   constructor(
@@ -36,6 +37,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy{
     this.subscriptions.push(this.appointmentService.appointments$.subscribe(appointments => this.appointments = appointments));
     this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
     this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
+    this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
   }
 
   ngOnDestroy(): void {

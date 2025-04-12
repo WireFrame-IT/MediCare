@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
+import { Patient } from '../../DTOs/models/patient';
 
 @Component({
   selector: 'app-admin-panel',
@@ -19,7 +20,8 @@ import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.co
 export class AdminPanelComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private dialogRef: MatDialogRef<EditUserDialogComponent> | null = null;
-  public doctors: Doctor[] = [];
+  private doctors: Doctor[] = [];
+  private patients: Patient[] = [];
 
   constructor(
       private appointmentService: AppointmentService,
@@ -28,17 +30,31 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.appointmentService.loadDoctors();
+    this.appointmentService.loadPatients();
     this.subscriptions.push(this.appointmentService.doctors$.subscribe(doctors => this.doctors = doctors));
+    this.subscriptions.push(this.appointmentService.patients$.subscribe(patients => this.patients = patients));
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  openEditUserDialog(doctor: Doctor): void {
+  getPersons(): (Doctor | Patient)[] {
+    return [...this.doctors, ...this.patients];
+  }
+
+  isDoctor(person: Doctor | Patient): boolean {
+    return 'specialityId' in person;
+  }
+
+  getSpecialityName(person: Doctor | Patient): string {
+    return (person as Doctor).speciality.name;
+  }
+
+  openEditUserDialog(person: Doctor | Patient): void {
     this.dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '600px',
-      data: doctor
+      data: person
     });
   }
 }

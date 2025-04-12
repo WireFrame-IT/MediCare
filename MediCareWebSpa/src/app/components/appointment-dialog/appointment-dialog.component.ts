@@ -91,10 +91,10 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
       );
       appointment.time.setHours(this.appointmentForm.value.time.getHours(), this.appointmentForm.value.time.getMinutes());
       this.loadingService.show();
-      this.dialogRef.close();
       this.appointmentService.saveAppointment(appointment).subscribe({
         next: (response: Appointment) => {
           this.loadingService.clearErrorMessage();
+          this.dialogRef.close();
           this.loadingService.showMessage('Appointment booked successfully');
         },
         error: (error) => {

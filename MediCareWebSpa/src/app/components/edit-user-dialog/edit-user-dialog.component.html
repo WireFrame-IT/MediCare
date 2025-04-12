@@ -1,8 +1,28 @@
 <h2 class="title" mat-dialog-title>Edit User</h2>
 <form class="form" [formGroup]="userForm" (ngSubmit)="onSubmit()">
   <mat-form-field class="form-field">
-    <mat-label>Full name</mat-label>
-    <input matInput [value]="getFullName()" readonly>
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" required/>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Surname</mat-label>
+    <input matInput formControlName="surname" required/>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" type="email" required/>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>New Password</mat-label>
+    <input matInput formControlName="newPassword" type="password"/>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Pesel</mat-label>
+    <input matInput formControlName="pesel" required/>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Phone Number</mat-label>
+    <input matInput formControlName="phoneNumber" required/>
   </mat-form-field>
   @if (isDoctor) {
     <mat-form-field class="form-field">
@@ -12,6 +32,13 @@
           <mat-option [value]="speciality.id">{{ speciality.name }}</mat-option>
         }
       </mat-select>
+    </mat-form-field>
+  } @else {
+    <mat-form-field class="form-field">
+      <mat-label>Birth Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="birthDate">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
   }
   <div class="buttons" mat-dialog-actions>

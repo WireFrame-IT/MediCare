@@ -7,11 +7,17 @@
       </mat-card-header>
       <mat-card-content class="content">
         <button class="status" [class]="getStatusClass(appointment)" mat-raised-button>{{ getStatus(appointment) }}</button>
-        @if(isDoctor) {
-          <p>{{ appointment.patient.user.name }} {{ appointment.patient.user.surname }}</p>
-        } @else {
-          <p class="doctor-name">{{ appointment.doctor.user.name }} {{ appointment.doctor.user.surname }}</p>
-          <p class="doctor-speciality">{{ appointment.doctor.speciality.name }}</p>
+        @if (!isDoctor) {
+          <div class="doctors-info">
+            <p class="doctor-name">{{ appointment.doctor.user.name }} {{ appointment.doctor.user.surname }}</p>
+            <i class="doctor-speciality">{{ appointment.doctor.speciality.name + " Doctor" }}</i>
+          </div>
+        }
+        @if (isDoctor || isAdmin) {
+          <div class="patients-info">
+            <p>{{ appointment.patient.user.name }} {{ appointment.patient.user.surname }}</p>
+            <i>Patient</i>
+          </div>
         }
       </mat-card-content>
       <mat-card-actions class="actions">

@@ -108,6 +108,15 @@ namespace MediCare.Controllers
 				.ToListAsync()));
 		}
 
+		[Authorize(Roles = "Admin")]
+		[HttpGet("patients")]
+		public async Task<IActionResult> GetPatients()
+		{
+			return Ok(_mapper.Map<List<PatientDTO>>(await _context.Patients
+				.Include(x => x.User)
+				.ToListAsync()));
+		}
+
 		[AllowAnonymous]
 		[HttpGet("services")]
 		public async Task<IActionResult> GetServices()

@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { Patient } from '../../DTOs/models/patient';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-edit-user-dialog',
@@ -22,6 +23,7 @@ import { Patient } from '../../DTOs/models/patient';
     MatSelectModule,
     MatButtonModule,
     MatOptionModule,
+    MatDatepickerModule,
     ReactiveFormsModule
   ],
   templateUrl: './edit-user-dialog.component.html',
@@ -40,15 +42,26 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<EditUserDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Doctor | Patient
   ) {
+    const base = {
+      name: [data.user.name, [Validators.required, Validators.maxLength(50)]],
+      surname: [data.user.surname, [Validators.required, Validators.maxLength(50)]],
+      email: [data.user.email, [Validators.required, Validators.email, Validators.maxLength(50)]],
+      newPassword: ['', [Validators.maxLength(256)]],
+      pesel: [data.user.pesel, [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
+      phoneNumber: [data.user.phoneNumber, [Validators.required, Validators.maxLength(15)]],
+    };
+
     if ('specialityId' in data) {
       this.isDoctor = true;
       this.userForm = this.fb.group({
-        specialityId: [data.specialityId, Validators.required]
+        ...base,
+        specialityId: [data.specialityId, [Validators.required]]
       });
     } else {
       this.isDoctor = false;
       this.userForm = this.fb.group({
-
+        ...base,
+        birthDate: [data.birthDate, [Validators.required]]
       });
     }
   }
@@ -66,20 +79,28 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  getFullName(): string {
-    return `${this.data.user.name} ${this.data.user.surname}`;
-  }
-
   onSubmit() {
     if (this.userForm.valid) {
       const user = new UserRequestDTO (
-        this.userForm.value.speciality
+        this.userForm.value.name,
+        this.userForm.value.surName,
+        this.userForm.value.email,
+        this.userForm.value.newPassword,
+        this.userForm.value.pesel,
+        this.userForm.value.phoneNumber
       );
+
+      if (this.isDoctor) {
+        user.specialityId = this.userForm.value.speciality;
+      } else {
+        user.birthDate = this.userForm.value.birthDate;
+      }
+
       this.loadingService.show();
-      this.dialogRef.close();
       this.authService.saveUser(user).subscribe({
         next: (response: boolean) => {
           this.loadingService.clearErrorMessage();
+          this.dialogRef.close();
           this.loadingService.showMessage('User saved successfully');
         },
         error: (error) => {

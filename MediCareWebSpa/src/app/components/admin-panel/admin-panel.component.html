@@ -1,16 +1,18 @@
 <div class="admin-panel-container">
   <div class="left">
-    @for (doctor of doctors; track doctor.userId) {
+    @for (person of getPersons(); track person.userId) {
       <mat-card class="doctors-card">
         <mat-card-header class="header">
-          <mat-card-title class="fullname">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-card-title>
-          <mat-card-subtitle class="speciality">{{ doctor.speciality.name }}</mat-card-subtitle>
+          <mat-card-title class="fullname">{{ person.user.name }} {{ person.user.surname }}</mat-card-title>
+          @if(isDoctor(person)) {
+            <mat-card-subtitle class="speciality">{{ getSpecialityName(person) }}</mat-card-subtitle>
+          }
         </mat-card-header>
         <mat-card-content class="content">
-
+          <button class="status" [class]="isDoctor(person) ? 'status-doctor' : 'status-patient'" mat-raised-button>{{ isDoctor(person) ? "Doctor": "Patient" }}</button>
         </mat-card-content>
         <mat-card-actions class="actions">
-          <button mat-raised-button (click)="openEditUserDialog(doctor)">Edit</button>
+          <button mat-raised-button (click)="openEditUserDialog(person)">Edit</button>
         </mat-card-actions>
       </mat-card>
     }

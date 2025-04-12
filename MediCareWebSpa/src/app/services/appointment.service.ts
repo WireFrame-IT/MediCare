@@ -5,14 +5,17 @@ import { HttpClient } from "@angular/common/http";
 import { Doctor } from "../DTOs/models/doctor";
 import { Appointment } from "../DTOs/models/appointment";
 import { AppointmentRequestDTO } from "../DTOs/request/appointment-request.dto";
+import { Patient } from "../DTOs/models/patient";
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
   private _services: BehaviorSubject<Service[]> = new BehaviorSubject<Service[]>([]);
   private _doctors: BehaviorSubject<Doctor[]> = new BehaviorSubject<Doctor[]>([]);
+  private _patients: BehaviorSubject<Patient[]> = new BehaviorSubject<Patient[]>([]);
   private _appointments: BehaviorSubject<Appointment[]> = new BehaviorSubject<Appointment[]>([]);
   services$: Observable<Service[]> = this._services.asObservable();
   doctors$: Observable<Doctor[]> = this._doctors.asObservable();
+  patients$: Observable<Patient[]> = this._patients.asObservable();
   appointments$: Observable<Appointment[]> = this._appointments.asObservable();
 
   readonly apiUrl = 'https://localhost:5001/MediCareWebApi/appointments';
@@ -33,6 +36,13 @@ export class AppointmentService {
       console.error(error);
       return [];
     })).subscribe(doctors => this._doctors.next(doctors as Doctor[]));
+  }
+
+  loadPatients(): void {
+    this.http.get<Patient[]>(`${this.apiUrl}/patients`).pipe(catchError(error => {
+      console.error(error);
+      return [];
+    })).subscribe(patients => this._patients.next(patients as Patient[]));
   }
 
   loadAppointments(): void {

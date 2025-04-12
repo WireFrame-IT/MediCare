@@ -1,4 +1,4 @@
-@use '../../../variables.scss' as variables;
+@use '../../../app/shared/styles/variables' as variables;
 
 .admin-panel-container {
   display: flex;
@@ -16,7 +16,7 @@
   .doctors-card {
     display: flex;
     flex-direction: row;
-    padding: 1rem;
+    padding: 0.5rem;
     box-shadow: variables.$box-shadow-hover;
     border-radius: variables.$border-radius;
     background-color: #fff;
@@ -31,6 +31,26 @@
 
       .speciality {
         color: variables.$grey-color;
+        font-style: italic;
+      }
+    }
+
+    .content {
+      display: flex;
+      align-items: center;
+
+      .status {
+        cursor: default;
+
+        &-doctor {
+          background-color: variables.$primary-color;
+          color: white;
+        }
+
+        &-patient {
+          background-color: rgba(variables.$grey-color, 0.2);
+          color: black;
+        }
       }
     }
   }
