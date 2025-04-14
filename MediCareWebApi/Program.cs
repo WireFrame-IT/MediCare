@@ -58,6 +58,8 @@ builder.Services.AddAutoMapper(typeof(MediCareMappingProfile).Assembly);
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
 	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+	options.JsonSerializerOptions.Converters.Add(new UtcToPolishTimeJsonConverter());
+	options.JsonSerializerOptions.Converters.Add(new NullableUtcToPolishTimeJsonConverter());
 });
 builder.Services.Configure<AppointmentSettings>(builder.Configuration.GetSection("AppointmentSettings"));
 builder.Services.AddMemoryCache();

@@ -54,21 +54,34 @@ namespace MediCare.Controllers
 
 		[HttpPost]
 		[Authorize(Roles = "Admin, Patient")]
-		public async Task<IActionResult> SaveAppointmentAsync([FromBody] AppointmentRequestDTO appointmentDTO)
+		public async Task<IActionResult> SaveAppointmentAsync([FromBody] AppointmentRequestDTO appointmentRequestDTO)
 		{
-			var appointment = _mapper.Map<Appointment>(appointmentDTO);
-			var userId = GetCurrentUserId();
-			var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == userId);
+			var isNew = appointmentRequestDTO.Id == null || appointmentRequestDTO.Id == 0;
+			var appointment = isNew ? _mapper.Map<Appointment>(appointmentRequestDTO) : await _context.Appointments.FirstOrDefaultAsync(x => x.Id == appointmentRequestDTO.Id);
+			var user = await GetCurrentUserAsync();
 
-			if (patient == null)
-				return BadRequest("Only patient can make the appointment.");
-
-			appointment.Status = AppointmentStatus.New;
-			appointment.PatientsUserId = patient.UserId;
-
-			if (appointmentDTO.ServiceId.HasValue)
+			switch (user.Role.RoleType)
 			{
-				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Id == appointmentDTO.ServiceId.Value);
+				case RoleType.Admin:
+					appointment.Status = appointmentRequestDTO.Status.Value;
+					break;
+				case RoleType.Patient:
+					appointment.Status = AppointmentStatus.New;
+					appointment.PatientsUserId = user.Id;
+					break;
+				case RoleType.Doctor:
+					appointment.Diagnosis = appointmentRequestDTO.Diagnosis;
+					break;
+			}
+
+			if (!isNew)
+			{
+				appointment.Time = appointmentRequestDTO.Time;
+			}
+
+			if (appointmentRequestDTO.ServiceId.HasValue)
+			{
+				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Id == appointmentRequestDTO.ServiceId.Value);
 				if (appointment.Service == null)
 					return NotFound("Service not found.");
 			}
@@ -77,23 +90,28 @@ namespace MediCare.Controllers
 				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Name == _appointmentSettings.FamilyMedicineServiceName && x.Description == _appointmentSettings.FamilyMedicineServiceDescription);
 			}
 
-			if (appointmentDTO.DoctorsUserId.HasValue && appointmentDTO.DoctorsUserId.Value > 0)
+			if (appointmentRequestDTO.DoctorsUserId.HasValue && appointmentRequestDTO.DoctorsUserId.Value > 0)
 			{
-				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service, appointment.DoctorsUserId);
+				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service, appointment.Id, appointment.DoctorsUserId);
 				if (doctor == null)
 					return NotFound("The selected doctor is not available at the provided time. If you don't choose a specific doctor, we'll automatically assign an available one for you.");
 				appointment.Doctor = doctor;
 			}
 			else
 			{
-				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service);
+				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service, appointment.Id);
 				if (doctor == null)
 					return NotFound("No available doctor for the specified term.");
 				appointment.Doctor = doctor;
 			}
 
 			ValidateAppointment(appointment);
-			_context.Appointments.Add(appointment);
+
+			if (appointment.Id == 0)
+				_context.Appointments.Add(appointment);
+			else if (user.Role.RoleType == RoleType.Patient)
+				return BadRequest("Patient cannot edit appointment.");
+
 			await _context.SaveChangesAsync();
 			return Ok(_mapper.Map<AppointmentDTO>(appointment));
 		}
@@ -155,13 +173,13 @@ namespace MediCare.Controllers
 				.FirstOrDefaultAsync(x => x.Id == id && (x.Doctor.UserId == userId || x.Patient.UserId == userId));
 		}
 
-		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service, int? doctorsUserId = null)
+		private async Task<Doctor?> FindAvailableDoctorAsync(DateTime time, Service service, int ignoreAppointmentId = 0, int? doctorsUserId = null)
 		{
 			var appointmentEndTime = time.AddMinutes(service.DurationMinutes);
 			return await _context.Doctors
 				.Where(x => x.SpecialityId == service.SpecialityId && (doctorsUserId == null || x.UserId == doctorsUserId)
 				    && x.DoctorsAvailabilities.Any(y => y.From <= time && appointmentEndTime <= y.To)
-					&& !x.Appointments.Any(y => y.Status != AppointmentStatus.Absent && y.Status != AppointmentStatus.Canceled
+					&& !x.Appointments.Any(y => y.Id != ignoreAppointmentId && y.Status != AppointmentStatus.Absent && y.Status != AppointmentStatus.Canceled
 					&& y.Time < appointmentEndTime && time < y.Time.AddMinutes(y.Service.DurationMinutes)))
 				.FirstOrDefaultAsync();
 		}

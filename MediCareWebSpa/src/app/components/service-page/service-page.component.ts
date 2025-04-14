@@ -9,6 +9,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { Appointment } from '../../DTOs/models/appointment';
+import { AppointmentStatus } from '../../enums/appointment-status';
 
 @Component({
   selector: 'app-service-page',
@@ -56,7 +58,7 @@ private subscriptions: Subscription[] = [];
 
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
       width: '600px',
-      data: service
+      data: { service: service, serviceId: service.id, status: AppointmentStatus.New } as Appointment
     });
   }
 

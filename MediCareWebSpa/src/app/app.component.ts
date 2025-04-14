@@ -36,6 +36,7 @@ export class AppComponent implements OnInit, OnDestroy{
   ) {}
 
   ngOnInit(): void {
+    this.authService.retrieveCredentials();
     this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
     this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
     this.subscriptions.push(this.loadingService.isLoading$.subscribe(isLoading => this.isLoading = isLoading));

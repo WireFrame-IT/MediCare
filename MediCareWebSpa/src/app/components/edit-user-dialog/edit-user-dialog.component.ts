@@ -82,8 +82,9 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.userForm.valid) {
       const user = new UserRequestDTO (
+        this.data.userId,
         this.userForm.value.name,
-        this.userForm.value.surName,
+        this.userForm.value.surname,
         this.userForm.value.email,
         this.userForm.value.newPassword,
         this.userForm.value.pesel,
@@ -98,9 +99,9 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
 
       this.loadingService.show();
       this.authService.saveUser(user).subscribe({
-        next: (response: boolean) => {
+        next: (response: Doctor | Patient) => {
           this.loadingService.clearErrorMessage();
-          this.dialogRef.close();
+          this.dialogRef.close(response);
           this.loadingService.showMessage('User saved successfully');
         },
         error: (error) => {

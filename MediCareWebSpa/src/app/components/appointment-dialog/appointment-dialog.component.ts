@@ -17,6 +17,7 @@ import { AuthService } from '../../services/auth.service';
 import { Appointment } from '../../DTOs/models/appointment';
 import { AppointmentRequestDTO } from '../../DTOs/request/appointment-request.dto';
 import { LoadingService } from '../../services/loading.service';
+import { AppointmentStatus } from '../../enums/appointment-status';
 
 @Component({
   selector: 'app-appointment-dialog',
@@ -39,10 +40,12 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
 
   appointmentForm: FormGroup;
   isDoctor: boolean = false;
+  isAdmin: boolean = false;
   services: Service[] = [];
   doctors: Doctor[] = [];
   doctorsBySpeciality: Doctor[] = [];
   minDate: Date = new Date();
+  statusEnum = Object.entries(AppointmentStatus).filter(([key, value]) => !isNaN(Number(value))).map(([key, value]) => ({ key, value }));
 
   constructor(
     private fb: FormBuilder,
@@ -50,23 +53,25 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
     private appointmentService: AppointmentService,
     private loadingService: LoadingService,
     public dialogRef: MatDialogRef<AppointmentDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Service
+    @Inject(MAT_DIALOG_DATA) public data: Appointment
   ) {
     this.appointmentForm = this.fb.group({
-      serviceId: [data?.id || ''],
-      doctorsUserId: [0],
-      date: ['', Validators.required],
-      time: ['', Validators.required]
+      serviceId: [data?.serviceId || ''],
+      doctorsUserId: [data?.doctorsUserId ||  0],
+      date: [data?.time ? new Date(data.time) : '', Validators.required],
+      time: [data?.time ? new Date(data.time) : '', Validators.required],
+      status: [data?.status ?? AppointmentStatus.New, Validators.required]
     });
   }
 
   ngOnInit(): void {
     this.appointmentService.loadDoctors();
     this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
+    this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
     this.subscriptions.push(this.appointmentService.services$.subscribe(services => this.services = services));
     this.subscriptions.push(this.appointmentService.doctors$.subscribe(doctors => {
       this.doctors = doctors;
-      this.doctorsBySpeciality = doctors.filter(x => x.specialityId === this.data?.specialityId);
+      this.doctorsBySpeciality = doctors.filter(x => x.specialityId === this.data?.service?.specialityId);
     }));
   }
 
@@ -85,7 +90,10 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.appointmentForm.valid) {
       const appointment = new AppointmentRequestDTO (
+        this.data.id ?? 0,
         this.appointmentForm.value.date,
+        this.appointmentForm.value.status,
+        '', //diagnosis todo and update appointment on save
         this.appointmentForm.value.doctorsUserId,
         this.appointmentForm.value.serviceId
       );
@@ -95,7 +103,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
         next: (response: Appointment) => {
           this.loadingService.clearErrorMessage();
           this.dialogRef.close();
-          this.loadingService.showMessage('Appointment booked successfully');
+          this.loadingService.showMessage('Appointment saved successfully');
         },
         error: (error) => {
           this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));

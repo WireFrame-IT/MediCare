@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, finalize, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, Observable } from 'rxjs';
 import { PatientRegisterRequestDTO } from '../DTOs/request/patient-register-request.dto';
 import { LoginRequestDTO } from '../DTOs/request/login-request.dto';
 import { RefreshResponseDTO } from '../DTOs/response/refresh-response.dto';
@@ -11,6 +11,8 @@ import { Speciality } from '../DTOs/models/speciality';
 import { DoctorRegisterRequestDTO } from '../DTOs/request/doctor-register-request.dto';
 import { RefreshRequestDTO } from '../DTOs/request/refresh-request.dto';
 import { UserRequestDTO } from '../DTOs/request/user-request.dto';
+import { Doctor } from '../DTOs/models/doctor';
+import { Patient } from '../DTOs/models/patient';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -45,7 +47,7 @@ export class AuthService {
   }
 
   refreshAccessToken(): Observable<RefreshResponseDTO> {
-    const refreshRequestDTO = new RefreshRequestDTO(localStorage.getItem('refreshToken') ?? '');
+    const refreshRequestDTO = new RefreshRequestDTO(this.getRefreshToken() ?? '');
     return this.http.post<RefreshResponseDTO>(`${this.apiUrl}/refresh`, refreshRequestDTO);
   }
 
@@ -65,8 +67,8 @@ export class AuthService {
     return null;
   }
 
-  saveUser(user: UserRequestDTO): Observable<boolean> {
-    return this.http.post<boolean>(`${this.apiUrl}/user`, user);
+  saveUser(user: UserRequestDTO): Observable<Doctor | Patient> {
+    return this.http.post<Doctor | Patient>(`${this.apiUrl}/user`, user);
   }
 
   storeUserData(accessToken: string, refreshToken: string, roleType?: RoleType): void {
@@ -94,6 +96,19 @@ export class AuthService {
     sessionStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     sessionStorage.removeItem('roleType');
+  }
+
+  retrieveCredentials(): void {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken)
+      return;
+
+    this._isLoggedIn.next(true);
+    const roleType = this.getRoleType();
+    if (roleType) {
+      this._isAdmin.next(roleType === RoleType.Admin);
+      this._isDoctor.next(roleType === RoleType.Doctor);
+    }
   }
 
   logout(): void {

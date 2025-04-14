@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
 import { AppointmentStatus } from '../../enums/appointment-status';
+import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-appointment-page',
@@ -20,7 +22,8 @@ import { AppointmentStatus } from '../../enums/appointment-status';
   templateUrl: './appointment-page.component.html',
   styleUrl: './appointment-page.component.scss'
 })
-export class AppointmentPageComponent implements OnInit, OnDestroy{
+export class AppointmentPageComponent implements OnInit, OnDestroy {
+  private dialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
   subscriptions: Subscription[] = [];
   appointments: Appointment[] = [];
   isDoctor: boolean = false;
@@ -29,7 +32,8 @@ export class AppointmentPageComponent implements OnInit, OnDestroy{
 
   constructor(
     private appointmentService: AppointmentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -82,5 +86,12 @@ export class AppointmentPageComponent implements OnInit, OnDestroy{
 
   canAccept(appointment: Appointment): boolean {
     return appointment.status === AppointmentStatus.New;
+  }
+
+  openEditAppointmentDialog(appointment: Appointment): void {
+    this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
+      width: '600px',
+      data: appointment
+    });
   }
 }

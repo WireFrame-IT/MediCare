@@ -31,7 +31,7 @@ namespace MedicalFacility.Controllers
 			var patient = new Patient()
 			{
 				RegisterDate = DateTime.Now,
-				BirthDate = registerRequest.BirthDate,
+				BirthDate = registerRequest.BirthDate.Date,
 				UserId = user.Id,
 			};
 
@@ -131,6 +131,43 @@ namespace MedicalFacility.Controllers
 					_accountsService.BlacklistToken(jti);
 			}
 			return Ok();
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpPost("user")]
+		public async Task<IActionResult> SaveUser([FromBody] UserRequestDTO userRequestDTO)
+		{
+			var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userRequestDTO.Id);
+			if (user == null)
+				return NotFound("User not found.");
+
+			user.Name = userRequestDTO.Name;
+			user.Surname = userRequestDTO.Surname;
+			user.Email = userRequestDTO.Email;
+			user.Pesel = userRequestDTO.Pesel;
+			user.PhoneNumber = userRequestDTO.PhoneNumber;
+
+			if (!string.IsNullOrWhiteSpace(userRequestDTO.Password))
+				user.Password = _accountsService.HashPassword(userRequestDTO.Password, user.Salt = _accountsService.GenerateSalt());
+
+			var doctor = await _context.Doctors
+				.Include(x => x.User)
+				.Include(x => x.Speciality)
+				.FirstOrDefaultAsync(x => x.UserId == user.Id);
+			var patient = await _context.Patients
+				.Include(x => x.User)
+				.FirstOrDefaultAsync(x => x.UserId == user.Id);
+			if (doctor == null && patient == null)
+				throw new InvalidOperationException("The user is neither a patient nor a doctor.");
+
+			if (doctor != null && userRequestDTO.SpecialityId.HasValue)
+				doctor.SpecialityId = userRequestDTO.SpecialityId.Value;
+
+			if (patient != null && userRequestDTO.BirthDate.HasValue)
+				patient.BirthDate = userRequestDTO.BirthDate.Value;
+
+			await _context.SaveChangesAsync();
+			return Ok(doctor == null ? patient : doctor);
 		}
 
 		[Authorize(Roles = "Admin")]

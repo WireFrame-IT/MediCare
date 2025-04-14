@@ -4,7 +4,7 @@
     <mat-label>Service</mat-label>
     <mat-select formControlName="serviceId" (selectionChange)="onServiceChange($event)">
       @for (service of services; track service.id) {
-        <mat-option [value]="service.id">{{ service.name }}</mat-option>
+        <mat-option [value]="service.id">{{ service.name }} ({{ service.durationMinutes }} minutes)</mat-option>
       }
     </mat-select>
   </mat-form-field>
@@ -17,6 +17,16 @@
       }
     </mat-select>
   </mat-form-field>
+  @if (isAdmin) {
+    <mat-form-field class="form-field">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        @for (status of statusEnum; track status.value) {
+          <mat-option [value]="status.value">{{ status.key }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
   <mat-form-field class="form-field">
     <mat-label>Date</mat-label>
     <input matInput [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" formControlName="date" [min]="minDate"/>
@@ -36,7 +46,7 @@
     </mat-form-field>
   }
   <div class="buttons" mat-dialog-actions>
-    <button class="submit-button" mat-raised-button type="submit" [disabled]="appointmentForm.invalid">Book</button>
+    <button class="submit-button" mat-raised-button type="submit" [disabled]="appointmentForm.invalid">Save</button>
     <button class="cancel-button" mat-button mat-dialog-close type="button" (click)="closeDialog()">Cancel</button>
   </div>
 </form>

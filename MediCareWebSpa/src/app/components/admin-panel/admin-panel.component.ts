@@ -56,5 +56,19 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
       width: '600px',
       data: person
     });
+
+    this.dialogRef.afterClosed().subscribe((updatedPerson: Doctor | Patient) => {
+      if (updatedPerson) {
+        const index = this.isDoctor(person)
+          ? this.doctors.findIndex(x => x.userId === updatedPerson.userId)
+          : this.patients.findIndex(x => x.userId === updatedPerson.userId);
+
+        if (index !== -1) {
+          this.isDoctor(person)
+            ? this.doctors[index] = updatedPerson as Doctor
+            : this.patients[index] = updatedPerson as Patient;
+        }
+      }
+    });
   }
 }
