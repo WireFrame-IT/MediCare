@@ -53,12 +53,25 @@ namespace MediCare.Controllers
 		}
 
 		[HttpPost]
-		[Authorize(Roles = "Admin, Patient")]
+		[Authorize(Roles = "Admin, Doctor, Patient")]
 		public async Task<IActionResult> SaveAppointmentAsync([FromBody] AppointmentRequestDTO appointmentRequestDTO)
 		{
-			var isNew = appointmentRequestDTO.Id == null || appointmentRequestDTO.Id == 0;
-			var appointment = isNew ? _mapper.Map<Appointment>(appointmentRequestDTO) : await _context.Appointments.FirstOrDefaultAsync(x => x.Id == appointmentRequestDTO.Id);
 			var user = await GetCurrentUserAsync();
+			var isNew = appointmentRequestDTO.Id == null || appointmentRequestDTO.Id == 0;
+			var appointment = isNew
+				? _mapper.Map<Appointment>(appointmentRequestDTO)
+				: await _context.Appointments
+					.Include(x => x.Service)
+					.Include(x => x.Patient)
+						.ThenInclude(x => x.User)
+					.Include(x => x.Doctor)
+						.ThenInclude(x => x.User)
+					.Include(x => x.Doctor)
+						.ThenInclude(x => x.Speciality)
+					.FirstOrDefaultAsync(x => x.Id == appointmentRequestDTO.Id);
+
+			if (isNew && user.Role.RoleType != RoleType.Patient)
+				return BadRequest("Only patient can make an appointment.");
 
 			switch (user.Role.RoleType)
 			{
@@ -71,7 +84,8 @@ namespace MediCare.Controllers
 					break;
 				case RoleType.Doctor:
 					appointment.Diagnosis = appointmentRequestDTO.Diagnosis;
-					break;
+					await _context.SaveChangesAsync();
+					return Ok(_mapper.Map<AppointmentDTO>(appointment));
 			}
 
 			if (!isNew)
@@ -186,7 +200,7 @@ namespace MediCare.Controllers
 
 		private async Task<IEnumerable<Appointment>> GetAppointments(int? userId = null, bool doctor = false)
 		{
-			var query = _context.Appointments
+			var baseQuery = _context.Appointments
 				.Include(x => x.Doctor)
 					.ThenInclude(x => x.User)
 				.Include(x => x.Doctor)
@@ -195,11 +209,13 @@ namespace MediCare.Controllers
 					.ThenInclude(x => x.User)
 				.Include(x => x.Service);
 
+			IQueryable<Appointment> query = baseQuery;
+
 			if (userId.HasValue)
 			{
-				query.Where(x => (doctor ? x.DoctorsUserId : x.PatientsUserId) == userId);
+				query = query.Where(x => (doctor ? x.DoctorsUserId : x.PatientsUserId) == userId);
 			}
-				
+
 			return await query.ToListAsync();
 		}
 

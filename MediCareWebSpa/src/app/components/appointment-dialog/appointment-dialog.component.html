@@ -1,22 +1,24 @@
-<h2 class="title" mat-dialog-title>Book Appointment</h2>
+<h2 class="title" mat-dialog-title>{{ isDoctor ? "Diagnosis": "Appointment" }}</h2>
 <form class="form" [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
-  <mat-form-field class="form-field">
-    <mat-label>Service</mat-label>
-    <mat-select formControlName="serviceId" (selectionChange)="onServiceChange($event)">
-      @for (service of services; track service.id) {
-        <mat-option [value]="service.id">{{ service.name }} ({{ service.durationMinutes }} minutes)</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field class="form-field">
-    <mat-label>Doctor</mat-label>
-    <mat-select formControlName="doctorsUserId">
-      <mat-option [value]="0">Auto-assign</mat-option>
-      @for (doctor of doctorsBySpeciality; track doctor.userId) {
-        <mat-option [value]="doctor.userId">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  @if (!isDoctor) {
+    <mat-form-field class="form-field">
+      <mat-label>Service</mat-label>
+      <mat-select formControlName="serviceId" (selectionChange)="onServiceChange($event)">
+        @for (service of services; track service.id) {
+          <mat-option [value]="service.id">{{ service.name }} ({{ service.durationMinutes }} minutes)</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Doctor</mat-label>
+      <mat-select formControlName="doctorsUserId">
+        <mat-option [value]="0">Auto-assign</mat-option>
+        @for (doctor of doctorsBySpeciality; track doctor.userId) {
+          <mat-option [value]="doctor.userId">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
   @if (isAdmin) {
     <mat-form-field class="form-field">
       <mat-label>Status</mat-label>
@@ -27,22 +29,24 @@
       </mat-select>
     </mat-form-field>
   }
-  <mat-form-field class="form-field">
-    <mat-label>Date</mat-label>
-    <input matInput [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" formControlName="date" [min]="minDate"/>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-  <mat-form-field class="form-field">
-    <mat-label>Time</mat-label>
-    <input matInput [matTimepicker]="timePicker" formControlName="time" matTimepickerMin="08:00" matTimepickerMax="15:45">
-    <mat-timepicker-toggle matIconSuffix [for]="timePicker"/>
-    <mat-timepicker #timePicker/>
-  </mat-form-field>
-  @if(isDoctor) {
+  @if (!isDoctor) {
     <mat-form-field class="form-field">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" formControlName="date" [min]="minDate"/>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Time</mat-label>
+      <input matInput [matTimepicker]="timePicker" formControlName="time" matTimepickerMin="08:00" matTimepickerMax="15:45">
+      <mat-timepicker-toggle matIconSuffix [for]="timePicker"/>
+      <mat-timepicker #timePicker/>
+    </mat-form-field>
+  }
+  @if(isDoctor) {
+    <mat-form-field class="diagnosis">
       <mat-label>Diagnosis</mat-label>
-      <textarea matInput formControlName="diagnosis"></textarea>
+      <textarea matInput formControlName="diagnosis" cdkTextareaAutosize cdkAutosizeMinRows="10" cdkAutosizeMaxRows="20"></textarea>
     </mat-form-field>
   }
   <div class="buttons" mat-dialog-actions>

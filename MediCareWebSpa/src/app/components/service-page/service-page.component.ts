@@ -60,6 +60,10 @@ private subscriptions: Subscription[] = [];
       width: '600px',
       data: { service: service, serviceId: service.id, status: AppointmentStatus.New } as Appointment
     });
+
+    this.dialogRef.afterClosed().subscribe(appointment => {
+      this.appointmentService.addAppointment(appointment);
+    });
   }
 
   getIcon(name: string): string {

@@ -60,7 +60,8 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
       doctorsUserId: [data?.doctorsUserId ||  0],
       date: [data?.time ? new Date(data.time) : '', Validators.required],
       time: [data?.time ? new Date(data.time) : '', Validators.required],
-      status: [data?.status ?? AppointmentStatus.New, Validators.required]
+      status: [data?.status ?? AppointmentStatus.New, Validators.required],
+      diagnosis: [data?.diagnosis || '']
     });
   }
 
@@ -93,7 +94,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
         this.data.id ?? 0,
         this.appointmentForm.value.date,
         this.appointmentForm.value.status,
-        '', //diagnosis todo and update appointment on save
+        this.appointmentForm.value.diagnosis, //fix error on second appointment update
         this.appointmentForm.value.doctorsUserId,
         this.appointmentForm.value.serviceId
       );
@@ -102,7 +103,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
       this.appointmentService.saveAppointment(appointment).subscribe({
         next: (response: Appointment) => {
           this.loadingService.clearErrorMessage();
-          this.dialogRef.close();
+          this.dialogRef.close(response);
           this.loadingService.showMessage('Appointment saved successfully');
         },
         error: (error) => {

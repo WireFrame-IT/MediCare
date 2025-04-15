@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, catchError, Observable } from "rxjs";
+import { BehaviorSubject, catchError, Observable, map } from "rxjs";
 import { Service } from "../DTOs/models/service";
 import { HttpClient } from "@angular/common/http";
 import { Doctor } from "../DTOs/models/doctor";
@@ -16,7 +16,9 @@ export class AppointmentService {
   services$: Observable<Service[]> = this._services.asObservable();
   doctors$: Observable<Doctor[]> = this._doctors.asObservable();
   patients$: Observable<Patient[]> = this._patients.asObservable();
-  appointments$: Observable<Appointment[]> = this._appointments.asObservable();
+  appointments$: Observable<Appointment[]> = this._appointments.asObservable().pipe(
+    map((appointments: Appointment[]) => appointments.slice().sort((a: Appointment, b: Appointment) => new Date(a.time).getTime() - new Date(b.time).getTime()))
+  );
 
   readonly apiUrl = 'https://localhost:5001/MediCareWebApi/appointments';
 
@@ -50,6 +52,14 @@ export class AppointmentService {
       console.error(error);
       return [];
     })).subscribe(appointments => this._appointments.next(appointments as Appointment[]));
+  }
+
+  addAppointment(appointment: Appointment): void {
+    this._appointments.next([...this._appointments.value, appointment]);
+  }
+
+  updateAppointment(appointment: Appointment): void {
+    this._appointments.next([...this._appointments.value.filter(x => x.id != appointment.id), appointment]);
   }
 
   saveAppointment(appointmentData: AppointmentRequestDTO): Observable<Appointment> {
