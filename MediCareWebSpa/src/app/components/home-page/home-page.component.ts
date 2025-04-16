@@ -42,17 +42,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     return ICON_MAP[name];
   }
 
-  getImageUrls(count: number): any {
-    const urls = []
-    for (let i = 1; i <= count; i += 2) {
-      urls.push({
-        first: `assets/medical-facility/${i}.svg`,
-        second: `assets/medical-facility/${i + 1}.svg`
-      });
-    }
-    return urls;
-  }
-
   private getRandomServices(services: Service[], count: number): Service[] {
     const result = [];
     const copy = services.slice();

@@ -9,6 +9,7 @@
     }
     <button mat-button routerLink="/services">Services</button>
     <button mat-button [routerLink]="isLoggedIn ? '/appointments' : '/login'">Appointments</button>
+    <button mat-button routerLink="/about-page">About us</button>
     <div class="auth-buttons">
       <app-success-dialog></app-success-dialog>
       @if(isLoggedIn) {

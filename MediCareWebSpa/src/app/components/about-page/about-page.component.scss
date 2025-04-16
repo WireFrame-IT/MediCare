@@ -1,0 +1,59 @@
+@use '../../../app/shared/styles/variables' as variables;
+
+.description {
+  background-color: variables.$background-color;
+  padding: 2rem 18rem;
+  font-size: 1.2rem;
+  text-align: center;
+  line-height: 1.8rem;
+}
+
+.image-gallery {
+  width: 80%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  .gallery-element {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 2rem;
+
+    &.image {
+      transition: all 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: variables.$box-shadow;
+      }
+    }
+
+    &.image-description {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+
+      .title {
+        padding-bottom: 2rem;
+      }
+
+      .description {
+        background: inherit;
+        padding: 0;
+        text-align: justify;
+      }
+    }
+  }
+
+  .gallery-element:nth-child(odd) {
+    align-self: flex-end;
+  }
+
+  .gallery-element:nth-child(even) {
+    align-self: flex-start;
+  }
+}

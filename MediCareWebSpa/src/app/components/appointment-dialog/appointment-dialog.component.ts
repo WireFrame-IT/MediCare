@@ -94,7 +94,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
         this.data.id ?? 0,
         this.appointmentForm.value.date,
         this.appointmentForm.value.status,
-        this.appointmentForm.value.diagnosis, //fix error on second appointment update
+        this.appointmentForm.value.diagnosis,
         this.appointmentForm.value.doctorsUserId,
         this.appointmentForm.value.serviceId
       );
