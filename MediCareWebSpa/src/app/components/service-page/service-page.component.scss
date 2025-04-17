@@ -9,6 +9,20 @@
   }
 }
 
+.filter {
+  width: 80%;;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 2%;
+
+  .search, .sort {
+    width: 25%;
+    font-size: 1.2rem;
+  }
+}
+
 .services-container {
   display: flex;
   flex-direction: column;

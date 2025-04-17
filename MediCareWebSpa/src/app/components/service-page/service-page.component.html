@@ -1,8 +1,23 @@
 <div class="services">
   <h1>Our Services</h1>
 </div>
+<div class="filter">
+  <mat-form-field class="search">
+    <input matInput type="text" placeholder="Search..." [(ngModel)]="filter" (input)="applyFilter()" />
+  </mat-form-field>
+  <mat-form-field class="sort">
+    <mat-select [(ngModel)]="selectedSort" (selectionChange)="onSortChange()">
+      <mat-option value="">Sort by...</mat-option>
+      @for (option of sortOptions; track option.value) {
+        <mat-option [value]="option.value">
+          {{ option.label }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
 <div class="services-container">
-  @for (service of services; track service.id) {
+  @for (service of filteredServices; track service.id) {
     <mat-card class="service-card" (click)="openAppointmentDialog(service)">
       <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
       <div class="service-info">

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { AppointmentService } from '../../services/appointment.service';
 import { Subscription } from 'rxjs';
 import { Service } from '../../DTOs/models/service';
@@ -11,21 +12,37 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Appointment } from '../../DTOs/models/appointment';
 import { AppointmentStatus } from '../../enums/appointment-status';
+import { MatInputModule } from '@angular/material/input';
+import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-service-page',
   imports: [
     MatCard,
-    MatIcon
+    MatIcon,
+    FormsModule,
+    MatInputModule,
+    MatSelect,
+    MatOption
   ],
   templateUrl: './service-page.component.html',
   styleUrl: './service-page.component.scss'
 })
 export class ServicePageComponent {
-private subscriptions: Subscription[] = [];
-  services: Service[] = [];
-  isLoggedIn: boolean = false;
+  private subscriptions: Subscription[] = [];
   private dialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
+
+  services: Service[] = [];
+  filteredServices: Service[] = [];
+  isLoggedIn: boolean = false;
+  filter: string = '';
+  selectedSort: string = '';
+
+  sortOptions = [
+    { label: 'Name', value: 'name' },
+    { label: 'Duration', value: 'duration' },
+    { label: 'Price', value: 'price' }
+  ];
 
   constructor(
     private appointmentService: AppointmentService,
@@ -36,7 +53,11 @@ private subscriptions: Subscription[] = [];
 
   ngOnInit(): void {
     this.appointmentService.loadServices();
-    this.subscriptions.push(this.appointmentService.services$.subscribe(services => this.services = services));
+    this.subscriptions.push(this.appointmentService.services$.subscribe(services => {
+      this.services = services;
+      this.applyFilter();
+    }));
+
     this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
       if(!this.isLoggedIn && this.dialogRef)
@@ -63,6 +84,27 @@ private subscriptions: Subscription[] = [];
 
     this.dialogRef.afterClosed().subscribe(appointment => {
       this.appointmentService.addAppointment(appointment);
+    });
+  }
+
+  applyFilter(): void {
+    const query = this.filter.toLowerCase();
+    this.filteredServices = this.services.filter(service => service.name.toLowerCase().includes(query) || service.description.toLocaleLowerCase().includes(query));
+    this.onSortChange();
+  }
+
+  onSortChange(): void {
+    this.filteredServices = [...this.filteredServices].sort((a, b) => {
+      switch(this.selectedSort) {
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'duration':
+          return a.durationMinutes - b .durationMinutes;
+        case 'price':
+          return a.price - b.price;
+        default:
+          return 0;
+      }
     });
   }
 
