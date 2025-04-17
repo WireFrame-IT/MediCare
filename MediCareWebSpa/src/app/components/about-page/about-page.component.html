@@ -3,33 +3,44 @@
     Our clinic combines specialist expertise with modern technology to deliver personalized diagnostics and treatments. We focus on cardiology, neurology, pediatrics, dermatology, and more — always prioritizing your health and comfort.
   </p>
 </div>
-<div id="gallery" class="image-gallery">
+<div id="gallery" class="image-gallery" [class.loaded]="allImagesLoaded">
+
   <div class="gallery-element image-description">
     <h3 class="title">Precision and advanced diagnostics</h3>
     <p class="description">At our clinic, we prioritize cutting-edge technology and the highest laboratory standards. With state-of-the-art equipment and the expertise of our specialists, we ensure fast and accurate diagnoses, always focused on effective treatment and patient safety.</p>
   </div>
-  <img src="assets/medical-facility/1.svg" alt="image1" class="gallery-element image"/>
-  <img src="assets/medical-facility/2.svg" alt="image2" class="gallery-element image"/>
+
+  <img #image src="assets/medical-facility/1.svg" alt="image1" class="gallery-element image" (load)="onImageLoad()"/>
+  <img #image src="assets/medical-facility/2.svg" alt="image2" class="gallery-element image" (load)="onImageLoad()"/>
+
   <div class="gallery-element image-description">
     <h3 class="title">Comprehensive prenatal care</h3>
     <p class="description">We provide attentive and personalized care for every stage of pregnancy. Our experienced specialists use advanced ultrasound technology to monitor fetal development and ensure the health and safety of both mother and baby. Your well-being is our priority—from the very first heartbeat.</p>
-  </div><div class="gallery-element image-description">
-    <h3 class="title">State-of-the-art surgical environment</h3>
-    <p class="description">Our operating rooms are equipped with top-tier technology, including advanced monitoring systems by Dräger, ensuring the highest level of safety during every procedure. With real-time data, precision instruments, and expert staff, we’re prepared for even the most demanding surgical interventions.</p>
   </div>
-  <img src="assets/medical-facility/3.svg" alt="image3" class="gallery-element image"/>
-  <img src="assets/medical-facility/4.svg" alt="image4" class="gallery-element image"/>
+
   <div class="gallery-element image-description">
     <h3 class="title">Gentle and effective pediatric care</h3>
     <p class="description">We create a safe and friendly environment for our youngest patients, using modern equipment to support respiratory health and early diagnosis. Whether it’s inhalation therapy or breathing assessments, our pediatric team ensures that every child receives expert, compassionate care tailored to their needs.</p>
-  </div><div class="gallery-element image-description">
+  </div>
+
+  <img #image src="assets/medical-facility/3.svg" alt="image3" class="gallery-element image" (load)="onImageLoad()"/>
+  <img #image src="assets/medical-facility/4.svg" alt="image4" class="gallery-element image" (load)="onImageLoad()"/>
+
+  <div class="gallery-element image-description">
+    <h3 class="title">State-of-the-art surgical environment</h3>
+    <p class="description">Our operating rooms are equipped with top-tier technology, including advanced monitoring systems by Dräger, ensuring the highest level of safety during every procedure. With real-time data, precision instruments, and expert staff, we’re prepared for even the most demanding surgical interventions.</p>
+  </div>
+  <div class="gallery-element image-description">
     <h3 class="title">Advanced dental technology for precise treatment</h3>
     <p class="description">Our dental suites are equipped with modern chairs and multifunctional tools designed for comfort, efficiency, and precision. From routine check-ups to advanced procedures, our technology ensures high-quality care in a clean, stress-free environment.</p>
   </div>
-  <img src="assets/medical-facility/5.svg" alt="image5" class="gallery-element image"/>
-  <img src="assets/medical-facility/6.svg" alt="image6" class="gallery-element image"/>
+
+  <img #image src="assets/medical-facility/5.svg" alt="image5" class="gallery-element image" (load)="onImageLoad()"/>
+  <img #image src="assets/medical-facility/6.svg" alt="image6" class="gallery-element image" (load)="onImageLoad()"/>
+
   <div class="gallery-element image-description">
     <h3 class="title">Thorough and personalized patient care</h3>
     <p class="description">Our dedicated healthcare professionals take the time to perform detailed assessments, such as blood pressure measurements, to ensure your health is always closely monitored. We believe in providing personalized care, focusing on every detail to help maintain and improve your well-being.</p>
   </div>
+
 </div>

@@ -1,12 +1,14 @@
 <div class="services">
   <h1>Our Services</h1>
-  <div class="grid">
-    @for (service of services; track service.id) {
-      <mat-card class="service-card" (click)="openAppointmentDialog(service)">
-        <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
+</div>
+<div class="services-container">
+  @for (service of services; track service.id) {
+    <mat-card class="service-card" (click)="openAppointmentDialog(service)">
+      <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
+      <div class="service-info">
         <h3 class="service-title">{{ service.name }}</h3>
         <p class="service-description">{{ service.description }}</p>
-      </mat-card>
-    }
-  </div>
+      </div>
+    </mat-card>
+  }
 </div>

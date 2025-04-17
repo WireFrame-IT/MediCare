@@ -1,4 +1,5 @@
 export const ICON_MAP: { [key: string]: string } = {
+  'Family Medicine': 'home',
   'Heart Checkup': 'favorite',
   'Neurological Consultation': 'psychology',
   'Bone Fracture Treatment': 'accessible',
@@ -19,5 +20,20 @@ export const ICON_MAP: { [key: string]: string } = {
   'Gynecological Consultation': 'female',
   'Diabetes Management': 'insights',
   'Chemotherapy Session': 'biotech',
-  'Family Medicine': 'home'
+  'Diagnostic Testing': 'science',
+  'Blood Sample Collection': 'opacity',
+  'Preoperative Anesthesia Consultation': 'local_hospital',
+  'General Anesthesia Administration': 'hotel',
+  'X-ray Imaging': 'filter_hdr',
+  'CT Scan': 'camera_indoor',
+  'Urinary Tract Infection Treatment': 'wc',
+  'Prostate Health Consultation': 'male',
+  'Eye Examination': 'visibility',
+  'Cataract Surgery Consultation': 'visibility_off',
+  'Lung Function Test': 'air',
+  'Asthma Management': 'cloud',
+  'Arthritis Consultation': 'accessibility',
+  'Osteoporosis Treatment': 'elderly',
+  'Allergy Testing': 'bug_report',
+  'Immunotherapy': 'vaccines'
 };

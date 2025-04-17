@@ -6,47 +6,55 @@
 
   h1 {
     color: white;
-    margin-bottom: 1rem;
   }
+}
 
-  .grid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    padding: 0 1rem;
+.services-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
 
-    .service-card {
-      padding: 1rem;
-      text-align: center;
-      background-color: variables.$background-color;
-      border: 1px solid #ddd;
-      border-radius: variables.$border-radius;
-      box-shadow: variables.$box-shadow;
-      transition: all 0.2s;
-      cursor: pointer;
+  .service-card {
+    width: 60%;
+    display: flex;
+    flex-direction: row;
+    padding: 0.6rem;
+    background-color: variables.$background-color;
+    border: 1px solid #ddd;
+    border-radius: variables.$border-radius;
+    box-shadow: variables.$box-shadow;
+    transition: all 0.2s;
+    cursor: pointer;
 
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: variables.$box-shadow-hover;
-      }
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: variables.$box-shadow-hover;
+    }
 
-      .service-icon {
-        font-size: 4rem;
-        height: 80%;
-        width: 100%;
-        color: variables.$accent-color;
-      }
+    .service-icon {
+      font-size: 3rem;
+      height: 100%;
+      width: 10%;
+      color: variables.$accent-color;
+      text-align: left;
+    }
+
+    .service-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
 
       .service-title {
-        margin: 1rem 0;
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         font-weight: bold;
         color: variables.$primary-color;
+        text-align: left;
       }
 
       .service-description {
-        margin: 0;
-        color: #555;
+        color: variables.$grey-color;
+        align-self: flex-start;
       }
     }
   }

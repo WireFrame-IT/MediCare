@@ -13,6 +13,12 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+
+  &.loaded {
+    opacity: 1;
+  }
 
   .gallery-element {
     box-sizing: border-box;
@@ -47,13 +53,13 @@
         text-align: justify;
       }
     }
-  }
 
-  .gallery-element:nth-child(odd) {
-    align-self: flex-end;
-  }
+    &:nth-child(odd) {
+      align-self: flex-end;
+    }
 
-  .gallery-element:nth-child(even) {
-    align-self: flex-start;
+    &:nth-child(even) {
+      align-self: flex-start;
+    }
   }
 }
