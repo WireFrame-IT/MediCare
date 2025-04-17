@@ -101,7 +101,7 @@ namespace MediCare.Controllers
 			}
 			else
 			{
-				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Name == _appointmentSettings.FamilyMedicineServiceName && x.Description == _appointmentSettings.FamilyMedicineServiceDescription);
+				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Name == _appointmentSettings.FamilyMedicineServiceName);
 			}
 
 			if (appointmentRequestDTO.DoctorsUserId.HasValue && appointmentRequestDTO.DoctorsUserId.Value > 0)

@@ -2,25 +2,31 @@
 {
 	public enum MedicamentType
 	{
-		Analgesic = 10,             // Przeciwbólowy
-		Antibiotic = 20,            // Antybiotyk
-		AntiInflammatory = 30,      // Przeciwzapalny
-		Antiviral = 40,             // Przeciwwirusowy
-		Antifungal = 50,            // Przeciwgrzybiczy
-		Antihistamine = 60,         // Przeciwhistaminowy
-		Antipyretic = 70,           // Przeciwgorączkowy
-		VitaminsAndSupplements = 80,// Witaminy i suplementy
-		Sedative = 90,              // Lek nasenny
-		CoughSuppressant = 100,     // Środek przeciwkaszlowy
-		Hypertension = 110,         // Lek na nadciśnienie
-		Antidiabetic = 120,         // Przeciwcukrzycowy
-		Hormonal = 130,             // Hormonalny
-		Immunosuppressant = 140,    // Immunosupresant
-		Antacid = 150,              // Środek na zgagę
-		Ophthalmic = 160,           // Krople i maści do oczu
-		Dermatologic = 170,         // Preparaty dermatologiczne
-		Antiplatelet = 180,         // Środek przeciwpłytkowy
-		MineralSupplement = 190,    // Suplement mineralny
-		Antispasmodic = 200         // Środek rozkurczowy
+		Analgesic = 10,
+		Antibiotic = 20,
+		AntiInflammatory = 30,
+		Antiviral = 40,
+		Antifungal = 50,
+		Antihistamine = 60,
+		Antipyretic = 70,
+		VitaminsAndSupplements = 80,
+		SedativeOrAnxiolytic = 90,
+		CoughSuppressant = 100,
+		Hypertension = 110,
+		Antidiabetic = 120,
+		Hormonal = 130,
+		Immunosuppressant = 140,
+		Antacid = 150,
+		Ophthalmic = 160,
+		Dermatologic = 170,
+		Antiplatelet = 180,
+		MineralSupplement = 190,
+		Antispasmodic = 200,
+		Antidepressant = 210,
+		Antipsychotic = 220,
+		Bronchodilator = 230,
+		Antiemetic = 240,
+		Anticoagulant = 250,
+		Laxative = 260
 	}
 }
