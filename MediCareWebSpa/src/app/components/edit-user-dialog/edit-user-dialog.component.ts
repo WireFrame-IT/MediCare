@@ -100,17 +100,13 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
       this.loadingService.show();
       this.authService.saveUser(user).subscribe({
         next: (response: Doctor | Patient) => {
-          this.loadingService.clearErrorMessage();
           this.dialogRef.close(response);
-          this.loadingService.showMessage('User saved successfully');
+          this.loadingService.hide();
+          this.loadingService.showMessage('User has been saved successfully.');
         },
         error: (error) => {
-          this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
-          console.error(error);
           this.loadingService.hide();
-        },
-        complete: () => {
-          this.loadingService.hide();
+          this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
         }
       });
     }

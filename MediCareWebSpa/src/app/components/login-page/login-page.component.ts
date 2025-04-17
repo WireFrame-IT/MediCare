@@ -45,27 +45,20 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   login() {
     if (this.loginForm.valid) {
       const loginRequest = { ...this.loginForm.value };
-      this.loadingService.show();
 
+      this.loadingService.show();
       this.authService.login(loginRequest).subscribe({
         next: (response: LoginResponseDTO) => {
-          this.loadingService.clearErrorMessage();
-          this.loadingService.showMessage('Logged in successfully');
           this.authService.storeUserData(response.accessToken, response.refreshToken, response.roleType);
+          this.loadingService.hide();
+          this.loadingService.showMessage('Logged in.');
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
-          console.error(error);
           this.loadingService.hide();
-        },
-        complete: () => {
-          this.loadingService.hide();
+          this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
         }
       });
-    }
-    else {
-      this.loadingService.setErrorMessage('Please fill in all fields correctly');
     }
   }
 }

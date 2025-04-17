@@ -19,6 +19,14 @@
     gap: 1rem;
     margin-left: auto;
   }
+
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1100;
+  }
 }
 
 .footer {
@@ -30,5 +38,42 @@
 
   .footer-info {
     text-align: center;
+  }
+}
+
+.message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50vw;
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: variables.$border-radius;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1200;
+  color: white;
+  padding: 1rem;
+  animation: show-message 2s ease-in-out infinite;
+
+  &.error {
+    background-color: rgba(variables.$error-color, 0.8);
+  }
+
+  @keyframes show-message {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 }

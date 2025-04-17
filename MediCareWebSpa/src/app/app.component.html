@@ -11,7 +11,6 @@
     <button mat-button [routerLink]="isLoggedIn ? '/appointments' : '/login'">Appointments</button>
     <button mat-button routerLink="/about-page">About us</button>
     <div class="auth-buttons">
-      <app-success-dialog></app-success-dialog>
       @if(isLoggedIn) {
         @if (isAdmin) {
           <button mat-raised-button routerLink="/register-doctor">Doctor Registration</button>
@@ -24,10 +23,19 @@
     </div>
   </mat-toolbar>
   @if(isLoading) {
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <mat-progress-bar class="progress-bar" mode="indeterminate"></mat-progress-bar>
   }
-  <app-error-message [message]="errorMessage"></app-error-message>
 </div>
+@if (message) {
+  <div class="message">
+    <p>{{ message }}</p>
+  </div>
+}
+@if (errorMessage) {
+  <div class="message error">
+    <p>{{ errorMessage }}</p>
+  </div>
+}
 <router-outlet></router-outlet>
 <div class="footer">
   <p class="footer-info">© 2025 MediCare. All Rights Reserved.</p>

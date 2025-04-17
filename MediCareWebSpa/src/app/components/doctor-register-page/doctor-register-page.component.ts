@@ -70,19 +70,18 @@ export class DoctorRegisterPageComponent implements OnInit, OnDestroy {
           this.registerForm.value.specialityId
         );
 
+        this.loadingService.show();
         this.authService.registerDoctor(registerRequest).subscribe({
           next: () => {
-            this.loadingService.clearErrorMessage();
-            this.loadingService.showMessage('The doctor has been registered successfully');
+            this.loadingService.hide();
+            this.loadingService.showMessage('The doctor has been registered successfully.');
             this.router.navigate(['/']);
           },
           error: (error) => {
-            this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
-            console.error(error);
+            this.loadingService.hide();
+            this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
           }
         });
-    } else {
-      this.loadingService.setErrorMessage('Please fill in all fields correctly');
     }
   }
 }

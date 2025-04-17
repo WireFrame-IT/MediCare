@@ -66,7 +66,7 @@ private subscriptions: Subscription[] = [];
     });
   }
 
-  getIcon(name: string): string {
-    return ICON_MAP[name];
-  }
+  getIcon = (name: string): string => ICON_MAP[name]
+
+  getDuration = (minutes: number): string => `${Math.floor(minutes / 60).toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}`;
 }

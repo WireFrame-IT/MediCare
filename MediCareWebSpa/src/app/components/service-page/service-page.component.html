@@ -9,6 +9,14 @@
         <h3 class="service-title">{{ service.name }}</h3>
         <p class="service-description">{{ service.description }}</p>
       </div>
+      <div class="service-duration">
+         <mat-icon>access_time</mat-icon>
+        <p>{{ getDuration(service.durationMinutes) }}</p>
+      </div>
+      <div class="service-duration">
+        <mat-icon>payment</mat-icon>
+        <p>{{ service.price }} PLN</p>
+      </div>
     </mat-card>
   }
 </div>

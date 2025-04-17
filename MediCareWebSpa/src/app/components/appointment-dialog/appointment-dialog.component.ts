@@ -98,21 +98,19 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
         this.appointmentForm.value.doctorsUserId,
         this.appointmentForm.value.serviceId
       );
+
       appointment.time.setHours(this.appointmentForm.value.time.getHours(), this.appointmentForm.value.time.getMinutes());
+
       this.loadingService.show();
       this.appointmentService.saveAppointment(appointment).subscribe({
         next: (response: Appointment) => {
-          this.loadingService.clearErrorMessage();
           this.dialogRef.close(response);
-          this.loadingService.showMessage('Appointment saved successfully');
+          this.loadingService.hide();
+          this.loadingService.showMessage('Appointment has been saved successfully.');
         },
         error: (error) => {
-          this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
-          console.error(error);
           this.loadingService.hide();
-        },
-        complete: () => {
-          this.loadingService.hide();
+          this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
         }
       });
     }

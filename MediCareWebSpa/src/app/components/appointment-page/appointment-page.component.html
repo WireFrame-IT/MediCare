@@ -34,16 +34,9 @@
     </mat-card>
   }
 </div>
-@if (!appointments || appointments.length === 0) {
+@if (isLoggedIn && !appointments || appointments.length === 0) {
   <div class="no-appointments">
-    @if (!isLoggedIn) {
-      <p>You should log in first.</p>
-      <button mat-flat-button routerLink="/login">Log In</button>
-    } @else {
-      <p>You don't have any appointments.</p>
-      @if (!isDoctor) {
-        <button mat-flat-button routerLink="/services">Book Appointment</button>
-      }
-    }
+    <p>No appointments.</p>
+      <button mat-flat-button routerLink="/services">See services</button>
   </div>
 }

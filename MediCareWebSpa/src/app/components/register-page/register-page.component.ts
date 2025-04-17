@@ -62,20 +62,19 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
         this.registerForm.value.birthDate,
       );
 
+      this.loadingService.show();
       this.authService.register(registerRequest).subscribe({
         next: (response: RefreshResponseDTO) => {
-          this.loadingService.clearErrorMessage();
           this.authService.storeUserData(response.accessToken, response.refreshToken);
-          this.loadingService.showMessage('Registered successfully');
+          this.loadingService.hide();
+          this.loadingService.showMessage('Registered successfully.');
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.loadingService.setErrorMessage(this.loadingService.extractErrorMessage(error));
-          console.error(error);
+          this.loadingService.hide();
+          this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
         }
       });
-    } else {
-      this.loadingService.setErrorMessage('Please fill in all fields correctly');
     }
   }
 }

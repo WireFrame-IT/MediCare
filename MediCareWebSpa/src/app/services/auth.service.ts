@@ -115,14 +115,17 @@ export class AuthService {
     this.loadingService.show();
     this.http.post(`${this.apiUrl}/logout`, {})
     .pipe(finalize(() => {
-      this.loadingService.hide();
       this.cleanCredentials();
       this.router.navigate(['/login']);
     }))
     .subscribe({
-      next: () => {},
+      next: () => {
+        this.loadingService.hide();
+        this.loadingService.showMessage('Logged out.');
+      },
       error: err => {
-        this.loadingService.setErrorMessage(err);
+        this.loadingService.hide();
+        this.loadingService.showErrorMessage(err);
       }
     })
   };

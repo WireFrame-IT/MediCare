@@ -119,7 +119,9 @@ namespace MediCare.Controllers
 				appointment.Doctor = doctor;
 			}
 
-			ValidateAppointment(appointment);
+			var validationResult = ValidateAppointment(appointment);
+			if (validationResult != null)
+				return validationResult;
 
 			if (appointment.Id == 0)
 				_context.Appointments.Add(appointment);
@@ -219,20 +221,22 @@ namespace MediCare.Controllers
 			return await query.ToListAsync();
 		}
 
-		private void ValidateAppointment(Appointment appointment)
+		private IActionResult? ValidateAppointment(Appointment appointment)
 		{
 			var dayOfWeek = appointment.Time.DayOfWeek.ToString();
 			if (!_appointmentSettings.AvailableDays.Contains(dayOfWeek))
-				throw new ValidationException($"Appointment is not allowed on {dayOfWeek}.");
+				return BadRequest($"Appointment is not allowed on {dayOfWeek}.");
 
 			if (appointment.Time.Minute % 15 != 0 || appointment.Time < DateTime.Now)
-				throw new ValidationException("Appointment time is not correct.");
+				return BadRequest("Appointment time is not correct.");
 
 			if (appointment.Time.TimeOfDay < TimeSpan.FromHours(_appointmentSettings.StartHour) || appointment.Time.TimeOfDay >= TimeSpan.FromHours(_appointmentSettings.EndHour))
-				throw new ValidationException($"Appointments can only be made within the time range of {_appointmentSettings.StartHour} to {_appointmentSettings.EndHour}.");
+				return BadRequest($"Appointments can only be made within the time range of {_appointmentSettings.StartHour} to {_appointmentSettings.EndHour}.");
 
 			if (appointment.Time.AddMinutes(appointment.Service.DurationMinutes) > appointment.Time.Date.AddHours(_appointmentSettings.EndHour))
-				throw new ValidationException($"Appointment duration exceeds {TimeSpan.FromHours(_appointmentSettings.EndHour).ToString(@"hh\:mm")}.");
+				return BadRequest($"Appointment duration exceeds {TimeSpan.FromHours(_appointmentSettings.EndHour).ToString(@"hh\:mm")}.");
+
+			return null;
 		}
 	}
 }

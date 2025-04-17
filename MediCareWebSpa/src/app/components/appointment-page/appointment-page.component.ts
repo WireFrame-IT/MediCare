@@ -95,7 +95,8 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
     });
 
     this.dialogRef.afterClosed().subscribe(appointment => {
-      this.appointmentService.updateAppointment(appointment);
+      if(appointment)
+        this.appointmentService.updateAppointment(appointment);
     });
   }
 }
