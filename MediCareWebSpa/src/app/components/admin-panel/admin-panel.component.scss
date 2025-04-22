@@ -12,7 +12,7 @@
     width: 45%;
   }
 
-  .doctors-card {
+  .user-card {
     display: flex;
     flex-direction: row;
     padding: 0.5rem;
@@ -21,7 +21,7 @@
     background-color: #fff;
 
     .header {
-      width: 60%;
+      width: 30%;
 
       .fullname {
         color: variables.$primary-color;
@@ -35,8 +35,10 @@
     }
 
     .content {
+      width: 60%;
       display: flex;
       align-items: center;
+      justify-content: space-between;
 
       .status {
         cursor: default;
@@ -51,6 +53,17 @@
           color: black;
         }
       }
+
+      .email {
+        justify-content: flex-start;
+        cursor: pointer;
+        user-select: text;
+      }
+    }
+
+    .actions {
+      width: 10%;
+      justify-content: flex-end;
     }
   }
 

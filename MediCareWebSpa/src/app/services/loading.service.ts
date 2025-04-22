@@ -3,6 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
+  private readonly DURATION_IN_MILLISECNDS = 3000;
+
   private _isLoading = new BehaviorSubject<boolean>(false);
   private _messageSubject = new BehaviorSubject<string | null>(null);
   private _errorMessageSubject = new BehaviorSubject<string | null>(null);
@@ -40,7 +42,7 @@ export class LoadingService {
         this._errorMessageSubject.next(null);
         this._showingMessage.next(false);
         this.displayNextMessage();
-      }, 2000);
+      }, this.DURATION_IN_MILLISECNDS);
     }
   }
 
@@ -54,7 +56,7 @@ export class LoadingService {
         this._messageSubject.next(null);
         this._showingMessage.next(false);
         this.displayNextMessage();
-      }, 2000);
+      }, this.DURATION_IN_MILLISECNDS);
     }
   }
 
@@ -68,13 +70,17 @@ export class LoadingService {
         this._errorMessageSubject.next(null);
         this._showingMessage.next(false);
         this.displayNextMessage();
-      }, 2000);
+      }, this.DURATION_IN_MILLISECNDS);
     }
   }
 
   extractErrorMessage(error: any): string {
     if (error?.status === 0) {
       return 'Could not connect to the server. Please check your connection or try again later.';
+    }
+
+    if (error?.status === 401) {
+      return 'You are not authorized. Please log in and try again.';
     }
 
     if (typeof error?.error === 'string') {

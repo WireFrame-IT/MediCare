@@ -1,4 +1,6 @@
-﻿namespace MediCare.DTOs.ViewModels
+﻿using MediCare.Enums;
+
+namespace MediCare.DTOs.ViewModels
 {
 	public class PermissionDTO
 	{
@@ -6,6 +8,7 @@
 		public string Description { get; set; }
 		public bool DoctorOnly { get; set; }
 		public bool PatientOnly { get; set; }
+		public PermissionType PermissionType { get; set; }
 		public IEnumerable<RolePermissionDTO> PermissionRoles { get; set; } = new List<RolePermissionDTO>();
 	}
 }

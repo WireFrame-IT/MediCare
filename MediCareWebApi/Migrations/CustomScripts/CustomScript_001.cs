@@ -19,15 +19,15 @@ namespace MediCare.Migrations.CustomScripts
 
 			migrationBuilder.InsertData(
 				table: "Permissions",
-				columns: new[] { "Id", "Description", "DoctorOnly", "PatientOnly"},
+				columns: new[] { "Id", "Description", "DoctorOnly", "PatientOnly", "PermissionType"},
 				values: new object[,]
 				{
-					{1, "View all appointments", true, false },
-					{2, "Cancel appointment", false, false },
-					{3, "Choose a doctor", false, true },
-					{4, "Generate reports", true, false },
-					{5, "Manage services", true, false },
-					{6, "View system logs", true, false }
+					{1, "View all appointments", true, false, (int)PermissionType.ViewAppointments },
+					{2, "Cancel appointment", false, false, (int)PermissionType.CancelAppointment },
+					{3, "Choose a doctor", false, true, (int)PermissionType.ChooseDoctor },
+					{4, "Generate reports", true, false, (int)PermissionType.GenerateReports },
+					{5, "Manage services", true, false, (int)PermissionType.ManageServices },
+					{6, "View system logs", true, false, (int)PermissionType.ViewSystemLogs }
 				});
 
 			migrationBuilder.InsertData(

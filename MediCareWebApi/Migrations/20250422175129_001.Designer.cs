@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20250422133843_002")]
-    partial class _002
+    [Migration("20250422175129_001")]
+    partial class _001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -255,6 +255,9 @@ namespace MediCare.Migrations
 
                     b.Property<bool>("PatientOnly")
                         .HasColumnType("bit");
+
+                    b.Property<int>("PermissionType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

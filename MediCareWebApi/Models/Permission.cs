@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MediCare.Enums;
 
 namespace MediCare.Models
 {
@@ -13,6 +14,9 @@ namespace MediCare.Models
 
 		[Required]
 		public bool PatientOnly { get; set; }
+
+		[Required]
+		public PermissionType PermissionType { get; set; }
 
 		public ICollection<RolePermission> PermissionRoles { get; set; } = new List<RolePermission>();
 	}

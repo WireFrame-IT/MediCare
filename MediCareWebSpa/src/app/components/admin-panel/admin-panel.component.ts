@@ -11,9 +11,10 @@ import { AuthService } from '../../services/auth.service';
 import { Permission } from '../../DTOs/models/permission';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RoleType } from '../../enums/role-type';
 import { RolePermissionRequest } from '../../DTOs/request/role-permission-request.dto';
-import { RolePermission } from '../../DTOs/models/role-permission';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { LoadingService } from '../../services/loading.service';
 
 @Component({
@@ -44,7 +45,9 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
       private appointmentService: AppointmentService,
       private authService: AuthService,
       private loadingService: LoadingService,
-      private dialog: MatDialog
+      private dialog: MatDialog,
+      private clipboard: Clipboard,
+      private snackBar: MatSnackBar
     ) {}
 
   ngOnInit(): void {
@@ -70,6 +73,13 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   getSpecialityName = (person: Doctor | Patient): string => (person as Doctor).speciality.name;
 
   hasPermission = (permission: Permission, roleType: RoleType): boolean => permission.permissionRoles.some(p => p.role.roleType === roleType);
+
+  copyEmail(email: string): void {
+    this.clipboard.copy(email);
+    this.snackBar.open('Email copied to clipboard.', 'Close', {
+      duration: 2000,
+    });
+  }
 
   togglePermission(permission: Permission, roleType: RoleType, checked: boolean): void {
     this.loadingService.show();

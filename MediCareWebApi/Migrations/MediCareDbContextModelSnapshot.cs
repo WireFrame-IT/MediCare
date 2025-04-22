@@ -253,6 +253,9 @@ namespace MediCare.Migrations
                     b.Property<bool>("PatientOnly")
                         .HasColumnType("bit");
 
+                    b.Property<int>("PermissionType")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Permissions");

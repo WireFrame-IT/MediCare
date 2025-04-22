@@ -1,14 +1,13 @@
 <div class="admin-panel-container">
   <div class="left">
     @for (person of getPersons(); track person.userId) {
-      <mat-card class="doctors-card">
+      <mat-card class="user-card">
         <mat-card-header class="header">
           <mat-card-title class="fullname">{{ person.user.name }} {{ person.user.surname }}</mat-card-title>
-          @if(isDoctor(person)) {
-            <mat-card-subtitle class="speciality">{{ getSpecialityName(person) }}</mat-card-subtitle>
-          }
+          <mat-card-subtitle class="speciality">{{ isDoctor(person) ? getSpecialityName(person) : "Patient"}}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="content">
+          <button class="email" mat-raised-button (click)="copyEmail(person.user.email)">{{ person.user.email }}</button>
           <button class="status" [class]="isDoctor(person) ? 'status-doctor' : 'status-patient'" mat-raised-button>{{ isDoctor(person) ? "Doctor": "Patient" }}</button>
         </mat-card-content>
         <mat-card-actions class="actions">
