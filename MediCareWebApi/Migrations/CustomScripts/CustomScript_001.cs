@@ -26,7 +26,7 @@ namespace MediCare.Migrations.CustomScripts
 					{2, "Cancel appointment", false, false },
 					{3, "Choose a doctor", false, true },
 					{4, "Generate reports", true, false },
-					{5, "Manage clinic services", true, false },
+					{5, "Manage services", true, false },
 					{6, "View system logs", true, false }
 				});
 

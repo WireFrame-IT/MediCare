@@ -12,6 +12,9 @@ import { Permission } from '../../DTOs/models/permission';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RoleType } from '../../enums/role-type';
+import { RolePermissionRequest } from '../../DTOs/request/role-permission-request.dto';
+import { RolePermission } from '../../DTOs/models/role-permission';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-admin-panel',
@@ -40,6 +43,7 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   constructor(
       private appointmentService: AppointmentService,
       private authService: AuthService,
+      private loadingService: LoadingService,
       private dialog: MatDialog
     ) {}
 
@@ -67,13 +71,37 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
 
   hasPermission = (permission: Permission, roleType: RoleType): boolean => permission.permissionRoles.some(p => p.role.roleType === roleType);
 
-  togglePermission(permission: Permission, role: RoleType, checked: boolean): void {
-    // if (checked) {
-    //   permission.permissionRoles.push(new RolePermission(role));
-    // } else {
-    //   permission.permissionRoles = permission.permissionRoles.filter(p => p.role !== role);
-    // }
+  togglePermission(permission: Permission, roleType: RoleType, checked: boolean): void {
+    this.loadingService.show();
+
+    if (checked) {
+      this.authService.addRolePermission(new RolePermissionRequest(roleType, permission.id)).subscribe({
+        next: () => {
+          this.authService.loadPermissions();
+          this.loadingService.hide();
+          this.loadingService.showMessage(`Permission to \"${permission.description}\" granted for the role of ${RoleType[roleType]}.`);
+        },
+        error: error => {
+          this.loadingService.hide();
+          this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
+        }
+      });
+    } else {
+      this.authService.removeRolePermission(roleType, permission.id).subscribe({
+        next: () => {
+          this.authService.loadPermissions();
+          this.loadingService.hide();
+          this.loadingService.showMessage(`Permission to \"${permission.description}\" revoked for the role of ${RoleType[roleType]}.`);
+        },
+        error: error => {
+          this.loadingService.hide();
+          this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
+        }
+      });
+    }
   }
+
+  isPermissionDisabled = (permission: Permission, roleType: RoleType): boolean =>  roleType === RoleType.Doctor ? permission.patientOnly : permission.doctorOnly;
 
   openEditUserDialog(person: Doctor | Patient): void {
     this.dialogRef = this.dialog.open(EditUserDialogComponent, {

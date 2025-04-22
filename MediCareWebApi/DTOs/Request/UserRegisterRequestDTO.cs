@@ -5,7 +5,7 @@ namespace MediCare.DTOs.Request
 {
     public class UserRegisterRequestDTO : RegisterRequestDTO
     {
-        [Required(ErrorMessage = "Role is required.")]
+        [Required(ErrorMessage = "RoleType is required.")]
         public RoleType RoleType { get; set; }
 
         [DataType(DataType.Date, ErrorMessage = "Invalid date format.")]

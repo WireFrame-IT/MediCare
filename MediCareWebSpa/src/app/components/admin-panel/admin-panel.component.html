@@ -27,7 +27,11 @@
         <ng-container [matColumnDef]="roleType.label.toLowerCase()">
           <th mat-header-cell *matHeaderCellDef> {{ roleType.label }} </th>
           <td mat-cell *matCellDef="let permission">
-            <mat-checkbox [checked]="hasPermission(permission, roleType.value)" (change)="togglePermission(permission, roleType.value, $event.checked)"></mat-checkbox>
+            <mat-checkbox
+              [checked]="hasPermission(permission, roleType.value)"
+              (change)="togglePermission(permission, roleType.value, $event.checked)"
+              [disabled]="isPermissionDisabled(permission, roleType.value)">
+            </mat-checkbox>
           </td>
         </ng-container>
       }

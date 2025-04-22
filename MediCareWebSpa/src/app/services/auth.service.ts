@@ -14,6 +14,8 @@ import { UserRequestDTO } from '../DTOs/request/user-request.dto';
 import { Doctor } from '../DTOs/models/doctor';
 import { Patient } from '../DTOs/models/patient';
 import { Permission } from '../DTOs/models/permission';
+import { RolePermissionRequest } from '../DTOs/request/role-permission-request.dto';
+import { LoginResponseDTO } from '../DTOs/response/login-response.dto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -37,16 +39,16 @@ export class AuthService {
     private loadingService: LoadingService
   ) {}
 
-  login(loginRequest: LoginRequestDTO): Observable<any> {
-    return this.http.post<LoginRequestDTO>(`${this.apiUrl}/login`, loginRequest);
+  login(loginRequest: LoginRequestDTO): Observable<LoginResponseDTO> {
+    return this.http.post<LoginResponseDTO>(`${this.apiUrl}/login`, loginRequest);
   }
 
-  register(registerRequest: PatientRegisterRequestDTO): Observable<any> {
-    return this.http.post<PatientRegisterRequestDTO>(`${this.apiUrl}/register`, registerRequest);
+  register(registerRequest: PatientRegisterRequestDTO): Observable<LoginResponseDTO> {
+    return this.http.post<LoginResponseDTO>(`${this.apiUrl}/register`, registerRequest);
   }
 
-  registerUser(registerRequest: UserRegisterRequestDTO): Observable<any> {
-    return this.http.post<UserRegisterRequestDTO>(`${this.apiUrl}/register-user`, registerRequest);
+  registerUser(registerRequest: UserRegisterRequestDTO): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/register-user`, registerRequest);
   }
 
   refreshAccessToken(): Observable<RefreshResponseDTO> {
@@ -93,6 +95,14 @@ export class AuthService {
     this.http.get(`${this.apiUrl}/permissions`)
       .pipe(catchError(error => []))
       .subscribe(permissions => this._permissions.next(permissions as Permission[]));
+  }
+
+  addRolePermission(rolePermission: RolePermissionRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/role-permission`, rolePermission);
+  }
+
+  removeRolePermission(roleType: RoleType, permissionId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/role-permission`, { params: { roleType, permissionId }});
   }
 
   cleanCredentials(): void {

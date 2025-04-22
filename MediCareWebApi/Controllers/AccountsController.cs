@@ -40,10 +40,11 @@ namespace MedicalFacility.Controllers
 
 			await _context.Patients.AddAsync(patient);
 			await _context.SaveChangesAsync();
-			return Ok(new RegisterResponseDTO()
+			return Ok(new LoginResponseDTO()
 			{
 				AccessToken = _accountsService.GenerateAccessToken(user),
-				RefreshToken = user.RefreshToken
+				RefreshToken = user.RefreshToken,
+				RoleType = RoleType.Patient
 			});
 		}
 
@@ -118,10 +119,11 @@ namespace MedicalFacility.Controllers
 			user.RefreshToken = _accountsService.GenerateSalt();
 			await _context.SaveChangesAsync();
 
-			return Ok(new RegisterResponseDTO()
+			return Ok(new LoginResponseDTO()
 			{
 				AccessToken = _accountsService.GenerateAccessToken(user),
-				RefreshToken = user.RefreshToken
+				RefreshToken = user.RefreshToken,
+				RoleType = user.Role.RoleType
 			});
 		}
 
@@ -202,6 +204,42 @@ namespace MedicalFacility.Controllers
 				.ToListAsync();
 
 			return Ok(_mapper.Map<List<PermissionDTO>>(permissions));
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpPost("role-permission")]
+		public async Task<IActionResult> SaveRolePermission([FromBody] RolePermissionRequestDTO requestDTO)
+		{
+			if (await _context.RolePermissions.AnyAsync(x => x.Role.RoleType == requestDTO.RoleType && x.PermissionId == requestDTO.PermissionId))
+				return BadRequest("Role permission already exists.");
+
+			var roleId = await _context.Roles.Where(x => x.RoleType == requestDTO.RoleType).Select(x => x.Id).FirstOrDefaultAsync();
+			var rolePermission = new RolePermission()
+			{
+				PermissionId = requestDTO.PermissionId,
+				RoleId = roleId
+			};
+
+			await _context.RolePermissions.AddAsync(rolePermission);
+			await _context.SaveChangesAsync();
+
+			return Ok(await _context.RolePermissions
+				.Include(x => x.Role)
+				.Include(x => x.Permission)
+				.FirstOrDefaultAsync(x => x.RoleId == rolePermission.RoleId && x.PermissionId == rolePermission.PermissionId));
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpDelete("role-permission")]
+		public async Task<IActionResult> DeleteRolePermission(RoleType roleType, int permissionId)
+		{
+			var rolePermission = await _context.RolePermissions.FirstOrDefaultAsync(x => x.Role.RoleType == roleType && x.PermissionId == permissionId);
+			if (rolePermission == null)
+				return BadRequest("Role permission does not exist.");
+
+			_context.RolePermissions.Remove(rolePermission);
+			await _context.SaveChangesAsync();
+			return Ok(rolePermission);
 		}
 	}
 }
