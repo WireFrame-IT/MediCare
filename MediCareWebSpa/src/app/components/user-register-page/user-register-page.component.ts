@@ -47,8 +47,8 @@ export class UserRegisterPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.authService.specialities$.subscribe(specialities => this.specialities = specialities));
     this.authService.loadSpecialities();
+    this.subscriptions.push(this.authService.specialities$.subscribe(specialities => this.specialities = specialities));
   }
 
   ngOnDestroy(): void {

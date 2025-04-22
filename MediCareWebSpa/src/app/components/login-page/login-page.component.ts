@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,7 +6,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LoginResponseDTO } from '../../DTOs/response/login-response.dto';
-import { Subscription } from 'rxjs';
 import { LoadingService } from '../../services/loading.service';
 
 @Component({
@@ -20,8 +19,7 @@ import { LoadingService } from '../../services/loading.service';
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss'
 })
-export class LoginPageComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class LoginPageComponent {
   public loginForm: FormGroup;
 
   constructor(
@@ -34,12 +32,6 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-  }
-
-  ngOnInit(): void { }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   login() {

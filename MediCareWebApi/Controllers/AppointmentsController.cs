@@ -36,16 +36,16 @@ namespace MediCare.Controllers
 					var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (doctor == null)
 						return NotFound("Doctor not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsAsync(doctor.UserId, true)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAllAppointmentsAsync(doctor.UserId, true)));
 
 				case RoleType.Patient:
 					var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (patient == null)
 						return NotFound("Patient not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsAsync(patient.UserId)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAllAppointmentsAsync(patient.UserId)));
 
 				case RoleType.Admin:
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsAsync()));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAllAppointmentsAsync()));
 			}
 
 			return NotFound();
@@ -219,7 +219,7 @@ namespace MediCare.Controllers
 				.FirstOrDefaultAsync();
 		}
 
-		private async Task<IEnumerable<Appointment>> GetAppointmentsAsync(int? userId = null, bool doctor = false)
+		private async Task<IEnumerable<Appointment>> GetAllAppointmentsAsync(int? userId = null, bool doctor = false)
 		{
 			var baseQuery = _context.Appointments
 				.Include(x => x.Doctor)

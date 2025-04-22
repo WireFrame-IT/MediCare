@@ -68,12 +68,19 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.appointmentService.loadReducedDoctors();
+    this.appointmentService.loadServices();
     this.authService.loadUserPsermissions();
 
     this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
-    this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
     this.subscriptions.push(this.authService.userPermissions$.subscribe(userPermissions => this.userPermissions = userPermissions));
+    this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => {
+      this.isAdmin = isAdmin;
+      if (this.isAdmin)
+        this.appointmentService.loadDoctors();
+      else
+        this.appointmentService.loadReducedDoctors();
+    }));
+
     this.subscriptions.push(this.appointmentService.services$.subscribe(services => this.services = services));
     this.subscriptions.push(this.appointmentService.reducedDoctors$.subscribe(doctors => {
       this.doctors = doctors;

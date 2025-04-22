@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 
 @Component({
   selector: 'app-about-page',
@@ -13,6 +13,8 @@ export class AboutPageComponent implements AfterViewInit {
 
   allImagesLoaded: boolean = false;
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngAfterViewInit() {
     this.images.forEach((img) => img.nativeElement.complete ? this.onImageLoad() : null);
   }
@@ -21,5 +23,6 @@ export class AboutPageComponent implements AfterViewInit {
     this.loadedImages++;
     if (this.loadedImages === this.images.length)
       this.allImagesLoaded = true;
+      this.cdr.detectChanges();
   }
 }

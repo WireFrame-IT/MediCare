@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PatientRegisterRequestDTO } from '../../DTOs/request/patient-register-request.dto';
 import { RefreshResponseDTO } from '../../DTOs/response/refresh-response.dto';
-import { Subscription } from 'rxjs';
 import { LoadingService } from '../../services/loading.service';
 
 @Component({
@@ -23,8 +22,7 @@ import { LoadingService } from '../../services/loading.service';
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.scss'
 })
-export class RegisterPageComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class RegisterPageComponent {
   public registerForm: FormGroup;
 
   constructor(
@@ -42,12 +40,6 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
       phoneNumber: ['', [Validators.required, Validators.maxLength(15)]],
       birthDate: ['', [Validators.required]],
     });
-  }
-
-  ngOnInit(): void { }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   register() {
