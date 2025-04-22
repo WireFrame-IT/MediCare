@@ -79,10 +79,6 @@ export class LoadingService {
       return 'Could not connect to the server. Please check your connection or try again later.';
     }
 
-    if (error?.status === 401) {
-      return 'You are not authorized. Please log in and try again.';
-    }
-
     if (typeof error?.error === 'string') {
       return error.error;
     }

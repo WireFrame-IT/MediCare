@@ -9,15 +9,17 @@
         }
       </mat-select>
     </mat-form-field>
-    <mat-form-field class="form-field">
-      <mat-label>Doctor</mat-label>
-      <mat-select formControlName="doctorsUserId">
-        <mat-option [value]="0">Auto-assign</mat-option>
-        @for (doctor of doctorsBySpeciality; track doctor.userId) {
-          <mat-option [value]="doctor.userId">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    @if (hasChooseDoctorPermission()) {
+      <mat-form-field class="form-field">
+        <mat-label>Doctor</mat-label>
+        <mat-select formControlName="doctorsUserId">
+          <mat-option [value]="0">Auto-assign</mat-option>
+          @for (doctor of doctorsBySpeciality; track doctor.userId) {
+            <mat-option [value]="doctor.userId">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
   }
   @if (isAdmin) {
     <mat-form-field class="form-field">

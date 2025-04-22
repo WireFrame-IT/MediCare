@@ -6,15 +6,18 @@ import { Doctor } from "../DTOs/models/doctor";
 import { Appointment } from "../DTOs/models/appointment";
 import { AppointmentRequestDTO } from "../DTOs/request/appointment-request.dto";
 import { Patient } from "../DTOs/models/patient";
+import { ReducedDoctor } from "../DTOs/models/reduced-doctor";
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
   private _services: BehaviorSubject<Service[]> = new BehaviorSubject<Service[]>([]);
   private _doctors: BehaviorSubject<Doctor[]> = new BehaviorSubject<Doctor[]>([]);
+  private _reducedDoctors: BehaviorSubject<ReducedDoctor[]> = new BehaviorSubject<ReducedDoctor[]>([]);
   private _patients: BehaviorSubject<Patient[]> = new BehaviorSubject<Patient[]>([]);
   private _appointments: BehaviorSubject<Appointment[]> = new BehaviorSubject<Appointment[]>([]);
   services$: Observable<Service[]> = this._services.asObservable();
   doctors$: Observable<Doctor[]> = this._doctors.asObservable();
+  reducedDoctors$: Observable<ReducedDoctor[]> = this._reducedDoctors.asObservable();
   patients$: Observable<Patient[]> = this._patients.asObservable();
   appointments$: Observable<Appointment[]> = this._appointments.asObservable().pipe(
     map((appointments: Appointment[]) => appointments.slice().sort((a: Appointment, b: Appointment) => new Date(a.time).getTime() - new Date(b.time).getTime()))
@@ -34,24 +37,19 @@ export class AppointmentService {
   }
 
   loadDoctors(): void {
-    this.http.get<Doctor[]>(`${this.apiUrl}/doctors`).pipe(catchError(error => {
-      console.error(error);
-      return [];
-    })).subscribe(doctors => this._doctors.next(doctors as Doctor[]));
+    this.http.get<Doctor[]>(`${this.apiUrl}/doctors`).pipe(catchError(() => [])).subscribe(doctors => this._doctors.next(doctors as Doctor[]));
+  }
+
+  loadReducedDoctors(): void {
+    this.http.get<Doctor[]>(`${this.apiUrl}/reduced-doctors`).pipe(catchError(() => [])).subscribe(reducedDoctors => this._reducedDoctors.next(reducedDoctors as ReducedDoctor[]));
   }
 
   loadPatients(): void {
-    this.http.get<Patient[]>(`${this.apiUrl}/patients`).pipe(catchError(error => {
-      console.error(error);
-      return [];
-    })).subscribe(patients => this._patients.next(patients as Patient[]));
+    this.http.get<Patient[]>(`${this.apiUrl}/patients`).pipe(catchError(() => [])).subscribe(patients => this._patients.next(patients as Patient[]));
   }
 
   loadAppointments(): void {
-    this.http.get<Appointment[]>(`${this.apiUrl}`).pipe(catchError(error => {
-      console.error(error);
-      return [];
-    })).subscribe(appointments => this._appointments.next(appointments as Appointment[]));
+    this.http.get<Appointment[]>(`${this.apiUrl}`).pipe(catchError(() => [])).subscribe(appointments => this._appointments.next(appointments as Appointment[]));
   }
 
   addAppointment(appointment: Appointment): void {

@@ -129,7 +129,7 @@ namespace MedicalFacility.Controllers
 
 		[Authorize]
 		[HttpPost("logout")]
-		public async Task<IActionResult> Logout()
+		public async Task<IActionResult> LogoutAsync()
 		{
 			var user = await GetCurrentUserAsync();
 			user.RefreshToken = null;
@@ -151,7 +151,7 @@ namespace MedicalFacility.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost("user")]
-		public async Task<IActionResult> SaveUser([FromBody] UserRequestDTO userRequestDTO)
+		public async Task<IActionResult> SaveUserAsync([FromBody] UserRequestDTO userRequestDTO)
 		{
 			var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userRequestDTO.Id);
 			if (user == null)
@@ -188,14 +188,14 @@ namespace MedicalFacility.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpGet("specialities")]
-		public async Task<IActionResult> GetSpecialities()
+		public async Task<IActionResult> GetSpecialitiesAsync()
 		{
 			return Ok(_mapper.Map<List<SpecialityDTO>>(await _context.Specialities.OrderBy(x => x.Name).ToListAsync()));
 		}
 
 		[Authorize(Roles = "Admin")]
 		[HttpGet("permissions")]
-		public async Task<IActionResult> GetPermissions()
+		public async Task<IActionResult> GetPermissionsAsync()
 		{
 			var permissions = await _context.Permissions
 				.Include(x => x.PermissionRoles)
@@ -206,9 +206,22 @@ namespace MedicalFacility.Controllers
 			return Ok(_mapper.Map<List<PermissionDTO>>(permissions));
 		}
 
+		[Authorize]
+		[HttpGet("user-permissions")]
+		public async Task<IActionResult> GetUserPermissionsAsync()
+		{
+			var user = await GetCurrentUserAsync();
+			var permissions = await _context.Permissions
+				.Where(x => x.PermissionRoles.Any(x => x.Role.Id == user.Role.Id))
+				.Select(x => x.PermissionType)
+				.ToListAsync();
+
+			return Ok(permissions);
+		}
+
 		[Authorize(Roles = "Admin")]
 		[HttpPost("role-permission")]
-		public async Task<IActionResult> SaveRolePermission([FromBody] RolePermissionRequestDTO requestDTO)
+		public async Task<IActionResult> SaveRolePermissionAsync([FromBody] RolePermissionRequestDTO requestDTO)
 		{
 			if (await _context.RolePermissions.AnyAsync(x => x.Role.RoleType == requestDTO.RoleType && x.PermissionId == requestDTO.PermissionId))
 				return BadRequest("Role permission already exists.");
@@ -231,7 +244,7 @@ namespace MedicalFacility.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpDelete("role-permission")]
-		public async Task<IActionResult> DeleteRolePermission(RoleType roleType, int permissionId)
+		public async Task<IActionResult> DeleteRolePermissionAsync(RoleType roleType, int permissionId)
 		{
 			var rolePermission = await _context.RolePermissions.FirstOrDefaultAsync(x => x.Role.RoleType == roleType && x.PermissionId == permissionId);
 			if (rolePermission == null)

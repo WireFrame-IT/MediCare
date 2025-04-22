@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { AppointmentStatus } from '../../enums/appointment-status';
 import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { PermissionType } from '../../enums/permission-type';
 
 @Component({
   selector: 'app-appointment-page',
@@ -26,6 +27,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
   private dialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
   subscriptions: Subscription[] = [];
   appointments: Appointment[] = [];
+  userPermissions: PermissionType[] = [];
   isDoctor: boolean = false;
   isAdmin: boolean = false;
   isLoggedIn: boolean = false;
@@ -38,10 +40,13 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.appointmentService.loadAppointments();
+    this.authService.loadUserPsermissions();
+
     this.subscriptions.push(this.appointmentService.appointments$.subscribe(appointments => this.appointments = appointments));
     this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
     this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
     this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
+    this.subscriptions.push(this.authService.userPermissions$.subscribe(userPermissions => this.userPermissions = userPermissions));
   }
 
   ngOnDestroy(): void {
@@ -49,13 +54,13 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
   }
 
   onCancel(appointment: Appointment): void {
-    this.appointmentService.cancelAppointment(appointment.id).subscribe(response => {
+    this.appointmentService.cancelAppointment(appointment.id).subscribe(() => {
       appointment.status = AppointmentStatus.Canceled;
     });
   }
 
   onAccept(appointment: Appointment): void {
-    this.appointmentService.acceptAppointment(appointment.id).subscribe(response => {
+    this.appointmentService.acceptAppointment(appointment.id).subscribe(() => {
       appointment.status = AppointmentStatus.Accepted;
     });
   }
@@ -76,7 +81,10 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
 
   getStatus = (appointment: Appointment): string => AppointmentStatus[appointment.status];
 
-  canCancel = (appointment: Appointment): boolean => appointment.status !== AppointmentStatus.Canceled && appointment.status !== AppointmentStatus.Absent && appointment.status !== AppointmentStatus.Confirmed;
+  canCancel = (appointment: Appointment): boolean => this.userPermissions.some(x => x === PermissionType.CancelAppointment)
+    && appointment.status !== AppointmentStatus.Canceled
+    && appointment.status !== AppointmentStatus.Absent
+    && appointment.status !== AppointmentStatus.Confirmed;
 
   canAccept = (appointment: Appointment): boolean => appointment.status === AppointmentStatus.New;
 

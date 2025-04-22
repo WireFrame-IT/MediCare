@@ -60,5 +60,16 @@ namespace MediCare.Controllers
 			await _context.SaveChangesAsync();
 			return user;
 		}
+
+		protected async Task<IActionResult?> CheckPermission(PermissionType type)
+		{
+			var user = await GetCurrentUserAsync();
+
+			if (user.Role.RoleType == RoleType.Admin)
+				return null;
+
+			var rolePermission = await _context.RolePermissions.FirstOrDefaultAsync(x => x.Role.Id == user.Role.Id && x.Permission.PermissionType == type);
+			return rolePermission == null ? Unauthorized("Missing required permission.") : null;
+		}
 	}
 }

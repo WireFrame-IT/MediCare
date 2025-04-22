@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AutoMapper;
+﻿using AutoMapper;
 using MediCare.DTOs.Request;
 using MediCare.DTOs.ViewModels;
 using MediCare.Enums;
@@ -26,8 +25,8 @@ namespace MediCare.Controllers
 			_appointmentSettings = appointmentSettings.Value;
 		}
 
-		[HttpGet]
 		[Authorize]
+		[HttpGet]
 		public async Task<IActionResult> GetAppointmentsAsync()
 		{
 			var user = await GetCurrentUserAsync();
@@ -37,16 +36,16 @@ namespace MediCare.Controllers
 					var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (doctor == null)
 						return NotFound("Doctor not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments(doctor.UserId, true)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsAsync(doctor.UserId, true)));
 
 				case RoleType.Patient:
 					var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (patient == null)
 						return NotFound("Patient not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments(patient.UserId)));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsAsync(patient.UserId)));
 
 				case RoleType.Admin:
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointments()));
+					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAppointmentsAsync()));
 			}
 
 			return NotFound();
@@ -106,6 +105,10 @@ namespace MediCare.Controllers
 
 			if (appointmentRequestDTO.DoctorsUserId.HasValue && appointmentRequestDTO.DoctorsUserId.Value > 0)
 			{
+				var actionResult = await CheckPermission(PermissionType.ChooseDoctor);
+				if (actionResult != null)
+					return actionResult;
+
 				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service, appointment.Id, appointment.DoctorsUserId);
 				if (doctor == null)
 					return NotFound("The selected doctor is not available at the provided time. If you don't choose a specific doctor, we'll automatically assign an available one for you.");
@@ -132,9 +135,9 @@ namespace MediCare.Controllers
 			return Ok(_mapper.Map<AppointmentDTO>(appointment));
 		}
 
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		[HttpGet("doctors")]
-		public async Task<IActionResult> GetDoctors()
+		public async Task<IActionResult> GetDoctorsAsync()
 		{
 			return Ok(_mapper.Map<List<DoctorDTO>>(await _context.Doctors
 				.Include(x => x.User)
@@ -142,9 +145,19 @@ namespace MediCare.Controllers
 				.ToListAsync()));
 		}
 
+		[Authorize]
+		[HttpGet("reduced-doctors")]
+		public async Task<IActionResult> GetReducedDoctorsAsync()
+		{
+			return Ok(_mapper.Map<List<ReducedDoctorDTO>>(await _context.Doctors
+				.Include(x => x.User)
+				.Include(x => x.Speciality)
+				.ToListAsync()));
+		}
+
 		[Authorize(Roles = "Admin")]
 		[HttpGet("patients")]
-		public async Task<IActionResult> GetPatients()
+		public async Task<IActionResult> GetPatientsAsync()
 		{
 			return Ok(_mapper.Map<List<PatientDTO>>(await _context.Patients
 				.Include(x => x.User)
@@ -153,13 +166,14 @@ namespace MediCare.Controllers
 
 		[AllowAnonymous]
 		[HttpGet("services")]
-		public async Task<IActionResult> GetServices()
+		public async Task<IActionResult> GetServicesAsync()
 		{
 			return Ok(_mapper.Map<List<ServiceDTO>>(await _context.Services.ToListAsync()));
 		}
 
+		[Authorize(Roles = "Doctor")]
 		[HttpPost("accept")]
-		public async Task<IActionResult> AcceptAppointment([FromQuery] int id)
+		public async Task<IActionResult> AcceptAppointmentAsync([FromQuery] int id)
 		{
 			var appointment = await GetAppointmentAsync(id);
 			if (appointment == null)
@@ -167,11 +181,16 @@ namespace MediCare.Controllers
 			appointment.Status = AppointmentStatus.Accepted;
 			await _context.SaveChangesAsync();
 			return Ok();
-		} 
+		}
 
+		[Authorize]
 		[HttpPost("cancel")]
-		public async Task<IActionResult> CancelAppointment([FromQuery] int id)
+		public async Task<IActionResult> CancelAppointmentAsync([FromQuery] int id)
 		{
+			var actionResult = await CheckPermission(PermissionType.CancelAppointment);
+			if (actionResult != null)
+				return actionResult;
+
 			var appointment = await GetAppointmentAsync(id);
 			if (appointment == null)
 				return NotFound();
@@ -200,7 +219,7 @@ namespace MediCare.Controllers
 				.FirstOrDefaultAsync();
 		}
 
-		private async Task<IEnumerable<Appointment>> GetAppointments(int? userId = null, bool doctor = false)
+		private async Task<IEnumerable<Appointment>> GetAppointmentsAsync(int? userId = null, bool doctor = false)
 		{
 			var baseQuery = _context.Appointments
 				.Include(x => x.Doctor)

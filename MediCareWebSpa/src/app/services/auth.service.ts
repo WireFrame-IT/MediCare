@@ -16,6 +16,7 @@ import { Patient } from '../DTOs/models/patient';
 import { Permission } from '../DTOs/models/permission';
 import { RolePermissionRequest } from '../DTOs/request/role-permission-request.dto';
 import { LoginResponseDTO } from '../DTOs/response/login-response.dto';
+import { PermissionType } from '../enums/permission-type';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -24,12 +25,14 @@ export class AuthService {
   private _isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _specialities: BehaviorSubject<Speciality[]> = new BehaviorSubject<Speciality[]>([]);
   private _permissions: BehaviorSubject<Permission[]> = new BehaviorSubject<Permission[]>([]);
+  private _userPermissions: BehaviorSubject<PermissionType[]> = new BehaviorSubject<PermissionType[]>([]);
 
   isAdmin$: Observable<boolean> = this._isAdmin.asObservable();
   isDoctor$: Observable<boolean> = this._isDoctor.asObservable();
   isLoggedIn$: Observable<boolean> = this._isLoggedIn.asObservable();
   specialities$: Observable<Speciality[]> = this._specialities.asObservable();
   permissions$: Observable<Permission[]> = this._permissions.asObservable();
+  userPermissions$: Observable<PermissionType[]> = this._userPermissions.asObservable();
 
   readonly apiUrl = 'https://localhost:5001/MediCareWebApi/accounts';
 
@@ -87,14 +90,20 @@ export class AuthService {
 
   loadSpecialities(): void {
     this.http.get(`${this.apiUrl}/specialities`)
-      .pipe(catchError(error => []))
+      .pipe(catchError(() => []))
       .subscribe(specialities => this._specialities.next(specialities as Speciality[]));
   }
 
   loadPermissions(): void {
     this.http.get(`${this.apiUrl}/permissions`)
-      .pipe(catchError(error => []))
+      .pipe(catchError(() => []))
       .subscribe(permissions => this._permissions.next(permissions as Permission[]));
+  }
+
+  loadUserPsermissions(): void {
+    this.http.get(`${this.apiUrl}/user-permissions`)
+      .pipe(catchError(() => []))
+      .subscribe(userPermissions => this._userPermissions.next(userPermissions as PermissionType[]));
   }
 
   addRolePermission(rolePermission: RolePermissionRequest): Observable<void> {
