@@ -33,7 +33,9 @@ namespace MediCare.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    DoctorOnly = table.Column<bool>(type: "bit", nullable: false),
+                    PatientOnly = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

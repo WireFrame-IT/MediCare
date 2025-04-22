@@ -247,6 +247,12 @@ namespace MediCare.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<bool>("DoctorOnly")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("PatientOnly")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("Permissions");

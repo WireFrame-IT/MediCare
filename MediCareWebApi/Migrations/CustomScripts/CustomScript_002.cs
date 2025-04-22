@@ -36,6 +36,20 @@ namespace MediCare.Migrations.CustomScripts
 
 				GO
 
+				CREATE TRIGGER CheckDoctorOnlyPatientOnlyBits
+				ON Permissions
+				AFTER INSERT
+				AS
+				BEGIN
+				    IF EXISTS (SELECT 1 FROM inserted WHERE DoctorOnly = 1 AND PatientOnly = 1)
+				    BEGIN
+				        RAISERROR('The ""DoctorOnly"" and ""PatientOnly"" columns cannot both be set to 1 at the same time.', 16, 1);
+				        ROLLBACK TRANSACTION;
+				    END
+				END;
+
+				GO
+
 				CREATE PROCEDURE UpdateAppointmentStatus
 				AS
 				BEGIN
@@ -51,10 +65,11 @@ namespace MediCare.Migrations.CustomScripts
 		public static void Down(MigrationBuilder migrationBuilder)
 		{
 			migrationBuilder.Sql(@"
-				USE MediCare;
-				ALTER ROLE db_datareader DROP MEMBER [IIS APPPOOL\MediCare AppPool];
-				ALTER ROLE db_datawriter DROP MEMBER [IIS APPPOOL\MediCare AppPool];
-				DROP USER [IIS APPPOOL\MediCare AppPool];
+				DROP PROCEDURE IF EXISTS UpdateAppointmentStatus;
+
+				GO
+
+				DROP TRIGGER IF EXISTS CheckOnlyDoctorOnlyPatientBits;
 
 				GO
 
@@ -62,7 +77,10 @@ namespace MediCare.Migrations.CustomScripts
 
 				GO
 
-				DROP PROCEDURE IF EXISTS UpdateAppointmentStatus;
+				USE MediCare;
+				ALTER ROLE db_datareader DROP MEMBER [IIS APPPOOL\MediCare AppPool];
+				ALTER ROLE db_datawriter DROP MEMBER [IIS APPPOOL\MediCare AppPool];
+				DROP USER [IIS APPPOOL\MediCare AppPool];
 			");
 		}
 	}

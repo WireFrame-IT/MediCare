@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20250322113029_002")]
+    [Migration("20250422133843_002")]
     partial class _002
     {
         /// <inheritdoc />
@@ -249,6 +249,12 @@ namespace MediCare.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("DoctorOnly")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("PatientOnly")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

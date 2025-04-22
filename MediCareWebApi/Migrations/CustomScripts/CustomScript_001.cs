@@ -19,25 +19,15 @@ namespace MediCare.Migrations.CustomScripts
 
 			migrationBuilder.InsertData(
 				table: "Permissions",
-				columns: new[] { "Id", "Description"},
+				columns: new[] { "Id", "Description", "DoctorOnly", "PatientOnly"},
 				values: new object[,]
 				{
-					{1, "Schedule appointment" },
-					{2, "View own appointments" },
-					{3, "View all appointments" },
-					{4, "Cancel appointment" },
-					{5, "Accept appointment" },
-					{6, "Confirm attendance" },
-					{7, "Choose doctors" },
-					{8, "Select service" },
-					{9, "Record diagnosis" },
-					{10, "Issue prescription" },
-					{11, "Manage user accounts" },
-					{12, "Assign roles" },
-					{13, "Generate reports" },
-					{14, "Manage clinic services" },
-					{15, "View system logs" },
-					{16, "Manage permissions" }
+					{1, "View all appointments", true, false },
+					{2, "Cancel appointment", false, false },
+					{3, "Choose a doctor", false, true },
+					{4, "Generate reports", true, false },
+					{5, "Manage clinic services", true, false },
+					{6, "View system logs", true, false }
 				});
 
 			migrationBuilder.InsertData(
@@ -45,25 +35,13 @@ namespace MediCare.Migrations.CustomScripts
 				columns: new [] { "RoleId", "PermissionId" },
 				values: new object[,]
 				{
-					{ 1, 1 },
 					{ 1, 2 },
-					{ 1, 4 },
-					{ 1, 6 },
-					{ 1, 7 },
+					{ 1, 3 },
+					{ 2, 1 },
 					{ 2, 2 },
 					{ 2, 4 },
 					{ 2, 5 },
-					{ 2, 6 },
-					{ 2, 9 },
-					{ 2, 10 },
-					{ 3, 3 },
-					{ 3, 4 },
-					{ 3, 11 },
-					{ 3, 12 },
-					{ 3, 13 },
-					{ 3, 14 },
-					{ 3, 15 },
-					{ 3, 16 },
+					{ 2, 6 }
 				});
 
 			migrationBuilder.InsertData(
@@ -332,32 +310,20 @@ namespace MediCare.Migrations.CustomScripts
 			migrationBuilder.DeleteData(
 				table: "Permissions",
 				keyColumn: "Id",
-				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
+				keyValues: new object[] { 1, 2, 3, 4, 5, 6});
 
 			migrationBuilder.DeleteData(
 				table: "RolePermissions",
 				keyColumns: new[] { "RoleId", "PermissionId" },
 				keyValues: new object[,]
 				{
-					{ 1, 1 },
 					{ 1, 2 },
-					{ 1, 4 },
-					{ 1, 6 },
-					{ 1, 7 },
+					{ 1, 3 },
+					{ 2, 1 },
 					{ 2, 2 },
 					{ 2, 4 },
 					{ 2, 5 },
-					{ 2, 6 },
-					{ 2, 9 },
-					{ 2, 10 },
-					{ 3, 3 },
-					{ 3, 4 },
-					{ 3, 11 },
-					{ 3, 12 },
-					{ 3, 13 },
-					{ 3, 14 },
-					{ 3, 15 },
-					{ 3, 16 }
+					{ 2, 6 }
 				});
 
 			migrationBuilder.DeleteData(
