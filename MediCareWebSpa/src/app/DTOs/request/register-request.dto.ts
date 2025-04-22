@@ -1,3 +1,5 @@
+import { RoleType } from "../../enums/role-type";
+
 export class RegisterRequestDTO {
   name: string;
   surname: string;
@@ -5,6 +7,7 @@ export class RegisterRequestDTO {
   password: string;
   pesel: string;
   phoneNumber: string;
+  roleType: RoleType;
 
   constructor(
     name: string,
@@ -12,7 +15,8 @@ export class RegisterRequestDTO {
     email: string,
     password: string,
     pesel: string,
-    phoneNumber: string
+    phoneNumber: string,
+    roleType: RoleType
   ) {
     this.name = name;
     this.surname = surname;
@@ -20,5 +24,6 @@ export class RegisterRequestDTO {
     this.password = password;
     this.pesel = pesel;
     this.phoneNumber = phoneNumber;
+    this.roleType = roleType;
   }
 }

@@ -52,6 +52,9 @@ export class ServicePageComponent {
   ) {}
 
   ngOnInit(): void {
+    this.selectedSort = localStorage.getItem('services_sort_by') ?? '';
+    this.filter = localStorage.getItem('services_filter') ?? '';
+
     this.appointmentService.loadServices();
     this.subscriptions.push(this.appointmentService.services$.subscribe(services => {
       this.services = services;
@@ -89,11 +92,13 @@ export class ServicePageComponent {
 
   applyFilter(): void {
     const query = this.filter.toLowerCase();
+    localStorage.setItem('services_filter', query);
     this.filteredServices = this.services.filter(service => service.name.toLowerCase().includes(query) || service.description.toLocaleLowerCase().includes(query));
     this.onSortChange();
   }
 
   onSortChange(): void {
+    localStorage.setItem('services_sort_by', this.selectedSort);
     this.filteredServices = [...this.filteredServices].sort((a, b) => {
       switch(this.selectedSort) {
         case 'name':

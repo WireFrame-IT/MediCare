@@ -8,7 +8,7 @@ import { RoleType } from '../enums/role-type';
 import { Router } from '@angular/router';
 import { LoadingService } from './loading.service';
 import { Speciality } from '../DTOs/models/speciality';
-import { DoctorRegisterRequestDTO } from '../DTOs/request/doctor-register-request.dto';
+import { UserRegisterRequestDTO } from '../DTOs/request/user-register-request.dto';
 import { RefreshRequestDTO } from '../DTOs/request/refresh-request.dto';
 import { UserRequestDTO } from '../DTOs/request/user-request.dto';
 import { Doctor } from '../DTOs/models/doctor';
@@ -42,8 +42,8 @@ export class AuthService {
     return this.http.post<PatientRegisterRequestDTO>(`${this.apiUrl}/register`, registerRequest);
   }
 
-  registerDoctor(registerRequest: DoctorRegisterRequestDTO): Observable<any> {
-    return this.http.post<DoctorRegisterRequestDTO>(`${this.apiUrl}/register-doctor`, registerRequest);
+  registerUser(registerRequest: UserRegisterRequestDTO): Observable<any> {
+    return this.http.post<UserRegisterRequestDTO>(`${this.apiUrl}/register-user`, registerRequest);
   }
 
   refreshAccessToken(): Observable<RefreshResponseDTO> {

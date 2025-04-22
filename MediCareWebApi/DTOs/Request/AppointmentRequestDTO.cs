@@ -7,8 +7,8 @@ namespace MediCare.DTOs.Request
     {
         public int? Id { get; set; }
 
-        [Required(ErrorMessage = "Appointment date is required")]
-        [DataType(DataType.DateTime, ErrorMessage = "Invalid date-time format")]
+        [Required(ErrorMessage = "Appointment date is required.")]
+        [DataType(DataType.DateTime, ErrorMessage = "Invalid date-time format.")]
         public DateTime Time { get; set; }
 
         public AppointmentStatus? Status { get; set; }

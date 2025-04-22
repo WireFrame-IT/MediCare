@@ -13,7 +13,7 @@
     <div class="auth-buttons">
       @if(isLoggedIn) {
         @if (isAdmin) {
-          <button mat-raised-button routerLink="/register-doctor">Doctor Registration</button>
+          <button mat-raised-button routerLink="/register-user">User Registration</button>
         }
         <button mat-raised-button (click)="logout()">Log out</button>
       } @else {

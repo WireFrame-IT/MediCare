@@ -6,8 +6,8 @@
     <input matInput type="text" placeholder="Search..." [(ngModel)]="filter" (input)="applyFilter()" />
   </mat-form-field>
   <mat-form-field class="sort">
+    <mat-label>Sort by...</mat-label>
     <mat-select [(ngModel)]="selectedSort" (selectionChange)="onSortChange()">
-      <mat-option value="">Sort by...</mat-option>
       @for (option of sortOptions; track option.value) {
         <mat-option [value]="option.value">
           {{ option.label }}

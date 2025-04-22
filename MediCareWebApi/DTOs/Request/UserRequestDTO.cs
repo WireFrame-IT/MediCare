@@ -11,7 +11,7 @@ namespace MediCare.DTOs.Request
 
 		public int? SpecialityId { get; set; }
 
-		[DataType(DataType.Date, ErrorMessage = "Invalid date format")]
+		[DataType(DataType.Date, ErrorMessage = "Invalid date format.")]
 		public DateTime? BirthDate { get; set; }
 	}
 }

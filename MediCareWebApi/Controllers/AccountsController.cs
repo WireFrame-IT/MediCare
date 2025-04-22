@@ -48,17 +48,31 @@ namespace MedicalFacility.Controllers
 		}
 
 		[Authorize(Roles = "Admin")]
-		[HttpPost("register-doctor")]
-		public async Task<IActionResult> DoctorRegisterAsync([FromBody] DoctorRegisterRequestDTO registerRequest)
+		[HttpPost("register-user")]
+		public async Task<IActionResult> UserRegisterAsync([FromBody] UserRegisterRequestDTO registerRequest)
 		{
-			var user = await RegisterUserAsync(registerRequest, RoleType.Doctor);
-			var doctor = new Doctor()
+			var user = await RegisterUserAsync(registerRequest, registerRequest.RoleType);
+			switch (registerRequest.RoleType)
 			{
-				EmploymentDate = registerRequest.EmploymentDate,
-				SpecialityId = registerRequest.SpecialityId,
-				UserId = user.Id,
-			};
-			await _context.Doctors.AddAsync(doctor);
+				case RoleType.Doctor:
+					var doctor = new Doctor()
+					{
+						EmploymentDate = registerRequest.EmploymentDate.Value,
+						SpecialityId = registerRequest.SpecialityId.Value,
+						UserId = user.Id,
+					};
+					await _context.Doctors.AddAsync(doctor);
+					break;
+				case RoleType.Patient:
+					var patient = new Patient()
+					{
+						BirthDate = registerRequest.BirthDate.Value,
+						UserId = user.Id,
+					};
+					await _context.Patients.AddAsync(patient);
+					break;
+			}
+			
 			await _context.SaveChangesAsync();
 			return Ok();
 		}
