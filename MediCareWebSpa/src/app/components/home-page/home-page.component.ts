@@ -38,9 +38,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscriotion => subscriotion.unsubscribe());
   }
 
-  getIcon(name: string): string {
-    return ICON_MAP[name];
-  }
+  getIcon = (name: string): string => ICON_MAP[name];
 
   private getRandomServices(services: Service[], count: number): Service[] {
     const result = [];

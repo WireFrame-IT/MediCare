@@ -33,8 +33,8 @@ export class UserRegisterPageComponent implements OnInit, OnDestroy {
   specialities: Speciality[] = [];
   isDoctor: boolean = false;
   roleTypes = [
-    { label: RoleType[RoleType.Doctor], value: RoleType.Doctor },
-    { label: RoleType[RoleType.Patient], value: RoleType.Patient }
+    { label: RoleType[RoleType.Patient], value: RoleType.Patient },
+    { label: RoleType[RoleType.Doctor], value: RoleType.Doctor }
   ];
 
   constructor(
@@ -87,31 +87,31 @@ export class UserRegisterPageComponent implements OnInit, OnDestroy {
 
   register() {
     if (this.registerForm.valid) {
-        const registerRequest = new UserRegisterRequestDTO(
-          this.registerForm.value.name,
-          this.registerForm.value.surname,
-          this.registerForm.value.email,
-          this.registerForm.value.password,
-          this.registerForm.value.pesel,
-          this.registerForm.value.phoneNumber,
-          this.registerForm.value.roleType,
-          this.isDoctor ? this.registerForm.value.employmentDate : null,
-          this.isDoctor ? this.registerForm.value.specialityId : null,
-          this.isDoctor ? null : this.registerForm.value.birthDate
-        );
+      const registerRequest = new UserRegisterRequestDTO(
+        this.registerForm.value.name,
+        this.registerForm.value.surname,
+        this.registerForm.value.email,
+        this.registerForm.value.password,
+        this.registerForm.value.pesel,
+        this.registerForm.value.phoneNumber,
+        this.registerForm.value.roleType,
+        this.isDoctor ? this.registerForm.value.employmentDate : null,
+        this.isDoctor ? this.registerForm.value.specialityId : null,
+        this.isDoctor ? null : this.registerForm.value.birthDate
+      );
 
-        this.loadingService.show();
-        this.authService.registerUser(registerRequest).subscribe({
-          next: () => {
-            this.loadingService.hide();
-            this.loadingService.showMessage('The user has been registered successfully.');
-            this.router.navigate(['/']);
-          },
-          error: (error) => {
-            this.loadingService.hide();
-            this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
-          }
-        });
+      this.loadingService.show();
+      this.authService.registerUser(registerRequest).subscribe({
+        next: () => {
+          this.loadingService.hide();
+          this.loadingService.showMessage('The user has been registered successfully.');
+          this.router.navigate(['/']);
+        },
+        error: (error) => {
+          this.loadingService.hide();
+          this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
+        }
+      });
     }
   }
 }

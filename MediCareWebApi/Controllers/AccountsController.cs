@@ -188,7 +188,20 @@ namespace MedicalFacility.Controllers
 		[HttpGet("specialities")]
 		public async Task<IActionResult> GetSpecialities()
 		{
-			return Ok(_mapper.Map<List<SpecialityDTO>>(await _context.Specialities.ToListAsync()));
+			return Ok(_mapper.Map<List<SpecialityDTO>>(await _context.Specialities.OrderBy(x => x.Name).ToListAsync()));
+		}
+
+		[Authorize(Roles = "Admin")]
+		[HttpGet("permissions")]
+		public async Task<IActionResult> GetPermissions()
+		{
+			var permissions = await _context.Permissions
+				.Include(x => x.PermissionRoles)
+					.ThenInclude(x => x.Role)
+				.OrderBy(x => x.Description)
+				.ToListAsync();
+
+			return Ok(_mapper.Map<List<PermissionDTO>>(permissions));
 		}
 	}
 }

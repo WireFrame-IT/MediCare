@@ -219,7 +219,10 @@ namespace MediCare.Migrations.CustomScripts
 					{ 31, "william.davis@outlook.com", "n0njd1rVVTbbVngO2FbO8weHjnohMdsOj2sLJMx3MqQ=", "Jf5N0VZvrAQeRpSn21QeoBtHI4YpA4pR2y0gu023WfM=", "William", "Davis", "90128456789", "+48901234568", 2 },
 					{ 32, "susan.martinez@outlook.com", "n0njd1rVVTbbVngO2FbO8weHjnohMdsOj2sLJMx3MqQ=", "Jf5N0VZvrAQeRpSn21QeoBtHI4YpA4pR2y0gu023WfM=", "Susan", "Martinez", "12345678921", "+48012345679", 2 },
 					{ 33, "charles.hernandez@outlook.com", "n0njd1rVVTbbVngO2FbO8weHjnohMdsOj2sLJMx3MqQ=", "Jf5N0VZvrAQeRpSn21QeoBtHI4YpA4pR2y0gu023WfM=", "Charles", "Hernandez", "23456789022", "+48123456780", 2 },
-					{ 34, "joseph.lopez@outlook.com", "n0njd1rVVTbbVngO2FbO8weHjnohMdsOj2sLJMx3MqQ=", "Jf5N0VZvrAQeRpSn21QeoBtHI4YpA4pR2y0gu023WfM=", "Joseph", "Lopez", "33567890123", "+48234567881", 2 }
+					{ 34, "joseph.lopez@outlook.com", "n0njd1rVVTbbVngO2FbO8weHjnohMdsOj2sLJMx3MqQ=", "Jf5N0VZvrAQeRpSn21QeoBtHI4YpA4pR2y0gu023WfM=", "Joseph", "Lopez", "33567890123", "+48234567881", 2 },
+					{ 35, "jk@pjwstk.edu.pl", "n0njd1rVVTbbVngO2FbO8weHjnohMdsOj2sLJMx3MqQ=", "Jf5N0VZvrAQeRpSn21QeoBtHI4YpA4pR2y0gu023WfM=", "Jan", "Kowalski", "56395736192", "+48926384057", 1 },
+					{ 36, "ak@pjwstk.edu.pl", "n0njd1rVVTbbVngO2FbO8weHjnohMdsOj2sLJMx3MqQ=", "Jf5N0VZvrAQeRpSn21QeoBtHI4YpA4pR2y0gu023WfM=", "Adam", "Kowalski", "46152430983", "+48123456780", 1 },
+					{ 37, "mk@pjwstk.edu.pl", "n0njd1rVVTbbVngO2FbO8weHjnohMdsOj2sLJMx3MqQ=", "Jf5N0VZvrAQeRpSn21QeoBtHI4YpA4pR2y0gu023WfM=", "Michał", "Kowalski", "60937462539", "+48698714231", 1 }
 				});
 
 			migrationBuilder.InsertData(
@@ -266,6 +269,16 @@ namespace MediCare.Migrations.CustomScripts
 					{ 32, new DateTime(2024, 4, 14), 13 },
 					{ 33, new DateTime(2021, 5, 7), 15 },
 					{ 34, new DateTime(2022, 12, 23), 18 }
+				});
+
+			migrationBuilder.InsertData(
+				table: "Patients",
+				columns: new[] { "UserId", "RegisterDate", "BirthDate" },
+				values: new object[,]
+				{
+					{ 35, DateTime.Now, new DateTime(1996, 4, 16) },
+					{ 36, DateTime.Now, new DateTime(1993, 10, 5) },
+					{ 37, DateTime.Now, new DateTime(2002, 8, 25) }
 				});
 
 			migrationBuilder.InsertData(
@@ -365,7 +378,7 @@ namespace MediCare.Migrations.CustomScripts
 			migrationBuilder.DeleteData(
 				table: "Users",
 				keyColumn: "Id",
-				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 });
+				keyValues: new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37 });
 
 			migrationBuilder.DeleteData(
 				table: "Admins",
@@ -376,6 +389,11 @@ namespace MediCare.Migrations.CustomScripts
 				table: "Doctors",
 				keyColumn: "UserId",
 				keyValues: new object[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 });
+
+			migrationBuilder.DeleteData(
+				table: "Patients",
+				keyColumn: "UserId",
+				keyValues: new object[] { 35, 36, 37 });
 
 			migrationBuilder.DeleteData(
 				table: "DoctorsAvailabilities",

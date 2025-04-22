@@ -13,6 +13,7 @@ import { RefreshRequestDTO } from '../DTOs/request/refresh-request.dto';
 import { UserRequestDTO } from '../DTOs/request/user-request.dto';
 import { Doctor } from '../DTOs/models/doctor';
 import { Patient } from '../DTOs/models/patient';
+import { Permission } from '../DTOs/models/permission';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -20,11 +21,13 @@ export class AuthService {
   private _isDoctor: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _specialities: BehaviorSubject<Speciality[]> = new BehaviorSubject<Speciality[]>([]);
+  private _permissions: BehaviorSubject<Permission[]> = new BehaviorSubject<Permission[]>([]);
 
   isAdmin$: Observable<boolean> = this._isAdmin.asObservable();
   isDoctor$: Observable<boolean> = this._isDoctor.asObservable();
   isLoggedIn$: Observable<boolean> = this._isLoggedIn.asObservable();
   specialities$: Observable<Speciality[]> = this._specialities.asObservable();
+  permissions$: Observable<Permission[]> = this._permissions.asObservable();
 
   readonly apiUrl = 'https://localhost:5001/MediCareWebApi/accounts';
 
@@ -82,11 +85,14 @@ export class AuthService {
 
   loadSpecialities(): void {
     this.http.get(`${this.apiUrl}/specialities`)
-    .pipe(catchError(error => {
-      console.error(error);
-      return [];
-    }))
-    .subscribe(specialities => this._specialities.next(specialities as Speciality[]));
+      .pipe(catchError(error => []))
+      .subscribe(specialities => this._specialities.next(specialities as Speciality[]));
+  }
+
+  loadPermissions(): void {
+    this.http.get(`${this.apiUrl}/permissions`)
+      .pipe(catchError(error => []))
+      .subscribe(permissions => this._permissions.next(permissions as Permission[]));
   }
 
   cleanCredentials(): void {
@@ -116,6 +122,8 @@ export class AuthService {
     this.http.post(`${this.apiUrl}/logout`, {})
     .pipe(finalize(() => {
       this.cleanCredentials();
+      localStorage.removeItem('services_filter');
+      localStorage.removeItem('services_sort_by');
       this.router.navigate(['/login']);
     }))
     .subscribe({

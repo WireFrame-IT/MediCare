@@ -20,6 +20,8 @@
   .search, .sort {
     width: 25%;
     font-size: 1.2rem;
+    border-radius: variables.$border-radius;
+    overflow: hidden;
   }
 }
 

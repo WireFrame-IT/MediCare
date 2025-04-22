@@ -1,5 +1,15 @@
 <form [formGroup]="registerForm" (ngSubmit)="register()" class="form">
   <mat-form-field class="form-field">
+    <mat-label>Role</mat-label>
+    <mat-select formControlName="roleType" (selectionChange)="onRoleTypeChange($event)">
+      @for (roleType of roleTypes; track roleType.value) {
+        <mat-option [value]="roleType.value">
+          {{ roleType.label }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="form-field">
     <mat-label>Name</mat-label>
     <input matInput formControlName="name" required/>
   </mat-form-field>
@@ -22,16 +32,6 @@
   <mat-form-field class="form-field">
     <mat-label>Phone Number</mat-label>
     <input matInput formControlName="phoneNumber" required/>
-  </mat-form-field>
-  <mat-form-field class="form-field">
-    <mat-label>Role</mat-label>
-    <mat-select formControlName="roleType" (selectionChange)="onRoleTypeChange($event)">
-      @for (roleType of roleTypes; track roleType.value) {
-        <mat-option [value]="roleType.value">
-          {{ roleType.label }}
-        </mat-option>
-      }
-    </mat-select>
   </mat-form-field>
   @if (isDoctor) {
     <mat-form-field class="form-field">

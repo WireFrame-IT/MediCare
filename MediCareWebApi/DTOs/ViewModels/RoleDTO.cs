@@ -6,6 +6,6 @@ namespace MediCare.DTOs.ViewModels
 	{
 		public int Id { get; set; }
 		public RoleType RoleType { get; set; }
-		public IEnumerable<RolePermissionDTO> RolePermissions = new List<RolePermissionDTO>();
+		public IEnumerable<RolePermissionDTO> RolePermissions { get; set; } = new List<RolePermissionDTO>();
 	}
 }

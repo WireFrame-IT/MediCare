@@ -60,10 +60,6 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  getStatus(appointment: Appointment): string {
-    return AppointmentStatus[appointment.status];
-  }
-
   getStatusClass(appointment: Appointment): string {
     switch (appointment.status) {
       case AppointmentStatus.Accepted:
@@ -78,15 +74,11 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  canCancel(appointment: Appointment): boolean {
-    return appointment.status !== AppointmentStatus.Canceled
-      && appointment.status !== AppointmentStatus.Absent
-      && appointment.status !== AppointmentStatus.Confirmed;
-  }
+  getStatus = (appointment: Appointment): string => AppointmentStatus[appointment.status];
 
-  canAccept(appointment: Appointment): boolean {
-    return appointment.status === AppointmentStatus.New;
-  }
+  canCancel = (appointment: Appointment): boolean => appointment.status !== AppointmentStatus.Canceled && appointment.status !== AppointmentStatus.Absent && appointment.status !== AppointmentStatus.Confirmed;
+
+  canAccept = (appointment: Appointment): boolean => appointment.status === AppointmentStatus.New;
 
   openEditAppointmentDialog(appointment: Appointment): void {
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {

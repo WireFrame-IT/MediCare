@@ -35,6 +35,7 @@ export class ServicePageComponent {
   services: Service[] = [];
   filteredServices: Service[] = [];
   isLoggedIn: boolean = false;
+  isDoctor: boolean = false;
   filter: string = '';
   selectedSort: string = '';
 
@@ -66,6 +67,8 @@ export class ServicePageComponent {
       if(!this.isLoggedIn && this.dialogRef)
         this.dialogRef.close();
     }));
+
+    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
   }
 
   ngOnDestroy(): void {
@@ -79,6 +82,9 @@ export class ServicePageComponent {
       this.router.navigate(['/login']);
       return;
     }
+
+    if (this.isDoctor)
+      return;
 
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
       width: '600px',

@@ -9,8 +9,7 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 1rem;
-    width: 40rem;
-    margin: 0 auto;
+    width: 45%;
   }
 
   .doctors-card {
@@ -53,5 +52,10 @@
         }
       }
     }
+  }
+
+  .table {
+    border-radius: variables.$border-radius;
+    overflow: hidden;
   }
 }
