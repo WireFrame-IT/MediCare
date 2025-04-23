@@ -92,7 +92,7 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
       );
 
       if (this.isDoctor) {
-        user.specialityId = this.userForm.value.speciality;
+        user.specialityId = this.userForm.value.specialityId;
       } else {
         user.birthDate = this.userForm.value.birthDate;
       }

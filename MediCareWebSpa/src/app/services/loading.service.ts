@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
-  private readonly DURATION_IN_MILLISECNDS = 3000;
+  private readonly DURATION_IN_MILLISECNDS = 2000;
 
   private _isLoading = new BehaviorSubject<boolean>(false);
   private _messageSubject = new BehaviorSubject<string | null>(null);

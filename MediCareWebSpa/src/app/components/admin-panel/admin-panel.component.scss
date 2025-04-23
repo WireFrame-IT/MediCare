@@ -12,13 +12,21 @@
     width: 45%;
   }
 
+  .left {
+    min-width: 45rem;
+  }
+
+  .right {
+    min-width: 25rem;
+  }
+
   .user-card {
     display: flex;
     flex-direction: row;
     padding: 0.5rem;
     box-shadow: variables.$box-shadow-hover;
     border-radius: variables.$border-radius;
-    background-color: #fff;
+    background-color: variables.$background-color;
 
     .header {
       width: 30%;
@@ -40,24 +48,14 @@
       align-items: center;
       justify-content: space-between;
 
-      .status {
-        cursor: default;
-
-        &-doctor {
-          background-color: variables.$primary-color;
-          color: white;
-        }
-
-        &-patient {
-          background-color: rgba(variables.$grey-color, 0.2);
-          color: black;
-        }
-      }
-
       .email {
         justify-content: flex-start;
         cursor: pointer;
         user-select: text;
+      }
+
+      .icon {
+        color: variables.$grey-color;
       }
     }
 
@@ -70,5 +68,7 @@
   .table {
     border-radius: variables.$border-radius;
     overflow: hidden;
+    background-color: rgba(variables.$background-color, 0.3);
+    box-shadow: variables.$box-shadow-hover;
   }
 }

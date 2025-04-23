@@ -166,13 +166,8 @@ namespace MedicalFacility.Controllers
 			if (!string.IsNullOrWhiteSpace(userRequestDTO.Password))
 				user.Password = _accountsService.HashPassword(userRequestDTO.Password, user.Salt = _accountsService.GenerateSalt());
 
-			var doctor = await _context.Doctors
-				.Include(x => x.User)
-				.Include(x => x.Speciality)
-				.FirstOrDefaultAsync(x => x.UserId == user.Id);
-			var patient = await _context.Patients
-				.Include(x => x.User)
-				.FirstOrDefaultAsync(x => x.UserId == user.Id);
+			var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
+			var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 			if (doctor == null && patient == null)
 				throw new InvalidOperationException("The user is neither a patient nor a doctor.");
 
@@ -183,7 +178,10 @@ namespace MedicalFacility.Controllers
 				patient.BirthDate = userRequestDTO.BirthDate.Value;
 
 			await _context.SaveChangesAsync();
-			return Ok(doctor == null ? patient : doctor);
+
+			return Ok(doctor == null
+				? await _context.Patients.Include(x => x.User).FirstAsync(x => x.UserId == patient.UserId)
+				: await _context.Doctors.Include(x => x.User).Include(x => x.Speciality).FirstAsync(x => x.UserId == doctor.UserId));
 		}
 
 		[Authorize(Roles = "Admin")]

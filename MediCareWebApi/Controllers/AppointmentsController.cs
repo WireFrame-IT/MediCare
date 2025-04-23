@@ -30,25 +30,31 @@ namespace MediCare.Controllers
 		public async Task<IActionResult> GetAppointmentsAsync()
 		{
 			var user = await GetCurrentUserAsync();
+
 			switch (user.Role.RoleType)
 			{
 				case RoleType.Doctor:
 					var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (doctor == null)
 						return NotFound("Doctor not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAllAppointmentsAsync(doctor.UserId, true)));
+
+					var actionResult = await CheckPermission(PermissionType.ViewAllAppointments);
+					var appointments = actionResult == null ? await GetAllAppointmentsAsync() : await GetAllAppointmentsAsync(doctor.UserId, true);
+					return Ok(_mapper.Map<List<AppointmentDTO>>(appointments));
 
 				case RoleType.Patient:
 					var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (patient == null)
 						return NotFound("Patient not found.");
-					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAllAppointmentsAsync(patient.UserId)));
+
+					return Ok(_mapper.Map<List<ReducedAppointmentDTO>>(await GetAllAppointmentsAsync(patient.UserId)));
 
 				case RoleType.Admin:
 					return Ok(_mapper.Map<List<AppointmentDTO>>(await GetAllAppointmentsAsync()));
-			}
 
-			return NotFound();
+				default:
+					return NotFound();
+			}
 		}
 
 		[HttpPost]

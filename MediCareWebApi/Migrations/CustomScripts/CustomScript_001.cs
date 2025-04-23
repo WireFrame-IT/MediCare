@@ -22,7 +22,7 @@ namespace MediCare.Migrations.CustomScripts
 				columns: new[] { "Id", "Description", "DoctorOnly", "PatientOnly", "PermissionType"},
 				values: new object[,]
 				{
-					{1, "View all appointments", true, false, (int)PermissionType.ViewAppointments },
+					{1, "View all appointments", true, false, (int)PermissionType.ViewAllAppointments },
 					{2, "Cancel appointment", false, false, (int)PermissionType.CancelAppointment },
 					{3, "Choose a doctor", false, true, (int)PermissionType.ChooseDoctor },
 					{4, "Generate reports", true, false, (int)PermissionType.GenerateReports },

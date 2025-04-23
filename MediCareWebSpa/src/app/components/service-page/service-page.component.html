@@ -16,22 +16,24 @@
     </mat-select>
   </mat-form-field>
 </div>
-<div class="services-container">
-  @for (service of filteredServices; track service.id) {
-    <mat-card class="service-card" [style.cursor]="isDoctor ? 'not-allowed' : 'pointer'" (click)="openAppointmentDialog(service)">
-      <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
-      <div class="service-info">
-        <h3 class="service-title">{{ service.name }}</h3>
-        <p class="service-description">{{ service.description }}</p>
-      </div>
-      <div class="service-duration">
-         <mat-icon>access_time</mat-icon>
-        <p>{{ getDuration(service.durationMinutes) }}</p>
-      </div>
-      <div class="service-duration">
-        <mat-icon>payment</mat-icon>
-        <p>{{ service.price }} PLN</p>
-      </div>
-    </mat-card>
-  }
-</div>
+@if (filteredServices.length) {
+  <div class="services-container">
+    @for (service of filteredServices; track service.id) {
+      <mat-card class="service-card" [style.cursor]="isDoctor ? 'not-allowed' : 'pointer'" (click)="openAppointmentDialog(service)">
+        <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
+        <div class="service-info">
+          <h3 class="service-title">{{ service.name }}</h3>
+          <p class="service-description">{{ service.description }}</p>
+        </div>
+        <div class="service-duration">
+           <mat-icon>access_time</mat-icon>
+          <p>{{ getDuration(service.durationMinutes) }}</p>
+        </div>
+        <div class="service-duration">
+          <mat-icon>payment</mat-icon>
+          <p>{{ service.price }} PLN</p>
+        </div>
+      </mat-card>
+    }
+  </div>
+}

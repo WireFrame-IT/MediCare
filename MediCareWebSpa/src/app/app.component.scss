@@ -56,7 +56,7 @@
   z-index: 1200;
   color: white;
   padding: 1rem;
-  animation: show-message 3s ease-in-out infinite;
+  animation: show-message 2s ease-in-out infinite;
 
   &.error {
     background-color: rgba(variables.$error-color, 0.8);

@@ -33,15 +33,17 @@ namespace MediCare.Mapping
 
 			CreateMap<Appointment, AppointmentDTO>();
 
+			CreateMap<Appointment, ReducedAppointmentDTO>();
+
 			CreateMap<Doctor, DoctorDTO>();
 
 			CreateMap<Doctor, ReducedDoctorDTO>();
 
-			CreateMap<User, ReducedUserDTO>();
-
 			CreateMap<Feedback, FeedbackDTO>();
 
 			CreateMap<Patient, PatientDTO>();
+
+			CreateMap<Patient, ReducedPatientDTO>();
 
 			CreateMap<Permission, PermissionDTO>();
 
@@ -54,6 +56,8 @@ namespace MediCare.Mapping
 			CreateMap<Speciality, SpecialityDTO>();
 
 			CreateMap<User, UserDTO>();
+
+			CreateMap<User, ReducedUserDTO>();
 		}
 	}
 }

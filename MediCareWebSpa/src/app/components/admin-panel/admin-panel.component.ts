@@ -16,6 +16,7 @@ import { RoleType } from '../../enums/role-type';
 import { RolePermissionRequest } from '../../DTOs/request/role-permission-request.dto';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { LoadingService } from '../../services/loading.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-admin-panel',
@@ -23,7 +24,8 @@ import { LoadingService } from '../../services/loading.service';
     MatCardModule,
     MatButtonModule,
     MatTableModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatIcon
   ],
   templateUrl: './admin-panel.component.html',
   styleUrl: './admin-panel.component.scss'

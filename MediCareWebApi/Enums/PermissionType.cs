@@ -2,7 +2,7 @@
 {
 	public enum PermissionType
 	{
-		ViewAppointments = 10,
+		ViewAllAppointments = 10,
 		CancelAppointment = 20,
 		ChooseDoctor = 30,
 		GenerateReports = 40,

@@ -86,6 +86,8 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
     && appointment.status !== AppointmentStatus.Absent
     && appointment.status !== AppointmentStatus.Confirmed;
 
+  canSeeAllAppointments = () => this.userPermissions.some(x => x === PermissionType.ViewAllAppointments);
+
   canAccept = (appointment: Appointment): boolean => appointment.status === AppointmentStatus.New;
 
   openEditAppointmentDialog(appointment: Appointment): void {
