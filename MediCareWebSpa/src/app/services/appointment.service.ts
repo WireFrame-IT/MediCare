@@ -64,11 +64,11 @@ export class AppointmentService {
     return this.http.post<Appointment>(`${this.apiUrl}`, appointmentData);
   }
 
-  acceptAppointment(id: number): Observable<null> {
-    return this.http.post<null>(`${this.apiUrl}/accept?id=${id}`, null);
+  acceptAppointment(id: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/accept?id=${id}`, null);
   }
 
-  cancelAppointment(id: number): Observable<null> {
-    return this.http.post<null>(`${this.apiUrl}/cancel?id=${id}`, null);
+  cancelAppointment(id: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/cancel?id=${id}`, null);
   }
 }

@@ -17,6 +17,8 @@ import { Permission } from '../DTOs/models/permission';
 import { RolePermissionRequest } from '../DTOs/request/role-permission-request.dto';
 import { LoginResponseDTO } from '../DTOs/response/login-response.dto';
 import { PermissionType } from '../enums/permission-type';
+import { DoctorsAvailability } from '../DTOs/models/doctors-availability';
+import { DoctorsAvailabilityRequest } from '../DTOs/request/doctors-availability-request.dto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -26,6 +28,7 @@ export class AuthService {
   private _specialities: BehaviorSubject<Speciality[]> = new BehaviorSubject<Speciality[]>([]);
   private _permissions: BehaviorSubject<Permission[]> = new BehaviorSubject<Permission[]>([]);
   private _userPermissions: BehaviorSubject<PermissionType[]> = new BehaviorSubject<PermissionType[]>([]);
+  private _availabilities: BehaviorSubject<DoctorsAvailability[]> = new BehaviorSubject<DoctorsAvailability[]>([]);
 
   isAdmin$: Observable<boolean> = this._isAdmin.asObservable();
   isDoctor$: Observable<boolean> = this._isDoctor.asObservable();
@@ -33,6 +36,7 @@ export class AuthService {
   specialities$: Observable<Speciality[]> = this._specialities.asObservable();
   permissions$: Observable<Permission[]> = this._permissions.asObservable();
   userPermissions$: Observable<PermissionType[]> = this._userPermissions.asObservable();
+  availabilities$: Observable<DoctorsAvailability[]> = this._availabilities.asObservable();
 
   readonly apiUrl = 'https://localhost:5001/MediCareWebApi/accounts';
 
@@ -64,7 +68,7 @@ export class AuthService {
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem('refreshToken');
+    return sessionStorage.getItem('refreshToken');
   }
 
   getRoleType(): RoleType | null {
@@ -79,9 +83,11 @@ export class AuthService {
     return this.http.post<Doctor | Patient>(`${this.apiUrl}/user`, user);
   }
 
-  storeUserData(accessToken: string, refreshToken: string, roleType?: RoleType): void {
+  storeUserData(userName: string, userSurname: string, accessToken: string, refreshToken: string, roleType?: RoleType): void {
+    sessionStorage.setItem('userName', userName);
+    sessionStorage.setItem('userSurname', userSurname);
     sessionStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+    sessionStorage.setItem('refreshToken', refreshToken);
     sessionStorage.setItem('roleType', roleType?.toString() ?? RoleType.Patient.toString());
     this._isAdmin.next(roleType === RoleType.Admin);
     this._isDoctor.next(roleType === RoleType.Doctor);
@@ -106,6 +112,12 @@ export class AuthService {
       .subscribe(userPermissions => this._userPermissions.next(userPermissions as PermissionType[]));
   }
 
+  loadDoctorsAvailabilities(): void {
+    this.http.get(`${this.apiUrl}/availabilities`)
+      .pipe(catchError(() => []))
+      .subscribe(availabilities => this._availabilities.next(availabilities as DoctorsAvailability[]));
+  }
+
   addRolePermission(rolePermission: RolePermissionRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/role-permission`, rolePermission);
   }
@@ -114,13 +126,25 @@ export class AuthService {
     return this.http.delete<void>(`${this.apiUrl}/role-permission`, { params: { roleType, permissionId }});
   }
 
+  removeDoctorsAvailability(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/availability`, { params: { id }});
+  }
+
+  saveDoctorsAvailability(availability: DoctorsAvailabilityRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/availability`, availability);
+  }
+
   cleanCredentials(): void {
     this._isAdmin.next(false);
     this._isDoctor.next(false);
     this._isLoggedIn.next(false);
     sessionStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('refreshToken');
     sessionStorage.removeItem('roleType');
+    sessionStorage.removeItem('servicesFilter');
+    sessionStorage.removeItem('servicesSortBy');
+    sessionStorage.removeItem('userName');
+    sessionStorage.removeItem('userSurname');
   }
 
   retrieveCredentials(): void {
@@ -136,13 +160,17 @@ export class AuthService {
     }
   }
 
+  getUserNameAndSurname(): string {
+    const name = sessionStorage.getItem('userName');
+    const surname = sessionStorage.getItem('userSurname');
+    return name && surname ? `${name} ${surname}` : '';
+  }
+
   logout(): void {
     this.loadingService.show();
     this.http.post(`${this.apiUrl}/logout`, {})
     .pipe(finalize(() => {
       this.cleanCredentials();
-      localStorage.removeItem('services_filter');
-      localStorage.removeItem('services_sort_by');
       this.router.navigate(['/login']);
     }))
     .subscribe({

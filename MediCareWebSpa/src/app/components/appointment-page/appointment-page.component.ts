@@ -92,7 +92,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
 
   openEditAppointmentDialog(appointment: Appointment): void {
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
-      width: '600px',
+      width: '500px',
       data: appointment
     });
 

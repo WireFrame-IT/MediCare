@@ -1,0 +1,23 @@
+<button mat-flat-button class="btn-new" (click)="openAvailabilityDialog(null)">New Availability</button>
+@if (availabilities.length) {
+  <div class="availability-container">
+    @for (availability of availabilities; track availability.id) {
+      <mat-card class="availability-card">
+        <mat-icon class="availability-icon">calendar_month</mat-icon>
+        <div class="availability-info">
+          <div class="from">
+            {{ availability.from | date: "EEEE, dd.MM.yyyy" }} {{ availability.from | date: "HH:mm" }}
+          </div>
+          <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+          <div class="to">
+            {{ availability.to | date: "EEEE, dd.MM.yyyy" }} {{ availability.to | date: "HH:mm" }}
+          </div>
+        </div>
+        <div class="actions">
+          <button mat-raised-button (click)="onRemove(availability)">Remove</button>
+          <button mat-flat-button (click)="openAvailabilityDialog(availability)">Edit</button>
+        </div>
+      </mat-card>
+    }
+  </div>
+}

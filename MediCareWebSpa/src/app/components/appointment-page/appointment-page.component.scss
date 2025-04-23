@@ -12,10 +12,9 @@
 .appointment-card {
   display: flex;
   flex-direction: row;
-  padding: 1rem;
   box-shadow: variables.$box-shadow-hover;
   border-radius: variables.$border-radius;
-  background-color: #fff;
+  background-color: variables.$background-color;
 
   .header {
     width: 30%;
@@ -87,7 +86,7 @@
 
   p {
     font-size: 1.6rem;
-    margin-bottom: 1rem;
+    margin: 1rem 0;
   }
 }
 

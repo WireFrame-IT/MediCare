@@ -98,9 +98,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
 
   hasChooseDoctorPermission = (): boolean => this.userPermissions.some(x => x === PermissionType.ChooseDoctor);
 
-  closeDialog(): void {
-    this.dialogRef.close();
-  }
+  closeDialog = (): void => this.dialogRef.close();
 
   onSubmit() {
     if (this.appointmentForm.valid) {

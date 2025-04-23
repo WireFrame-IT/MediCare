@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +6,8 @@ import { AuthService } from './services/auth.service';
 import { Subscription } from 'rxjs';
 import { LoadingService } from './services/loading.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     RouterModule,
     MatToolbarModule,
     MatButtonModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatIcon
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -22,6 +26,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 export class AppComponent implements OnInit, OnDestroy{
   private subscriptions: Subscription[] = [];
   isAdmin: boolean = false;
+  isDoctor: boolean = false;
   isLoggedIn: boolean = false;
   isLoading: boolean = false;
   message: string | null = null;
@@ -34,7 +39,9 @@ export class AppComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.authService.retrieveCredentials();
+
     this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
+    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
     this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
     this.subscriptions.push(this.loadingService.isLoading$.subscribe(isLoading => this.isLoading = isLoading));
     this.subscriptions.push(this.loadingService.message$.subscribe(message => this.message = message));
@@ -46,4 +53,6 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   logout = () => this.authService.logout();
+
+  getUserNameAndSurname = (): string => this.authService.getUserNameAndSurname();
 }

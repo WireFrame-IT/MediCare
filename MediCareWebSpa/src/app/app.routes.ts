@@ -7,6 +7,7 @@ import { ServicePageComponent } from './components/service-page/service-page.com
 import { AppointmentPageComponent } from './components/appointment-page/appointment-page.component';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 import { AboutPageComponent } from './components/about-page/about-page.component';
+import { AvailabilityPageComponent } from './components/availability-page/availability-page.component';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'services', component: ServicePageComponent },
   { path: 'appointments', component: AppointmentPageComponent },
   { path: 'admin-panel', component: AdminPanelComponent },
-  { path: 'about-page', component: AboutPageComponent }
+  { path: 'about-page', component: AboutPageComponent },
+  { path: 'availability-page', component: AvailabilityPageComponent }
 ];

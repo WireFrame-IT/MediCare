@@ -2,9 +2,9 @@ import { RoleType } from '../../enums/role-type';
 import { RegisterRequestDTO } from './register-request.dto';
 
 export class UserRegisterRequestDTO extends RegisterRequestDTO {
-  employmentDate: string | null;
+  employmentDate: Date | null;
   specialityId: number | null;
-  birthDate: string | null;
+  birthDate: Date | null;
 
   constructor(
     name: string,
@@ -14,9 +14,9 @@ export class UserRegisterRequestDTO extends RegisterRequestDTO {
     pesel: string,
     phoneNumber: string,
     roleType: RoleType,
-    employmentDate: string,
+    employmentDate: Date,
     specialityId: number,
-    birthDate: string
+    birthDate: Date
   ) {
     super(name, surname, email, password, pesel, phoneNumber, roleType);
     this.employmentDate = employmentDate;

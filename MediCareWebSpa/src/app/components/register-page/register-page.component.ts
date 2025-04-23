@@ -7,8 +7,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PatientRegisterRequestDTO } from '../../DTOs/request/patient-register-request.dto';
-import { RefreshResponseDTO } from '../../DTOs/response/refresh-response.dto';
 import { LoadingService } from '../../services/loading.service';
+import { LoginResponseDTO } from '../../DTOs/response/login-response.dto';
 
 @Component({
   selector: 'app-register-page',
@@ -56,8 +56,8 @@ export class RegisterPageComponent {
 
       this.loadingService.show();
       this.authService.register(registerRequest).subscribe({
-        next: (response: RefreshResponseDTO) => {
-          this.authService.storeUserData(response.accessToken, response.refreshToken);
+        next: (response: LoginResponseDTO) => {
+          this.authService.storeUserData(response.userName, response. userSurname, response.accessToken, response.refreshToken);
           this.loadingService.hide();
           this.loadingService.showMessage('Registered successfully.');
           this.router.navigate(['/']);

@@ -117,7 +117,7 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
 
   openEditUserDialog(person: Doctor | Patient): void {
     this.dialogRef = this.dialog.open(EditUserDialogComponent, {
-      width: '600px',
+      width: '500px',
       data: person
     });
 

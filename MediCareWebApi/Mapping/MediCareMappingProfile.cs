@@ -39,6 +39,10 @@ namespace MediCare.Mapping
 
 			CreateMap<Doctor, ReducedDoctorDTO>();
 
+			CreateMap<DoctorsAvailability, DoctorsAvailabilityDTO>();
+
+			CreateMap<DoctorsAvailabilityRequestDTO, DoctorsAvailability>();
+
 			CreateMap<Feedback, FeedbackDTO>();
 
 			CreateMap<Patient, PatientDTO>();

@@ -42,6 +42,8 @@ namespace MedicalFacility.Controllers
 			await _context.SaveChangesAsync();
 			return Ok(new LoginResponseDTO()
 			{
+				UserName = user.Name,
+				UserSurname = user.Surname,
 				AccessToken = _accountsService.GenerateAccessToken(user),
 				RefreshToken = user.RefreshToken,
 				RoleType = RoleType.Patient
@@ -62,14 +64,20 @@ namespace MedicalFacility.Controllers
 						SpecialityId = registerRequest.SpecialityId.Value,
 						UserId = user.Id,
 					};
+
 					await _context.Doctors.AddAsync(doctor);
 					break;
+
 				case RoleType.Patient:
 					var patient = new Patient()
 					{
 						BirthDate = registerRequest.BirthDate.Value,
 						UserId = user.Id,
 					};
+
+					if (patient.BirthDate > DateTime.Now)
+						throw new InvalidOperationException("Wrong birth date.");
+
 					await _context.Patients.AddAsync(patient);
 					break;
 			}
@@ -96,6 +104,8 @@ namespace MedicalFacility.Controllers
 
 			return Ok(new LoginResponseDTO
 			{
+				UserName = user.Name,
+				UserSurname = user.Surname,
 				AccessToken = _accountsService.GenerateAccessToken(user),
 				RefreshToken = user.RefreshToken,
 				RoleType = user.Role.RoleType
@@ -121,6 +131,8 @@ namespace MedicalFacility.Controllers
 
 			return Ok(new LoginResponseDTO()
 			{
+				UserName = user.Name,
+				UserSurname = user.Surname,
 				AccessToken = _accountsService.GenerateAccessToken(user),
 				RefreshToken = user.RefreshToken,
 				RoleType = user.Role.RoleType
@@ -242,7 +254,7 @@ namespace MedicalFacility.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpDelete("role-permission")]
-		public async Task<IActionResult> DeleteRolePermissionAsync(RoleType roleType, int permissionId)
+		public async Task<IActionResult> DeleteRolePermissionAsync([FromQuery] RoleType roleType, [FromQuery] int permissionId)
 		{
 			var rolePermission = await _context.RolePermissions.FirstOrDefaultAsync(x => x.Role.RoleType == roleType && x.PermissionId == permissionId);
 			if (rolePermission == null)
@@ -250,7 +262,66 @@ namespace MedicalFacility.Controllers
 
 			_context.RolePermissions.Remove(rolePermission);
 			await _context.SaveChangesAsync();
-			return Ok(rolePermission);
+			return Ok();
+		}
+
+		[Authorize(Roles = "Doctor")]
+		[HttpGet("availabilities")]
+		public async Task<IActionResult> GetDoctorsAvailabilitiesAsync()
+		{
+			var user = await GetCurrentUserAsync();
+			var availabilities = await _context.DoctorsAvailabilities
+				.Where(x => x.DoctorsUserId == user.Id)
+				.OrderByDescending(x => x.From)
+				.ToListAsync();
+
+			return Ok(availabilities);
+		}
+
+		[Authorize(Roles = "Doctor")]
+		[HttpDelete("availability")]
+		public async Task<IActionResult> DeleteDoctorsAvailabilityAsync([FromQuery] int id)
+		{
+			var user = await GetCurrentUserAsync();
+			var availability = await _context.DoctorsAvailabilities.FirstOrDefaultAsync(x => x.Id == id && x.DoctorsUserId == user.Id);
+			if (availability == null)
+				return BadRequest("Availability does not exist.");
+
+			_context.DoctorsAvailabilities.Remove(availability);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+
+		[Authorize(Roles = "Doctor")]
+		[HttpPost("availability")]
+		public async Task<IActionResult> SaveDoctorsAvailabilityAsync([FromBody] DoctorsAvailabilityRequestDTO availabilityDTO)
+		{
+			if (availabilityDTO.From < DateTime.Now || availabilityDTO.From >= availabilityDTO.To)
+				return BadRequest("Wrong availability period.");
+
+			var user = await GetCurrentUserAsync();
+			var availabilities = await _context.DoctorsAvailabilities
+				.Where(x => x.DoctorsUserId == user.Id && availabilityDTO.From < x.To && x.From < availabilityDTO.To && (!availabilityDTO.Id.HasValue || x.Id != availabilityDTO.Id.Value))
+				.ToListAsync();
+
+			if (availabilities.Any())
+				return BadRequest($"Availabilities cannot overlap.");
+
+			if (availabilityDTO.Id.HasValue)
+			{
+				var availability = await _context.DoctorsAvailabilities.FirstOrDefaultAsync(x => x.Id == availabilityDTO.Id.Value);
+				availability.From = availabilityDTO.From;
+				availability.To = availabilityDTO.To;
+			}
+			else
+			{
+				var availability = _mapper.Map<DoctorsAvailability>(availabilityDTO);
+				availability.DoctorsUserId = user.Id;
+				await _context.DoctorsAvailabilities.AddAsync(availability);
+			}
+
+			await _context.SaveChangesAsync();
+			return Ok();
 		}
 	}
 }

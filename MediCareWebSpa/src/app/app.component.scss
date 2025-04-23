@@ -16,8 +16,20 @@
 
   .auth-buttons {
     display: flex;
+    align-items: center;
     gap: 1rem;
     margin-left: auto;
+
+    .btn-user {
+      padding: 0;
+
+      .icon {
+        font-size: 2rem;
+        height: 2rem;
+        width: 2rem;
+        margin: 0;
+      }
+    }
   }
 
   .progress-bar {

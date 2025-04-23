@@ -251,12 +251,12 @@ namespace MediCare.Migrations.CustomScripts
 
 			migrationBuilder.InsertData(
 				table: "Patients",
-				columns: new[] { "UserId", "RegisterDate", "BirthDate" },
+				columns: new[] { "UserId", "RegisterDate", "BirthDate", "PatientCard" },
 				values: new object[,]
 				{
-					{ 35, DateTime.Now, new DateTime(1996, 4, 16) },
-					{ 36, DateTime.Now, new DateTime(1993, 10, 5) },
-					{ 37, DateTime.Now, new DateTime(2002, 8, 25) }
+					{ 35, DateTime.Now, new DateTime(1996, 4, 16), "56395764759913205892" },
+					{ 36, DateTime.Now, new DateTime(1993, 10, 5), "46152446285731205482" },
+					{ 37, DateTime.Now, new DateTime(2002, 8, 25), "60937462549387123046" }
 				});
 
 			migrationBuilder.InsertData(
@@ -264,39 +264,39 @@ namespace MediCare.Migrations.CustomScripts
 				columns: new[] { "Id", "From", "To", "DoctorsUserId" },
 				values: new object[,]
 				{
-					{ 1, new DateTime(2025, 3, 3), new DateTime(2025, 6, 18), 2 },
-					{ 2, new DateTime(2025, 3, 7), new DateTime(2025, 7, 2), 3 },
-					{ 3, new DateTime(2025, 3, 12), new DateTime(2025, 6, 30), 4 },
-					{ 4, new DateTime(2025, 3, 5), new DateTime(2025, 7, 15), 5 },
-					{ 5, new DateTime(2025, 3, 9), new DateTime(2025, 6, 25), 6 },
-					{ 6, new DateTime(2025, 3, 18), new DateTime(2025, 7, 9), 7 },
-					{ 7, new DateTime(2025, 3, 22), new DateTime(2025, 6, 20), 8 },
-					{ 8, new DateTime(2025, 4, 2), new DateTime(2025, 7, 28), 9 },
-					{ 9, new DateTime(2025, 3, 13), new DateTime(2025, 8, 10), 10 },
-					{ 10, new DateTime(2025, 3, 26), new DateTime(2025, 9, 3), 11 },
-					{ 11, new DateTime(2025, 3, 17), new DateTime(2025, 7, 20), 12 },
-					{ 12, new DateTime(2025, 4, 1), new DateTime(2025, 8, 1), 13 },
-					{ 13, new DateTime(2025, 3, 6), new DateTime(2025, 7, 5), 14 },
-					{ 14, new DateTime(2025, 4, 8), new DateTime(2025, 6, 28), 15 },
-					{ 15, new DateTime(2025, 3, 15), new DateTime(2025, 8, 7), 16 },
-					{ 16, new DateTime(2025, 4, 3), new DateTime(2025, 7, 16), 17 },
-					{ 17, new DateTime(2025, 3, 29), new DateTime(2025, 8, 3), 18 },
-					{ 18, new DateTime(2025, 3, 4), new DateTime(2025, 9, 2), 19 },
-					{ 19, new DateTime(2025, 3, 19), new DateTime(2025, 7, 18), 20 },
-					{ 20, new DateTime(2025, 3, 30), new DateTime(2025, 9, 10), 21 },
-					{ 21, new DateTime(2025, 4, 4), new DateTime(2025, 6, 21), 22 },
-					{ 22, new DateTime(2025, 3, 21), new DateTime(2025, 8, 25), 23 },
-					{ 23, new DateTime(2025, 4, 7), new DateTime(2025, 9, 5), 24 },
-					{ 24, new DateTime(2025, 3, 11), new DateTime(2025, 7, 14), 25 },
-					{ 25, new DateTime(2025, 4, 5), new DateTime(2025, 9, 1), 26 },
-					{ 26, new DateTime(2025, 4, 9), new DateTime(2025, 8, 22), 27 },
-					{ 27, new DateTime(2025, 3, 4), new DateTime(2025, 6, 26), 28 },
-					{ 28, new DateTime(2025, 3, 27), new DateTime(2025, 8, 8), 29 },
-					{ 29, new DateTime(2025, 3, 23), new DateTime(2025, 9, 4), 30 },
-					{ 30, new DateTime(2025, 4, 6), new DateTime(2025, 7, 23), 31 },
-					{ 31, new DateTime(2025, 4, 2), new DateTime(2025, 8, 15), 32 },
-					{ 32, new DateTime(2025, 3, 10), new DateTime(2025, 9, 8), 33 },
-					{ 33, new DateTime(2025, 3, 25), new DateTime(2025, 6, 30), 34 }
+					{ 1, new DateTime(2025, 3, 3, 8, 0, 0), new DateTime(2025, 6, 18, 16, 0, 0), 2 },
+					{ 2, new DateTime(2025, 3, 7, 8, 0, 0), new DateTime(2025, 7, 2, 16, 0, 0), 3 },
+					{ 3, new DateTime(2025, 3, 12, 8, 0, 0), new DateTime(2025, 6, 30, 16, 0, 0), 4 },
+					{ 4, new DateTime(2025, 3, 5, 8, 0, 0), new DateTime(2025, 7, 15, 16, 0, 0), 5 },
+					{ 5, new DateTime(2025, 3, 9, 8, 0, 0), new DateTime(2025, 6, 25, 16, 0, 0), 6 },
+					{ 6, new DateTime(2025, 3, 18, 8, 0, 0), new DateTime(2025, 7, 9, 16, 0, 0), 7 },
+					{ 7, new DateTime(2025, 3, 22, 8, 0, 0), new DateTime(2025, 6, 20, 16, 0, 0), 8 },
+					{ 8, new DateTime(2025, 4, 2, 8, 0, 0), new DateTime(2025, 7, 28, 16, 0, 0), 9 },
+					{ 9, new DateTime(2025, 3, 13, 8, 0, 0), new DateTime(2025, 8, 10, 16, 0, 0), 10 },
+					{ 10, new DateTime(2025, 3, 26, 8, 0, 0), new DateTime(2025, 9, 3, 16, 0, 0), 11 },
+					{ 11, new DateTime(2025, 3, 17, 8, 0, 0), new DateTime(2025, 7, 20, 16, 0, 0), 12 },
+					{ 12, new DateTime(2025, 4, 1, 8, 0, 0), new DateTime(2025, 8, 1, 16, 0, 0), 13 },
+					{ 13, new DateTime(2025, 3, 6, 8, 0, 0), new DateTime(2025, 7, 5, 16, 0, 0), 14 },
+					{ 14, new DateTime(2025, 4, 8, 8, 0, 0), new DateTime(2025, 6, 28, 16, 0, 0), 15 },
+					{ 15, new DateTime(2025, 3, 15, 8, 0, 0), new DateTime(2025, 8, 7, 16, 0, 0), 16 },
+					{ 16, new DateTime(2025, 4, 3, 8, 0, 0), new DateTime(2025, 7, 16, 16, 0, 0), 17 },
+					{ 17, new DateTime(2025, 3, 29, 8, 0, 0), new DateTime(2025, 8, 3, 16, 0, 0), 18 },
+					{ 18, new DateTime(2025, 3, 4, 8, 0, 0), new DateTime(2025, 9, 2, 16, 0, 0), 19 },
+					{ 19, new DateTime(2025, 3, 19, 8, 0, 0), new DateTime(2025, 7, 18, 16, 0, 0), 20 },
+					{ 20, new DateTime(2025, 3, 30, 8, 0, 0), new DateTime(2025, 9, 10, 16, 0, 0), 21 },
+					{ 21, new DateTime(2025, 4, 4, 8, 0, 0), new DateTime(2025, 6, 21, 16, 0, 0), 22 },
+					{ 22, new DateTime(2025, 3, 21, 8, 0, 0), new DateTime(2025, 8, 25, 16, 0, 0), 23 },
+					{ 23, new DateTime(2025, 4, 7, 8, 0, 0), new DateTime(2025, 9, 5, 16, 0, 0), 24 },
+					{ 24, new DateTime(2025, 3, 11, 8, 0, 0), new DateTime(2025, 7, 14, 16, 0, 0), 25 },
+					{ 25, new DateTime(2025, 4, 5, 8, 0, 0), new DateTime(2025, 9, 1, 16, 0, 0), 26 },
+					{ 26, new DateTime(2025, 4, 9, 8, 0, 0), new DateTime(2025, 8, 22, 16, 0, 0), 27 },
+					{ 27, new DateTime(2025, 3, 4, 8, 0, 0), new DateTime(2025, 6, 26, 16, 0, 0), 28 },
+					{ 28, new DateTime(2025, 3, 27, 8, 0, 0), new DateTime(2025, 8, 8, 16, 0, 0), 29 },
+					{ 29, new DateTime(2025, 3, 23, 8, 0, 0), new DateTime(2025, 9, 4, 16, 0, 0), 30 },
+					{ 30, new DateTime(2025, 4, 6, 8, 0, 0), new DateTime(2025, 7, 23, 16, 0, 0), 31 },
+					{ 31, new DateTime(2025, 4, 2, 8, 0, 0), new DateTime(2025, 8, 15, 16, 0, 0), 32 },
+					{ 32, new DateTime(2025, 3, 10, 8, 0, 0), new DateTime(2025, 9, 8, 16, 0, 0), 33 },
+					{ 33, new DateTime(2025, 3, 25, 8, 0, 0), new DateTime(2025, 6, 30, 16, 0, 0), 34 }
 				});
 		}
 

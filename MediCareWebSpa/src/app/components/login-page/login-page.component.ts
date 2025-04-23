@@ -41,7 +41,7 @@ export class LoginPageComponent {
       this.loadingService.show();
       this.authService.login(loginRequest).subscribe({
         next: (response: LoginResponseDTO) => {
-          this.authService.storeUserData(response.accessToken, response.refreshToken, response.roleType);
+          this.authService.storeUserData(response.userName, response.userSurname, response.accessToken, response.refreshToken, response.roleType);
           this.loadingService.hide();
           this.loadingService.showMessage('Logged in.');
           this.router.navigate(['/']);

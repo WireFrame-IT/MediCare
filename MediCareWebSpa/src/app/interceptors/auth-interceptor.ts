@@ -55,10 +55,10 @@ export class AuthInterceptor implements HttpInterceptor {
   private handleAuthError(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (this.isRefreshing) {
       return this.refreshTokenSubject.pipe(
-      filter((tokens) => tokens != null),
-      take(1),
-      switchMap(() => next.handle(this.addAuthorizationHeader(request, this.authService.getAccessToken()!)))
-    );
+        filter((tokens) => tokens != null),
+        take(1),
+        switchMap(() => next.handle(this.addAuthorizationHeader(request, this.authService.getAccessToken()!)))
+      );
     }
 
     this.isRefreshing = true;

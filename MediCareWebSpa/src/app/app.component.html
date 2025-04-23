@@ -7,6 +7,9 @@
     @if (isAdmin) {
       <button mat-button routerLink="/admin-panel">Admin panel</button>
     }
+    @if (isDoctor) {
+      <button mat-button routerLink="/availability-page">Availabilities</button>
+    }
     <button mat-button routerLink="/services">Services</button>
     <button mat-button [routerLink]="isLoggedIn ? '/appointments' : '/login'">Appointments</button>
     <button mat-button routerLink="/about-page">About us</button>
@@ -16,6 +19,9 @@
           <button mat-raised-button routerLink="/register-user">User Registration</button>
         }
         <button mat-raised-button (click)="logout()">Log out</button>
+        <button mat-raised-button [matTooltip]="getUserNameAndSurname()" class="btn-user">
+          <mat-icon class="icon">person</mat-icon>
+        </button>
       } @else {
           <button mat-raised-button routerLink="/login">Login</button>
           <button mat-raised-button routerLink="/register">Register</button>

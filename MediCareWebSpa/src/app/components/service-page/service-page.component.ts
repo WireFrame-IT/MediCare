@@ -53,8 +53,8 @@ export class ServicePageComponent {
   ) {}
 
   ngOnInit(): void {
-    this.selectedSort = localStorage.getItem('services_sort_by') ?? '';
-    this.filter = localStorage.getItem('services_filter') ?? '';
+    this.selectedSort = sessionStorage.getItem('servicesSortBy') ?? '';
+    this.filter = sessionStorage.getItem('servicesFilter') ?? '';
 
     this.appointmentService.loadServices();
     this.subscriptions.push(this.appointmentService.services$.subscribe(services => {
@@ -87,7 +87,7 @@ export class ServicePageComponent {
       return;
 
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
-      width: '600px',
+      width: '500px',
       data: { service: service, serviceId: service.id, status: AppointmentStatus.New } as Appointment
     });
 
@@ -98,13 +98,13 @@ export class ServicePageComponent {
 
   applyFilter(): void {
     const query = this.filter.toLowerCase();
-    localStorage.setItem('services_filter', query);
+    sessionStorage.setItem('servicesFilter', query);
     this.filteredServices = this.services.filter(service => service.name.toLowerCase().includes(query) || service.description.toLocaleLowerCase().includes(query));
     this.onSortChange();
   }
 
   onSortChange(): void {
-    localStorage.setItem('services_sort_by', this.selectedSort);
+    sessionStorage.setItem('servicesSortBy', this.selectedSort);
     this.filteredServices = [...this.filteredServices].sort((a, b) => {
       switch(this.selectedSort) {
         case 'name':
