@@ -168,7 +168,7 @@ export class AuthService {
 
   logout(): void {
     this.loadingService.show();
-    this.http.post(`${this.apiUrl}/logout`, {})
+    this.http.post(`${this.apiUrl}/logout`, null)
     .pipe(finalize(() => {
       this.cleanCredentials();
       this.router.navigate(['/login']);

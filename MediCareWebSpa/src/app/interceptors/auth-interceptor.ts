@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
 import { catchError, switchMap, filter, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { RefreshResponseDTO } from '../DTOs/response/refresh-response.dto';
@@ -75,7 +75,7 @@ export class AuthInterceptor implements HttpInterceptor {
         this.isRefreshing = false;
         this.authService.cleanCredentials();
         this.router.navigate(['/login']);
-        return throwError(() => error);
+        return of(error);
       })
     );
   }

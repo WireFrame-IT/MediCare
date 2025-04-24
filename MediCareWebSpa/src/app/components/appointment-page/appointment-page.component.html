@@ -11,7 +11,7 @@
           @if (!isDoctor || canSeeAllAppointments()) {
             <div class="doctors-info">
               <p class="doctor-name">{{ appointment.doctor.user.name }} {{ appointment.doctor.user.surname }}</p>
-              <i class="doctor-speciality">{{ appointment.doctor.speciality.name + " Doctor" }}</i>
+              <i class="doctor-speciality">{{ appointment.doctor.speciality.name }}</i>
             </div>
           }
           @if (isDoctor || isAdmin) {

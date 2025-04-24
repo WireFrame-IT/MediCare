@@ -2,10 +2,10 @@
 using MediCare.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using AutoMapper;
 using MediCare.Services.Interfaces;
 using MediCare.DTOs.Request;
+using MediCare.Utilities;
 
 namespace MediCare.Controllers
 {
@@ -25,13 +25,7 @@ namespace MediCare.Controllers
 			_accountsService = accountsService;
 		}
 
-		protected int GetCurrentUserId()
-		{
-			var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-			if (!int.TryParse(userIdString, out var userId))
-				throw new InvalidOperationException("User Id claim is not a valid integer.");
-			return userId;
-		}
+		protected int GetCurrentUserId() => User.GetCurrentUserId();
 
 		protected async Task<User> GetCurrentUserAsync()
 		{

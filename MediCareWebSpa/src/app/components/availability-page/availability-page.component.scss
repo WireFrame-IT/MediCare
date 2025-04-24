@@ -30,13 +30,14 @@
     }
 
     .availability-icon {
+      width: 5%;
       font-size: 2rem;
       height: 100%;
-      width: 5%;
       color: variables.$accent-color;
     }
 
     .availability-info {
+      width: 80%;
       color: variables.$primary-color;
       font-size: 1.2rem;
       display: flex;
@@ -53,6 +54,7 @@
     }
 
     .actions {
+      width: 15%;
       display: flex;
       align-items: center;
       gap: 1rem;
