@@ -183,7 +183,7 @@ namespace MediCare.Controllers
 		{
 			var appointment = await GetAppointmentAsync(id);
 			if (appointment == null)
-				return NotFound();
+				return NotFound("Appointment doesn't exist or you don't have permission to accept it.");
 			appointment.Status = AppointmentStatus.Accepted;
 			await _context.SaveChangesAsync();
 			return Ok();
@@ -199,7 +199,7 @@ namespace MediCare.Controllers
 
 			var appointment = await GetAppointmentAsync(id);
 			if (appointment == null)
-				return NotFound();
+				return NotFound("Appointment doesn't exist or you don't have permission to cancel it.");
 			appointment.Status = AppointmentStatus.Canceled;
 			await _context.SaveChangesAsync();
 			return Ok();

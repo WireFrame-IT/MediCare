@@ -52,14 +52,6 @@ export class AppointmentService {
     this.http.get<Appointment[]>(`${this.apiUrl}`).pipe(catchError(() => [])).subscribe(appointments => this._appointments.next(appointments as Appointment[]));
   }
 
-  addAppointment(appointment: Appointment): void {
-    this._appointments.next([...this._appointments.value, appointment]);
-  }
-
-  updateAppointment(appointment: Appointment): void {
-    this._appointments.next([...this._appointments.value.filter(x => x.id != appointment.id), appointment]);
-  }
-
   saveAppointment(appointmentData: AppointmentRequestDTO): Observable<Appointment> {
     return this.http.post<Appointment>(`${this.apiUrl}`, appointmentData);
   }

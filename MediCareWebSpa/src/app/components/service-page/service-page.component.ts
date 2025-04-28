@@ -91,8 +91,8 @@ export class ServicePageComponent {
       data: { service: service, serviceId: service.id, status: AppointmentStatus.New } as Appointment
     });
 
-    this.dialogRef.afterClosed().subscribe(appointment => {
-      this.appointmentService.addAppointment(appointment);
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.appointmentService.loadAppointments();
     });
   }
 

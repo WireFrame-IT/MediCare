@@ -42,6 +42,7 @@ namespace MedicalFacility.Controllers
 			await _context.SaveChangesAsync();
 			return Ok(new LoginResponseDTO()
 			{
+				UserId = user.Id,
 				UserName = user.Name,
 				UserSurname = user.Surname,
 				AccessToken = _accountsService.GenerateAccessToken(user),
@@ -104,6 +105,7 @@ namespace MedicalFacility.Controllers
 
 			return Ok(new LoginResponseDTO
 			{
+				UserId = user.Id,
 				UserName = user.Name,
 				UserSurname = user.Surname,
 				AccessToken = _accountsService.GenerateAccessToken(user),
@@ -131,6 +133,7 @@ namespace MedicalFacility.Controllers
 
 			return Ok(new LoginResponseDTO()
 			{
+				UserId = user.Id,
 				UserName = user.Name,
 				UserSurname = user.Surname,
 				AccessToken = _accountsService.GenerateAccessToken(user),

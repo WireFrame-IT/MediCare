@@ -83,12 +83,13 @@ export class AuthService {
     return this.http.post<Doctor | Patient>(`${this.apiUrl}/user`, user);
   }
 
-  storeUserData(userName: string, userSurname: string, accessToken: string, refreshToken: string, roleType?: RoleType): void {
+  storeUserData(userId: number, userName: string, userSurname: string, accessToken: string, refreshToken: string, roleType?: RoleType): void {
+    sessionStorage.setItem('userId', userId.toString());
     sessionStorage.setItem('userName', userName);
     sessionStorage.setItem('userSurname', userSurname);
+    sessionStorage.setItem('roleType', roleType?.toString() ?? RoleType.Patient.toString());
     sessionStorage.setItem('accessToken', accessToken);
     sessionStorage.setItem('refreshToken', refreshToken);
-    sessionStorage.setItem('roleType', roleType?.toString() ?? RoleType.Patient.toString());
     this._isAdmin.next(roleType === RoleType.Admin);
     this._isDoctor.next(roleType === RoleType.Doctor);
     this._isLoggedIn.next(true);
@@ -140,11 +141,12 @@ export class AuthService {
     this._isLoggedIn.next(false);
     sessionStorage.removeItem('accessToken');
     sessionStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('userName');
+    sessionStorage.removeItem('userSurname');
     sessionStorage.removeItem('roleType');
     sessionStorage.removeItem('servicesFilter');
     sessionStorage.removeItem('servicesSortBy');
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('userSurname');
   }
 
   retrieveCredentials(): void {

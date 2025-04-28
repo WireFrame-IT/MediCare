@@ -26,8 +26,7 @@ namespace MediCare.Migrations.CustomScripts
 					{2, "Cancel appointment", false, false, (int)PermissionType.CancelAppointment },
 					{3, "Choose a doctor", false, true, (int)PermissionType.ChooseDoctor },
 					{4, "Generate reports", true, false, (int)PermissionType.GenerateReports },
-					{5, "Manage services", true, false, (int)PermissionType.ManageServices },
-					{6, "View system logs", true, false, (int)PermissionType.ViewSystemLogs }
+					{5, "Manage services", true, false, (int)PermissionType.ManageServices }
 				});
 
 			migrationBuilder.InsertData(
@@ -40,8 +39,7 @@ namespace MediCare.Migrations.CustomScripts
 					{ 2, 1 },
 					{ 2, 2 },
 					{ 2, 4 },
-					{ 2, 5 },
-					{ 2, 6 }
+					{ 2, 5 }
 				});
 
 			migrationBuilder.InsertData(
@@ -310,7 +308,7 @@ namespace MediCare.Migrations.CustomScripts
 			migrationBuilder.DeleteData(
 				table: "Permissions",
 				keyColumn: "Id",
-				keyValues: new object[] { 1, 2, 3, 4, 5, 6});
+				keyValues: new object[] { 1, 2, 3, 4, 5 });
 
 			migrationBuilder.DeleteData(
 				table: "RolePermissions",
@@ -322,8 +320,7 @@ namespace MediCare.Migrations.CustomScripts
 					{ 2, 1 },
 					{ 2, 2 },
 					{ 2, 4 },
-					{ 2, 5 },
-					{ 2, 6 }
+					{ 2, 5 }
 				});
 
 			migrationBuilder.DeleteData(

@@ -57,7 +57,7 @@ export class RegisterPageComponent {
       this.loadingService.show();
       this.authService.register(registerRequest).subscribe({
         next: (response: LoginResponseDTO) => {
-          this.authService.storeUserData(response.userName, response. userSurname, response.accessToken, response.refreshToken);
+          this.authService.storeUserData(response.userId, response.userName, response. userSurname, response.accessToken, response.refreshToken);
           this.loadingService.hide();
           this.loadingService.showMessage('Registered successfully.');
           this.router.navigate(['/']);

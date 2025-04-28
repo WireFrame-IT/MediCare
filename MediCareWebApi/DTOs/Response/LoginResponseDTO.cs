@@ -4,6 +4,7 @@ namespace MediCare.DTOs.Response
 {
 	public class LoginResponseDTO
 	{
+		public int UserId { get; set; }
 		public string UserName { get; set; }
 		public string UserSurname { get; set; }
 		public string AccessToken { get; set; }

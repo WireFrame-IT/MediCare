@@ -8,6 +8,7 @@ import { AppointmentPageComponent } from './components/appointment-page/appointm
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 import { AboutPageComponent } from './components/about-page/about-page.component';
 import { AvailabilityPageComponent } from './components/availability-page/availability-page.component';
+import { authGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'appointments', component: AppointmentPageComponent },
   { path: 'admin-panel', component: AdminPanelComponent },
   { path: 'about-page', component: AboutPageComponent },
-  { path: 'availability-page', component: AvailabilityPageComponent }
+  { path: 'availability-page', component: AvailabilityPageComponent },
+  { path: 'appointments', canActivate: [authGuard], loadComponent: () => import('./components/appointment-page/appointment-page.component').then(x => x.AppointmentPageComponent)}
 ];

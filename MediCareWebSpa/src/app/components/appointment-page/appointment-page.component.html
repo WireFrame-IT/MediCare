@@ -28,6 +28,9 @@
           @if (isDoctor && canAccept(appointment)) {
             <button mat-flat-button (click)="onAccept(appointment)">Accept</button>
           }
+          @if (isDoctor && canConfirm(appointment)) {
+            <button mat-flat-button (click)="onConfirm(appointment)">Confirm</button>
+          }
           @if (isAdmin || isDoctor) {
             <button mat-flat-button (click)="openEditAppointmentDialog(appointment)">Edit</button>
           }

@@ -1,31 +1,32 @@
 <div class="sticky-container">
   <mat-toolbar color="primary">
     <img src="assets/logo.svg" alt="MediCare Logo" class="logo">
-    <span>MediCare</span>
-    <span class="spacer"></span>
-    <button mat-button routerLink="/" routerLinkActive="active">Home</button>
-    @if (isAdmin) {
-      <button mat-button routerLink="/admin-panel">Admin panel</button>
-    }
-    @if (isDoctor) {
-      <button mat-button routerLink="/availability-page">Availabilities</button>
-    }
-    <button mat-button routerLink="/services">Services</button>
-    <button mat-button [routerLink]="isLoggedIn ? '/appointments' : '/login'">Appointments</button>
-    <button mat-button routerLink="/about-page">About us</button>
-    <div class="auth-buttons">
-      @if(isLoggedIn) {
-        @if (isAdmin) {
-          <button mat-raised-button routerLink="/register-user">User Registration</button>
-        }
-        <button mat-raised-button (click)="logout()">Log out</button>
-        <button mat-raised-button [matTooltip]="getUserNameAndSurname()" class="btn-user">
-          <mat-icon class="icon">person</mat-icon>
-        </button>
-      } @else {
-          <button mat-raised-button routerLink="/login">Login</button>
-          <button mat-raised-button routerLink="/register">Register</button>
+    <span class="title">MediCare</span>
+    <div class="links">
+      <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</button>
+      @if (isAdmin) {
+        <button mat-button routerLink="/admin-panel" routerLinkActive="active">Admin panel</button>
       }
+      @if (isDoctor) {
+        <button mat-button routerLink="/availability-page" routerLinkActive="active">Availabilities</button>
+      }
+      <button mat-button routerLink="/services" routerLinkActive="active">Services</button>
+      <button mat-button routerLink="/appointments" routerLinkActive="active">Appointments</button>
+      <button mat-button routerLink="/about-page" routerLinkActive="active">About us</button>
+      <div class="auth-buttons">
+        @if(isLoggedIn) {
+          @if (isAdmin) {
+            <button mat-raised-button routerLink="/register-user" routerLinkActive="active">User Registration</button>
+          }
+          <button mat-raised-button (click)="logout()" routerLinkActive="active">Log out</button>
+          <button mat-raised-button [matTooltip]="getUserNameAndSurname()" class="btn-user">
+            <mat-icon class="icon">person</mat-icon>
+          </button>
+        } @else {
+            <button mat-raised-button routerLink="/login" routerLinkActive="active">Login</button>
+            <button mat-raised-button routerLink="/register" routerLinkActive="active">Register</button>
+        }
+      </div>
     </div>
   </mat-toolbar>
   @if(isLoading) {

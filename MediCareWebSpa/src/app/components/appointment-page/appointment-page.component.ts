@@ -11,6 +11,7 @@ import { AppointmentStatus } from '../../enums/appointment-status';
 import { AppointmentDialogComponent } from '../appointment-dialog/appointment-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PermissionType } from '../../enums/permission-type';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-appointment-page',
@@ -35,6 +36,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
   constructor(
     private appointmentService: AppointmentService,
     private authService: AuthService,
+    private loadingService: LoadingService,
     private dialog: MatDialog
   ) {}
 
@@ -54,15 +56,37 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
   }
 
   onCancel(appointment: Appointment): void {
-    this.appointmentService.cancelAppointment(appointment.id).subscribe(() => {
-      appointment.status = AppointmentStatus.Canceled;
+    this.appointmentService.cancelAppointment(appointment.id).subscribe({
+      next: () => {
+        this.loadingService.hide();
+        appointment.status = AppointmentStatus.Canceled;
+        this.loadingService.showMessage('Appointment canceled.');
+      },
+      error: (error) => {
+        this.loadingService.hide();
+        this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
+      }
     });
   }
 
   onAccept(appointment: Appointment): void {
-    this.appointmentService.acceptAppointment(appointment.id).subscribe(() => {
-      appointment.status = AppointmentStatus.Accepted;
+    this.loadingService.show();
+
+    this.appointmentService.acceptAppointment(appointment.id).subscribe({
+      next: () => {
+        this.loadingService.hide();
+        appointment.status = AppointmentStatus.Accepted;
+        this.loadingService.showMessage('Appointment accepted.');
+      },
+      error: (error) => {
+        this.loadingService.hide();
+        this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
+      }
     });
+  }
+
+  onConfirm(appointment: Appointment): void {
+
   }
 
   getStatusClass(appointment: Appointment): string {
@@ -81,14 +105,26 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
 
   getStatus = (appointment: Appointment): string => AppointmentStatus[appointment.status];
 
-  canCancel = (appointment: Appointment): boolean => this.userPermissions.some(x => x === PermissionType.CancelAppointment)
-    && appointment.status !== AppointmentStatus.Canceled
-    && appointment.status !== AppointmentStatus.Absent
-    && appointment.status !== AppointmentStatus.Confirmed;
+  isRightUser = (appointment: Appointment): boolean => {
+    const userId = sessionStorage.getItem('userId');
+
+    if (userId == null)
+      return false;
+
+    return Number(userId) === appointment.doctorsUserId || Number(userId) === appointment.patientsUserId;
+  };
 
   canSeeAllAppointments = () => this.userPermissions.some(x => x === PermissionType.ViewAllAppointments);
 
-  canAccept = (appointment: Appointment): boolean => appointment.status === AppointmentStatus.New;
+  canAccept = (appointment: Appointment): boolean => this.isRightUser(appointment) && appointment.status === AppointmentStatus.New;
+
+  canConfirm = (appointment: Appointment): boolean => this.isRightUser(appointment) && appointment.status === AppointmentStatus.Accepted;
+
+  canCancel = (appointment: Appointment): boolean => this.userPermissions.some(x => x === PermissionType.CancelAppointment)
+    && this.isRightUser(appointment)
+    && appointment.status !== AppointmentStatus.Canceled
+    && appointment.status !== AppointmentStatus.Absent
+    && appointment.status !== AppointmentStatus.Confirmed;
 
   openEditAppointmentDialog(appointment: Appointment): void {
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
@@ -96,9 +132,8 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
       data: appointment
     });
 
-    this.dialogRef.afterClosed().subscribe(appointment => {
-      if(appointment)
-        this.appointmentService.updateAppointment(appointment);
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.appointmentService.loadAppointments();
     });
   }
 }
