@@ -190,7 +190,9 @@ namespace MediCare.Controllers
 		public async Task<IActionResult> GetPrescriptionMedicamentsAsync()
 		{
 			var user = await GetCurrentUserAsync();
-			IQueryable<PrescriptionMedicament> query = _context.PrescriptionMedicaments;
+			IQueryable<PrescriptionMedicament> query = _context.PrescriptionMedicaments
+				.Include(x => x.Prescription)
+				.Include(x => x.Medicament);
 
 			switch (user.Role.RoleType)
 			{
@@ -199,7 +201,9 @@ namespace MediCare.Controllers
 					break;
 
 				case RoleType.Doctor:
-					query = query.Where(x => x.Prescription.Appointment.DoctorsUserId == user.Id);
+					var actionResult = await CheckPermission(PermissionType.ViewAllAppointments);
+					if (actionResult != null)
+						query = query.Where(x => x.Prescription.Appointment.DoctorsUserId == user.Id);
 					break;
 
 				case RoleType.Admin:
@@ -232,7 +236,7 @@ namespace MediCare.Controllers
 			if (appointment == null)
 				return NotFound("Appointment doesn't exist or you don't have permission to accept it.");
 
-			if (appointment.Time < DateTime.Now)
+			if (DateTime.Now < appointment.Time)
 				return BadRequest("Too early to confirm the appointment.");
 
 			appointment.Status = AppointmentStatus.Confirmed;

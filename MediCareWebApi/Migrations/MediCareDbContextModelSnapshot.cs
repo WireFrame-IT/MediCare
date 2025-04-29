@@ -298,6 +298,9 @@ namespace MediCare.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
 
@@ -323,8 +326,10 @@ namespace MediCare.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int>("MedicamentUnit")
+                        .HasColumnType("int");
+
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")

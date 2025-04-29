@@ -9,6 +9,9 @@ namespace MediCare.Models
 		public DateTime IssueDate { get; set; }
 
 		[Required]
+		public DateTime ExpirationDate { get; set; }
+
+		[Required]
 		public string Description { get; set; }
 
 		[Required]

@@ -12,6 +12,7 @@ import { AppointmentDialogComponent } from '../appointment-dialog/appointment-di
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PermissionType } from '../../enums/permission-type';
 import { LoadingService } from '../../services/loading.service';
+import { PrescriptionDialogComponent } from '../prescription-dialog/prescription-dialog.component';
 
 @Component({
   selector: 'app-appointment-page',
@@ -25,7 +26,9 @@ import { LoadingService } from '../../services/loading.service';
   styleUrl: './appointment-page.component.scss'
 })
 export class AppointmentPageComponent implements OnInit, OnDestroy {
-  private dialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
+  private appointmentDialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
+  private prescriptionDialogRef: MatDialogRef<PrescriptionDialogComponent> | null = null;
+
   subscriptions: Subscription[] = [];
   appointments: Appointment[] = [];
   userPermissions: PermissionType[] = [];
@@ -86,7 +89,19 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
   }
 
   onConfirm(appointment: Appointment): void {
+    this.loadingService.show();
 
+    this.appointmentService.confirmAppointment(appointment.id).subscribe({
+      next: () => {
+        this.loadingService.hide();
+        appointment.status = AppointmentStatus.Confirmed;
+        this.loadingService.showMessage('Appointment confirmed.');
+      },
+      error: (error) => {
+        this.loadingService.hide();
+        this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
+      }
+    });
   }
 
   getStatusClass(appointment: Appointment): string {
@@ -120,19 +135,32 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
 
   canConfirm = (appointment: Appointment): boolean => this.isRightUser(appointment) && appointment.status === AppointmentStatus.Accepted;
 
+  canEdit = (appointment: Appointment): boolean => this.isRightUser(appointment) && appointment.status === AppointmentStatus.Confirmed;
+
   canCancel = (appointment: Appointment): boolean => this.userPermissions.some(x => x === PermissionType.CancelAppointment)
     && this.isRightUser(appointment)
     && appointment.status !== AppointmentStatus.Canceled
     && appointment.status !== AppointmentStatus.Absent
     && appointment.status !== AppointmentStatus.Confirmed;
 
+  openPrescriptionDialog(appointment: Appointment): void {
+    this.prescriptionDialogRef = this.dialog.open(PrescriptionDialogComponent, {
+      width: '800px',
+      data: appointment.id
+    });
+
+    this.prescriptionDialogRef.afterClosed().subscribe(() => {
+      this.appointmentService.loadPrescriptionMedicaments();
+    });
+  }
+
   openEditAppointmentDialog(appointment: Appointment): void {
-    this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
+    this.appointmentDialogRef = this.dialog.open(AppointmentDialogComponent, {
       width: '500px',
       data: appointment
     });
 
-    this.dialogRef.afterClosed().subscribe(() => {
+    this.appointmentDialogRef.afterClosed().subscribe(() => {
       this.appointmentService.loadAppointments();
     });
   }

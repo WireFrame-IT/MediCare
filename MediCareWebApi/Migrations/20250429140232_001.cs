@@ -326,6 +326,7 @@ namespace MediCare.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IssueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AppointmentId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -348,7 +349,8 @@ namespace MediCare.Migrations
                     MedicamentId = table.Column<int>(type: "int", nullable: false),
                     Dosage = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MedicamentUnit = table.Column<int>(type: "int", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

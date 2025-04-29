@@ -1,0 +1,64 @@
+<h2 class="title" mat-dialog-title>Prescription</h2>
+<form class="form" [formGroup]="prescriptionForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="text-area">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="10"></textarea>
+  </mat-form-field>
+  @if (getFilteredPrescriptionMedicaments().length) {
+    <mat-accordion class="prescription-medicaments">
+      @for (prescriptionMedicament of getFilteredPrescriptionMedicaments(); track prescriptionMedicament.medicamentId) {
+        <mat-expansion-panel class="expansion-panel">
+          <mat-expansion-panel-header class="expansion-panel-header">
+            <mat-panel-title class="expansion-panel-title">
+              <div class="medicament">
+                <h3>{{ prescriptionMedicament.medicament!.name }}</h3>
+                <p>{{ getMedicamentTypeName(prescriptionMedicament.medicament!.medicamentType) }}</p>
+              </div>
+              <div class="quantity">
+                <p>Quantity: <span>{{ prescriptionMedicament.quantity }}</span></p>
+                <p>Measurement unit: <span>{{ getMedicamentUnitName(prescriptionMedicament.medicamentUnit) }}</span></p>
+              </div>
+              <button class="btn-delete" mat-button (click)="removeMedicament($event, prescriptionMedicament)">
+                <mat-icon class="icon-delete">delete</mat-icon>
+              </button>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="content">
+            <p>{{ prescriptionMedicament.medicament!.description }}</p>
+            <div class="dosage">
+              <p>Dosage:</p>
+              <p>{{ prescriptionMedicament.dosage }}</p>
+            </div>
+            @if (prescriptionMedicament.notes) {
+              <div class="notes">
+                <p>Notes:</p>
+                <p>{{ prescriptionMedicament.notes }}</p>
+              </div>
+            }
+            @if (prescriptionMedicament.medicament!.prescriptionRequired) {
+              <div class="info">
+                <mat-icon class="icon-info">info</mat-icon>
+                <i>Prescription only medicine.</i>
+              </div>
+            }
+          </div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  }
+   <!-- <mat-form-field appearance="fill" class="flex-1">
+          <mat-label>Nazwa leku</mat-label>
+          <input matInput [(ngModel)]="medicaments()[i].name">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="flex-1">
+          <mat-label>Dawkowanie</mat-label>
+          <input matInput [(ngModel)]="medicaments()[i].dosage">
+        </mat-form-field>
+   -->
+  <button class="btn-add" mat-flat-button (click)="addMedicament()">Add</button>
+  <div class="buttons" mat-dialog-actions>
+    <button class="btn-submit" mat-raised-button type="submit" [disabled]="prescriptionForm.invalid">Save</button>
+    <button class="btn-cancel" mat-button mat-dialog-close type="button" (click)="closeDialog()">Cancel</button>
+  </div>
+</form>

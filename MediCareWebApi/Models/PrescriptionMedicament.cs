@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MediCare.Enums;
 
 namespace MediCare.Models
 {
@@ -11,6 +12,9 @@ namespace MediCare.Models
 
 		[Required]
 		public int Quantity { get; set; }
+
+		[Required]
+		public MedicamentUnit MedicamentUnit { get; set; }
 
 		public string? Notes { get; set; }
 
