@@ -13,7 +13,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PermissionType } from '../../enums/permission-type';
 import { LoadingService } from '../../services/loading.service';
 import { PrescriptionDialogComponent } from '../prescription-dialog/prescription-dialog.component';
-import { PrescriptionMedicament } from '../../DTOs/models/prescription-medicament';
+import { Prescription } from '../../DTOs/models/prescription';
 
 @Component({
   selector: 'app-appointment-page',
@@ -33,7 +33,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   appointments: Appointment[] = [];
   userPermissions: PermissionType[] = [];
-  prescriptionMedicaments: PrescriptionMedicament[] = [];
+  prescriptions: Prescription[] = [];
   isDoctor: boolean = false;
   isAdmin: boolean = false;
   isLoggedIn: boolean = false;
@@ -47,7 +47,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.appointmentService.loadAppointments();
-    this.appointmentService.loadPrescriptionMedicaments();
+    this.appointmentService.loadPrescriptions();
     this.authService.loadUserPsermissions();
 
     this.subscriptions.push(this.appointmentService.appointments$.subscribe(appointments => this.appointments = appointments));
@@ -55,7 +55,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
     this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
     this.subscriptions.push(this.authService.userPermissions$.subscribe(userPermissions => this.userPermissions = userPermissions));
-    this.subscriptions.push(this.appointmentService.prescriptionMedicaments$.subscribe(prescriptionMedicaments => this.prescriptionMedicaments = prescriptionMedicaments));
+    this.subscriptions.push(this.appointmentService.prescriptions$.subscribe(prescriptions => this.prescriptions = prescriptions));
   }
 
   ngOnDestroy(): void {
@@ -141,7 +141,7 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
 
   isConfirmed = (appointment: Appointment): boolean => appointment.status === AppointmentStatus.Confirmed;
 
-  existsPrescription = (appointment: Appointment): boolean => this.prescriptionMedicaments.some(x => x.prescription.appointmentId == appointment.id);
+  existsPrescription = (appointment: Appointment): boolean => this.prescriptions.some(x => x.appointmentId == appointment.id);
 
   canCancel = (appointment: Appointment): boolean => this.userPermissions.some(x => x === PermissionType.CancelAppointment)
     && this.isRightUser(appointment)
@@ -153,11 +153,14 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
     this.prescriptionDialogRef = this.dialog.open(PrescriptionDialogComponent, {
       width: '700px',
       maxWidth: '700px',
-      data: this.prescriptionMedicaments.filter(x => x.prescription.appointmentId === appointment.id)
+      data: {
+        prescription: this.prescriptions.find(x => x.appointmentId === appointment.id),
+        appointmentId: appointment.id
+      }
     });
 
     this.prescriptionDialogRef.afterClosed().subscribe(() => {
-      this.appointmentService.loadPrescriptionMedicaments();
+      this.appointmentService.loadPrescriptions();
     });
   }
 

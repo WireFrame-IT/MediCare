@@ -104,7 +104,7 @@ export class UserRegisterPageComponent implements OnInit, OnDestroy {
       this.authService.registerUser(registerRequest).subscribe({
         next: () => {
           this.loadingService.hide();
-          this.loadingService.showMessage('The user has been registered successfully.');
+          this.loadingService.showMessage('The user has been registered.');
           this.router.navigate(['/']);
         },
         error: (error) => {

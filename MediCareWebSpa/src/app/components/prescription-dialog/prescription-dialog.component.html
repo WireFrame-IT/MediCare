@@ -10,9 +10,10 @@
     <mat-datepicker-toggle matIconSuffix [for]="picker" [disabled]="!isDoctor"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  @if (prescriptionMedicaments.length) {
+  @if (data.prescription?.prescriptionMedicaments?.length) {
+    <h3>Medications</h3>
     <mat-accordion class="prescription-medicaments">
-      @for (prescriptionMedicament of prescriptionMedicaments; track prescriptionMedicament.medicamentId) {
+      @for (prescriptionMedicament of data.prescription!.prescriptionMedicaments; track prescriptionMedicament.medicamentId) {
         <mat-expansion-panel class="expansion-panel">
           <mat-expansion-panel-header class="expansion-panel-header">
             <mat-panel-title class="expansion-panel-title">
@@ -25,7 +26,7 @@
                 <p>Measurement unit: <span>{{ getMedicamentUnitName(prescriptionMedicament.medicamentUnit) }}</span></p>
               </div>
               @if (isDoctor) {
-                <button class="btn-delete" mat-button (click)="removeMedicament($event, prescriptionMedicament)">
+                <button class="btn-delete" type="button" mat-button (click)="removeMedicament($event, prescriptionMedicament)">
                   <mat-icon class="icon-delete">delete</mat-icon>
                 </button>
               }
@@ -65,7 +66,7 @@
         </mat-form-field>
    -->
    @if (isDoctor) {
-     <button class="btn-add" mat-flat-button (click)="addMedicament()">Add Medication</button>
+     <button class="btn-add" type="button" mat-flat-button (click)="addMedicament()">Add Medication</button>
    }
   <div class="buttons" mat-dialog-actions>
     @if (isDoctor) {

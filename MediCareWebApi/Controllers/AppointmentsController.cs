@@ -181,29 +181,28 @@ namespace MediCare.Controllers
 		[HttpGet("medicaments")]
 		public async Task<IActionResult> GetMedicamentsAsync()
 		{
-			return Ok(_mapper.Map<List<Medicament>>(await _context.Medicaments.ToListAsync()));
+			return Ok(_mapper.Map<List<MedicamentDTO>>(await _context.Medicaments.ToListAsync()));
 		}
 
-
 		[Authorize]
-		[HttpGet("prescription-medicaments")]
-		public async Task<IActionResult> GetPrescriptionMedicamentsAsync()
+		[HttpGet("prescriptions")]
+		public async Task<IActionResult> GetPrescriptionsAsync()
 		{
 			var user = await GetCurrentUserAsync();
-			IQueryable<PrescriptionMedicament> query = _context.PrescriptionMedicaments
-				.Include(x => x.Prescription)
-				.Include(x => x.Medicament);
+			IQueryable<Prescription> query = _context.Prescriptions
+				.Include(x => x.PrescriptionMedicaments)
+				.ThenInclude(x => x.Medicament);
 
 			switch (user.Role.RoleType)
 			{
 				case RoleType.Patient:
-					query = query.Where(x => x.Prescription.Appointment.PatientsUserId == user.Id);
+					query = query.Where(x => x.Appointment.PatientsUserId == user.Id);
 					break;
 
 				case RoleType.Doctor:
 					var actionResult = await CheckPermission(PermissionType.ViewAllAppointments);
 					if (actionResult != null)
-						query = query.Where(x => x.Prescription.Appointment.DoctorsUserId == user.Id);
+						query = query.Where(x => x.Appointment.DoctorsUserId == user.Id);
 					break;
 
 				case RoleType.Admin:
@@ -213,7 +212,29 @@ namespace MediCare.Controllers
 					return Forbid();
 			}
 
-			return Ok(_mapper.Map<List<PrescriptionMedicamentDTO>>(await query.ToListAsync()));
+			return Ok(_mapper.Map<List<PrescriptionDTO>>(await query.ToListAsync()));
+		}
+
+		[Authorize(Roles = "Doctor")]
+		[HttpPost("prescription")]
+		public async Task<IActionResult> SavePrescriptionAsync([FromBody] PrescriptionRequestDTO prescriptionRequestDto)
+		{
+			var prescription = await _context.Prescriptions.FirstOrDefaultAsync(x => x.AppointmentId == prescriptionRequestDto.AppointmentId);
+
+			if (prescription == null)
+			{
+				prescription = _mapper.Map<Prescription>(prescriptionRequestDto);
+				prescription.IssueDate = DateTime.Now;
+				await _context.AddAsync(prescription);
+			}
+			else
+			{
+				prescription.Description = prescriptionRequestDto.Description;
+				prescription.ExpirationDate = prescriptionRequestDto.ExpirationDate;
+			}
+
+			await _context.SaveChangesAsync();
+			return Ok();
 		}
 
 		[Authorize(Roles = "Doctor")]

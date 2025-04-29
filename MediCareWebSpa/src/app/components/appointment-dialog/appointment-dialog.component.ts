@@ -118,7 +118,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
         next: (response: Appointment) => {
           this.dialogRef.close(response);
           this.loadingService.hide();
-          this.loadingService.showMessage('Appointment has been saved successfully.');
+          this.loadingService.showMessage('Appointment has been saved.');
         },
         error: (error) => {
           this.loadingService.hide();

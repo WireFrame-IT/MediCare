@@ -14,6 +14,9 @@ import { MedicamentUnit } from '../../enums/medicament-unit';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AuthService } from '../../services/auth.service';
+import { PrescriptionRequestDTO } from '../../DTOs/request/prescription-request.dto';
+import { LoadingService } from '../../services/loading.service';
+import { Prescription } from '../../DTOs/models/prescription';
 
 @Component({
   selector: 'app-prescription-dialog',
@@ -39,13 +42,14 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
   constructor(
     private appointmentService: AppointmentService,
     private authService: AuthService,
+    private loadingService: LoadingService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<PrescriptionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public prescriptionMedicaments: PrescriptionMedicament[]
+    @Inject(MAT_DIALOG_DATA) public data: { prescription: Prescription | undefined, appointmentId: number }
   ) {
     this.prescriptionForm = this.fb.group({
-      description: [ prescriptionMedicaments.length ? prescriptionMedicaments[0].prescription.description : '', Validators.required],
-      expirationDate: [ prescriptionMedicaments.length ? new Date(prescriptionMedicaments[0].prescription.expirationDate) : '', Validators.required]
+      description: [ data.prescription ? data.prescription.description : '', Validators.required],
+      expirationDate: [ data.prescription ? new Date(data.prescription.expirationDate) : '', Validators.required]
     });
   }
 
@@ -71,7 +75,24 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.prescriptionForm.valid) {
+      const prescription = new PrescriptionRequestDTO(
+        this.data.appointmentId,
+        this.prescriptionForm.value.description,
+        this.prescriptionForm.value.expirationDate
+      );
 
+      this.loadingService.show();
+      this.appointmentService.savePrescription(prescription).subscribe({
+        next: () => {
+          this.dialogRef.close();
+          this.loadingService.hide();
+          this.loadingService.showMessage('Prescription has been saved.');
+        },
+        error: (error) => {
+          this.loadingService.hide();
+          this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
+        }
+      });
     }
   }
 

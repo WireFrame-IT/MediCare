@@ -8,7 +8,8 @@ import { AppointmentRequestDTO } from "../DTOs/request/appointment-request.dto";
 import { Patient } from "../DTOs/models/patient";
 import { ReducedDoctor } from "../DTOs/models/reduced-doctor";
 import { Medicament } from "../DTOs/models/medicament";
-import { PrescriptionMedicament } from "../DTOs/models/prescription-medicament";
+import { PrescriptionRequestDTO } from "../DTOs/request/prescription-request.dto";
+import { Prescription } from "../DTOs/models/prescription";
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
@@ -17,7 +18,7 @@ export class AppointmentService {
   private _reducedDoctors: BehaviorSubject<ReducedDoctor[]> = new BehaviorSubject<ReducedDoctor[]>([]);
   private _patients: BehaviorSubject<Patient[]> = new BehaviorSubject<Patient[]>([]);
   private _medicaments: BehaviorSubject<Medicament[]> = new BehaviorSubject<Medicament[]>([]);
-  private _prescriptionMedicaments: BehaviorSubject<PrescriptionMedicament[]> = new BehaviorSubject<PrescriptionMedicament[]>([]);
+  private _prescriptions: BehaviorSubject<Prescription[]> = new BehaviorSubject<Prescription[]>([]);
   private _appointments: BehaviorSubject<Appointment[]> = new BehaviorSubject<Appointment[]>([]);
 
   services$: Observable<Service[]> = this._services.asObservable();
@@ -25,7 +26,7 @@ export class AppointmentService {
   reducedDoctors$: Observable<ReducedDoctor[]> = this._reducedDoctors.asObservable();
   patients$: Observable<Patient[]> = this._patients.asObservable();
   medicaments$: Observable<Medicament[]> = this._medicaments.asObservable();
-  prescriptionMedicaments$: Observable<PrescriptionMedicament[]> = this._prescriptionMedicaments.asObservable();
+  prescriptions$: Observable<Prescription[]> = this._prescriptions.asObservable();
   appointments$: Observable<Appointment[]> = this._appointments.asObservable().pipe(
     map((appointments: Appointment[]) => appointments.slice().sort((a: Appointment, b: Appointment) => new Date(a.time).getTime() - new Date(b.time).getTime()))
   );
@@ -59,8 +60,8 @@ export class AppointmentService {
     this.http.get<Medicament[]>(`${this.apiUrl}/medicaments`).pipe(catchError(() => [])).subscribe(medicaments => this._medicaments.next(medicaments as Medicament[]));
   }
 
-  loadPrescriptionMedicaments(): void {
-    this.http.get<PrescriptionMedicament[]>(`${this.apiUrl}/prescription-medicaments`).pipe(catchError(() => [])).subscribe(prescriptionMedicaments => this._prescriptionMedicaments.next(prescriptionMedicaments as PrescriptionMedicament[]));
+  loadPrescriptions(): void {
+    this.http.get<Prescription[]>(`${this.apiUrl}/prescriptions`).pipe(catchError(() => [])).subscribe(prescriptions => this._prescriptions.next(prescriptions as Prescription[]));
   }
 
   loadAppointments(): void {
@@ -69,6 +70,10 @@ export class AppointmentService {
 
   saveAppointment(appointmentData: AppointmentRequestDTO): Observable<Appointment> {
     return this.http.post<Appointment>(`${this.apiUrl}`, appointmentData);
+  }
+
+  savePrescription(prescription: PrescriptionRequestDTO): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/prescription`, prescription);
   }
 
   acceptAppointment(id: number): Observable<void> {

@@ -59,7 +59,7 @@ export class RegisterPageComponent {
         next: (response: LoginResponseDTO) => {
           this.authService.storeUserData(response.userId, response.userName, response. userSurname, response.accessToken, response.refreshToken);
           this.loadingService.hide();
-          this.loadingService.showMessage('Registered successfully.');
+          this.loadingService.showMessage('Registered.');
           this.router.navigate(['/']);
         },
         error: (error) => {

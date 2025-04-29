@@ -58,7 +58,7 @@ export class AvailabilityDialogComponent {
         next: () => {
           this.dialogRef.close();
           this.loadingService.hide();
-          this.loadingService.showMessage('Availability has been saved successfully.');
+          this.loadingService.showMessage('Availability has been saved.');
         },
         error: (error) => {
           this.loadingService.hide();

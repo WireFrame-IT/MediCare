@@ -9,5 +9,7 @@
 		public string Description { get; set; }
 
 		public int AppointmentId { get; set; }
+
+		public List<PrescriptionMedicamentDTO> PrescriptionMedicaments { get; set; } = new List<PrescriptionMedicamentDTO>();
 	}
 }

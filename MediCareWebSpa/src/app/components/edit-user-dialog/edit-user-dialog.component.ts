@@ -102,7 +102,7 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
         next: (response: Doctor | Patient) => {
           this.dialogRef.close(response);
           this.loadingService.hide();
-          this.loadingService.showMessage('User has been saved successfully.');
+          this.loadingService.showMessage('User has been saved.');
         },
         error: (error) => {
           this.loadingService.hide();
