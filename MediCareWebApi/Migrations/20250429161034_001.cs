@@ -323,16 +323,14 @@ namespace MediCare.Migrations
                 name: "Prescriptions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppointmentId = table.Column<int>(type: "int", nullable: false),
                     IssueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AppointmentId = table.Column<int>(type: "int", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Prescriptions", x => x.Id);
+                    table.PrimaryKey("PK_Prescriptions", x => x.AppointmentId);
                     table.ForeignKey(
                         name: "FK_Prescriptions_Appointments_AppointmentId",
                         column: x => x.AppointmentId,
@@ -365,7 +363,7 @@ namespace MediCare.Migrations
                         name: "FK_PrescriptionMedicaments_Prescriptions_PrescriptionId",
                         column: x => x.PrescriptionId,
                         principalTable: "Prescriptions",
-                        principalColumn: "Id",
+                        principalColumn: "AppointmentId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -408,11 +406,6 @@ namespace MediCare.Migrations
                 name: "IX_PrescriptionMedicaments_MedicamentId",
                 table: "PrescriptionMedicaments",
                 column: "MedicamentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Prescriptions_AppointmentId",
-                table: "Prescriptions",
-                column: "AppointmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolePermissions_PermissionId",

@@ -285,12 +285,6 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.Prescription", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("AppointmentId")
                         .HasColumnType("int");
 
@@ -304,9 +298,7 @@ namespace MediCare.Migrations
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
+                    b.HasKey("AppointmentId");
 
                     b.ToTable("Prescriptions");
                 });

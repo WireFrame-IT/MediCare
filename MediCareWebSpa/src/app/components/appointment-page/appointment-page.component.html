@@ -31,10 +31,10 @@
           @if (isDoctor && canConfirm(appointment)) {
             <button mat-flat-button (click)="onConfirm(appointment)">Confirm</button>
           }
-          @if (isDoctor && canEdit(appointment)) {
-            <button mat-flat-button (click)="openPrescriptionDialog(appointment)">Prescription</button>
+          @if (isAdmin || isRightUser(appointment) && isConfirmed(appointment) && (isDoctor || existsPrescription(appointment))) {
+            <button mat-raised-button (click)="openPrescriptionDialog(appointment)">Prescription</button>
           }
-          @if (isAdmin || isDoctor && canEdit(appointment)) {
+          @if (isAdmin || isDoctor && isRightUser(appointment) && isConfirmed(appointment)) {
             <button mat-flat-button (click)="openEditAppointmentDialog(appointment)">{{ isAdmin ? "Edit" : "Diagnosis"}}</button>
           }
         </mat-card-actions>

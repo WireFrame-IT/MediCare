@@ -12,6 +12,8 @@ import { PrescriptionMedicament } from '../../DTOs/models/prescription-medicamen
 import { MedicamentType } from '../../enums/medicament-type';
 import { MedicamentUnit } from '../../enums/medicament-unit';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-prescription-dialog',
@@ -19,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatExpansionModule,
+    MatDatepickerModule,
     MatIconModule,
     MatInputModule,
     MatButtonModule
@@ -29,21 +32,20 @@ import { MatIconModule } from '@angular/material/icon';
 export class PrescriptionDialogComponent implements OnInit, OnDestroy {
   prescriptionForm: FormGroup;
   subscriptions: Subscription[] = [];
-  prescriptionMedicaments: PrescriptionMedicament[] = [];
   medicaments: Medicament[] = [];
-
-  // description: string = '';
-  // prescriptionMedicaments: WritableSignal<typeof PrescriptionMedicament[]> = signal([PrescriptionMedicament]);
+  isDoctor: boolean = false;
+  minDate: Date = new Date();
 
   constructor(
     private appointmentService: AppointmentService,
+    private authService: AuthService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<PrescriptionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public appointmentId: number
+    @Inject(MAT_DIALOG_DATA) public prescriptionMedicaments: PrescriptionMedicament[]
   ) {
     this.prescriptionForm = this.fb.group({
-      description: ['', Validators.required],
-      prescriptionMedicaments: this.fb.array([this.createMedicament()])
+      description: [ prescriptionMedicaments.length ? prescriptionMedicaments[0].prescription.description : '', Validators.required],
+      expirationDate: [ prescriptionMedicaments.length ? new Date(prescriptionMedicaments[0].prescription.expirationDate) : '', Validators.required]
     });
   }
 
@@ -58,13 +60,9 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.appointmentService.loadMedicaments();
-    this.appointmentService.loadPrescriptionMedicaments();
 
+    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
     this.subscriptions.push(this.appointmentService.medicaments$.subscribe(medicaments => this.medicaments = medicaments));
-    this.subscriptions.push(this.appointmentService.prescriptionMedicaments$.subscribe(prescriptionMedicaments => {
-      this.prescriptionMedicaments = prescriptionMedicaments;
-      this.prescriptionForm.patchValue({ description: prescriptionMedicaments.find(x => x.prescription.appointmentId === this.appointmentId)?.prescription.description ?? '' });
-    }));
   }
 
   ngOnDestroy(): void {
@@ -85,8 +83,6 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
     event.stopPropagation();
 
   }
-
-  getFilteredPrescriptionMedicaments = (): PrescriptionMedicament[] => this.prescriptionMedicaments.filter(x => x.prescription.appointmentId === this.appointmentId);
 
   closeDialog = (): void => this.dialogRef.close();
 

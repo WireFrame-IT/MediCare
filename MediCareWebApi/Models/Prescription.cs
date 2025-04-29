@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MediCare.Models
 {
-	public class Prescription : Entity
+	public class Prescription
 	{
 		[Required]
 		public DateTime IssueDate { get; set; }
@@ -14,6 +14,7 @@ namespace MediCare.Models
 		[Required]
 		public string Description { get; set; }
 
+		[Key]
 		[Required]
 		public int AppointmentId { get; set; }
 

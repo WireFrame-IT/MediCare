@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20250429140232_001")]
+    [Migration("20250429161034_001")]
     partial class _001
     {
         /// <inheritdoc />
@@ -288,12 +288,6 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.Prescription", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("AppointmentId")
                         .HasColumnType("int");
 
@@ -307,9 +301,7 @@ namespace MediCare.Migrations
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
+                    b.HasKey("AppointmentId");
 
                     b.ToTable("Prescriptions");
                 });
