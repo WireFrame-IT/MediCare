@@ -177,6 +177,41 @@ namespace MediCare.Controllers
 			return Ok(_mapper.Map<List<ServiceDTO>>(await _context.Services.ToListAsync()));
 		}
 
+		[AllowAnonymous]
+		[HttpGet("medicaments")]
+		public async Task<IActionResult> GetMedicamentsAsync()
+		{
+			return Ok(_mapper.Map<List<Medicament>>(await _context.Medicaments.ToListAsync()));
+		}
+
+
+		[Authorize]
+		[HttpGet("prescription-medicaments")]
+		public async Task<IActionResult> GetPrescriptionMedicamentsAsync()
+		{
+			var user = await GetCurrentUserAsync();
+			IQueryable<PrescriptionMedicament> query = _context.PrescriptionMedicaments;
+
+			switch (user.Role.RoleType)
+			{
+				case RoleType.Patient:
+					query = query.Where(x => x.Prescription.Appointment.PatientsUserId == user.Id);
+					break;
+
+				case RoleType.Doctor:
+					query = query.Where(x => x.Prescription.Appointment.DoctorsUserId == user.Id);
+					break;
+
+				case RoleType.Admin:
+					break;
+
+				default:
+					return Forbid();
+			}
+
+			return Ok(_mapper.Map<List<PrescriptionMedicamentDTO>>(await query.ToListAsync()));
+		}
+
 		[Authorize(Roles = "Doctor")]
 		[HttpPost("accept")]
 		public async Task<IActionResult> AcceptAppointmentAsync([FromQuery] int id)
@@ -185,6 +220,22 @@ namespace MediCare.Controllers
 			if (appointment == null)
 				return NotFound("Appointment doesn't exist or you don't have permission to accept it.");
 			appointment.Status = AppointmentStatus.Accepted;
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+
+		[Authorize(Roles = "Doctor")]
+		[HttpPost("confirm")]
+		public async Task<IActionResult> ConfirmAppointmentAsync([FromQuery] int id)
+		{
+			var appointment = await GetAppointmentAsync(id);
+			if (appointment == null)
+				return NotFound("Appointment doesn't exist or you don't have permission to accept it.");
+
+			if (appointment.Time < DateTime.Now)
+				return BadRequest("Too early to confirm the appointment.");
+
+			appointment.Status = AppointmentStatus.Confirmed;
 			await _context.SaveChangesAsync();
 			return Ok();
 		}

@@ -62,6 +62,10 @@ namespace MediCare.Mapping
 			CreateMap<User, UserDTO>();
 
 			CreateMap<User, ReducedUserDTO>();
+
+			CreateMap<PrescriptionMedicament, PrescriptionMedicamentDTO>();
+
+			CreateMap<PrescriptionMedicamentDTO, PrescriptionMedicament>();
 		}
 	}
 }

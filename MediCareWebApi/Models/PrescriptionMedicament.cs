@@ -12,8 +12,7 @@ namespace MediCare.Models
 		[Required]
 		public int Quantity { get; set; }
 
-		[Required]
-		public string Notes { get; set; }
+		public string? Notes { get; set; }
 
 		[Key]
 		[Column(Order = 1)]

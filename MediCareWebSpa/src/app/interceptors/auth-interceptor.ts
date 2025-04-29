@@ -5,6 +5,7 @@ import { catchError, switchMap, filter, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { RefreshResponseDTO } from '../DTOs/response/refresh-response.dto';
 import { Router } from '@angular/router';
+import { LoadingService } from '../services/loading.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -14,6 +15,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
     private authService: AuthService,
+    private loadingService: LoadingService,
     private router: Router
   ) {
     this.ignoreUrls = [
@@ -75,6 +77,7 @@ export class AuthInterceptor implements HttpInterceptor {
         this.isRefreshing = false;
         this.authService.cleanCredentials();
         this.router.navigate(['/login']);
+        this.loadingService.hide();
         return of(error);
       })
     );

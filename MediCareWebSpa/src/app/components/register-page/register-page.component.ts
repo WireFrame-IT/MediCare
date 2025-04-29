@@ -42,7 +42,7 @@ export class RegisterPageComponent {
     });
   }
 
-  register() {
+  register(): void {
     if (this.registerForm.valid) {
       const registerRequest = new PatientRegisterRequestDTO(
         this.registerForm.value.name,

@@ -100,7 +100,7 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
 
   closeDialog = (): void => this.dialogRef.close();
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.appointmentForm.valid) {
       const appointment = new AppointmentRequestDTO (
         this.data.id ?? 0,

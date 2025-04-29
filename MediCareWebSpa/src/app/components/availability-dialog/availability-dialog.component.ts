@@ -42,7 +42,7 @@ export class AvailabilityDialogComponent {
     });
   }
 
-   onSubmit() {
+   onSubmit(): void {
     if (this.availabilityForm.valid) {
       const availability = new DoctorsAvailabilityRequest (
         this.data?.id,

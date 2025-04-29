@@ -85,7 +85,7 @@ export class UserRegisterPageComponent implements OnInit, OnDestroy {
     this.buildForm(event.value);
   }
 
-  register() {
+  register(): void {
     if (this.registerForm.valid) {
       const registerRequest = new UserRegisterRequestDTO(
         this.registerForm.value.name,

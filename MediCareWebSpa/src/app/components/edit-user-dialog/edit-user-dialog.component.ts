@@ -79,7 +79,7 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.userForm.valid) {
       const user = new UserRequestDTO (
         this.data.userId,

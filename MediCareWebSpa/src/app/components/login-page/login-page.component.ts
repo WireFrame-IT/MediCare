@@ -34,7 +34,7 @@ export class LoginPageComponent {
     });
   }
 
-  login() {
+  login(): void {
     if (this.loginForm.valid) {
       const loginRequest = { ...this.loginForm.value };
 
