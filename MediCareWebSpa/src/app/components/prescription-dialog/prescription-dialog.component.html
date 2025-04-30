@@ -55,19 +55,14 @@
       }
     </mat-accordion>
   }
-   <!-- <mat-form-field appearance="fill" class="flex-1">
-          <mat-label>Nazwa leku</mat-label>
-          <input matInput [(ngModel)]="medicaments()[i].name">
-        </mat-form-field>
-
-        <mat-form-field appearance="fill" class="flex-1">
-          <mat-label>Dawkowanie</mat-label>
-          <input matInput [(ngModel)]="medicaments()[i].dosage">
-        </mat-form-field>
-   -->
-   @if (isDoctor) {
-     <button class="btn-add" type="button" mat-flat-button (click)="addMedicament()">Add Medication</button>
-   }
+  @if (isDoctor && data.prescription) {
+    <button class="btn-add" type="button" mat-flat-button (click)="addMedicament()">Add Medication</button>
+  } @else if (isDoctor && !data.prescription) {
+    <div class="info">
+      <mat-icon class="icon-info">info</mat-icon>
+      <i>Save the prescription to add medications.</i>
+    </div>
+  }
   <div class="buttons" mat-dialog-actions>
     @if (isDoctor) {
       <button class="btn-submit" mat-raised-button type="submit" [disabled]="prescriptionForm.invalid">Save</button>

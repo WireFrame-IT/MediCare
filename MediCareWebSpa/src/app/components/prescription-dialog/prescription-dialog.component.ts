@@ -83,8 +83,12 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
 
       this.loadingService.show();
       this.appointmentService.savePrescription(prescription).subscribe({
-        next: () => {
-          this.dialogRef.close();
+        next: (prescription: Prescription) => {
+          if (this.data.prescription)
+            this.dialogRef.close();
+
+          this.data.prescription = prescription;
+
           this.loadingService.hide();
           this.loadingService.showMessage('Prescription has been saved.');
         },
@@ -102,12 +106,25 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
 
   removeMedicament(event: MouseEvent, prescriptionMedicament: PrescriptionMedicament): void {
     event.stopPropagation();
+    this.loadingService.show();
 
+    this.appointmentService.removePrescriptionMedicament(prescriptionMedicament.prescriptionId, prescriptionMedicament.medicamentId).subscribe({
+      next: () => {
+        this.data.prescription!.prescriptionMedicaments = this.data.prescription!.prescriptionMedicaments
+          .filter(x => !(x.prescriptionId === prescriptionMedicament.prescriptionId && x.medicamentId === prescriptionMedicament.medicamentId))
+        this.loadingService.hide();
+        this.loadingService.showMessage('Medicament has been removed.');
+      },
+      error: error => {
+        this.loadingService.hide();
+        this.loadingService.showErrorMessage(this.loadingService.extractErrorMessage(error));
+      }
+    });;
   }
 
   closeDialog = (): void => this.dialogRef.close();
 
-  getMedicamentTypeName = (type: MedicamentType): string => MedicamentType[type];
+  getMedicamentTypeName = (type: MedicamentType): string => MedicamentType[type].replace(/([a-z])([A-Z])/g, '$1 $2');
 
-  getMedicamentUnitName = (unit: MedicamentUnit): string => MedicamentUnit[unit];
+  getMedicamentUnitName = (unit: MedicamentUnit): string => MedicamentUnit[unit].replace(/([a-z])([A-Z])/g, '$1 $2');
 }

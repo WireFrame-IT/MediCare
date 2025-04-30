@@ -64,6 +64,10 @@ export class AppointmentService {
     this.http.get<Prescription[]>(`${this.apiUrl}/prescriptions`).pipe(catchError(() => [])).subscribe(prescriptions => this._prescriptions.next(prescriptions as Prescription[]));
   }
 
+  removePrescriptionMedicament(prescriptionId: number, medicamentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/prescription-medicament`, { params: { prescriptionId, medicamentId }});
+  }
+
   loadAppointments(): void {
     this.http.get<Appointment[]>(`${this.apiUrl}`).pipe(catchError(() => [])).subscribe(appointments => this._appointments.next(appointments as Appointment[]));
   }
@@ -72,8 +76,8 @@ export class AppointmentService {
     return this.http.post<Appointment>(`${this.apiUrl}`, appointmentData);
   }
 
-  savePrescription(prescription: PrescriptionRequestDTO): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/prescription`, prescription);
+  savePrescription(prescription: PrescriptionRequestDTO): Observable<Prescription> {
+    return this.http.post<Prescription>(`${this.apiUrl}/prescription`, prescription);
   }
 
   acceptAppointment(id: number): Observable<void> {

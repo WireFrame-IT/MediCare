@@ -128,7 +128,7 @@ namespace MediCare.Controllers
 				appointment.Doctor = doctor;
 			}
 
-			var validationResult = ValidateAppointment(appointment);
+			var validationResult = ValidateAppointment(appointment, user.Role.RoleType);
 			if (validationResult != null)
 				return validationResult;
 
@@ -219,7 +219,13 @@ namespace MediCare.Controllers
 		[HttpPost("prescription")]
 		public async Task<IActionResult> SavePrescriptionAsync([FromBody] PrescriptionRequestDTO prescriptionRequestDto)
 		{
-			var prescription = await _context.Prescriptions.FirstOrDefaultAsync(x => x.AppointmentId == prescriptionRequestDto.AppointmentId);
+			var prescription = await _context.Prescriptions
+				.Include(x => x.PrescriptionMedicaments)
+					.ThenInclude(x => x.Medicament)
+				.FirstOrDefaultAsync(x => x.AppointmentId == prescriptionRequestDto.AppointmentId);
+
+			if (prescriptionRequestDto.ExpirationDate <= DateTime.Now.Date)
+				return BadRequest("Invalid expiration date.");
 
 			if (prescription == null)
 			{
@@ -233,6 +239,20 @@ namespace MediCare.Controllers
 				prescription.ExpirationDate = prescriptionRequestDto.ExpirationDate;
 			}
 
+			await _context.SaveChangesAsync();
+			return Ok(_mapper.Map<PrescriptionDTO>(prescription));
+		}
+
+		[Authorize(Roles = "Doctor")]
+		[HttpDelete("prescription-medicament")]
+		public async Task<IActionResult> DeletePrescriptionMedicamentAsync([FromQuery] int prescriptionId, [FromQuery] int medicamentId)
+		{
+			var prescriptionMedicament = await _context.PrescriptionMedicaments
+				.FirstOrDefaultAsync(x => x.PrescriptionId == prescriptionId && x.MedicamentId == medicamentId);
+			if (prescriptionMedicament == null)
+				return BadRequest("Prescription medicament does not exist.");
+
+			_context.PrescriptionMedicaments.Remove(prescriptionMedicament);
 			await _context.SaveChangesAsync();
 			return Ok();
 		}
@@ -322,13 +342,13 @@ namespace MediCare.Controllers
 			return await query.ToListAsync();
 		}
 
-		private IActionResult? ValidateAppointment(Appointment appointment)
+		private IActionResult? ValidateAppointment(Appointment appointment, RoleType roleType)
 		{
 			var dayOfWeek = appointment.Time.DayOfWeek.ToString();
 			if (!_appointmentSettings.AvailableDays.Contains(dayOfWeek))
 				return BadRequest($"Appointment is not allowed on {dayOfWeek}.");
 
-			if (appointment.Time.Minute % 15 != 0 || appointment.Time < DateTime.Now)
+			if (appointment.Time.Minute % 15 != 0 || appointment.Time < DateTime.Now && roleType != RoleType.Admin)
 				return BadRequest("Appointment time is not correct.");
 
 			if (appointment.Time.TimeOfDay < TimeSpan.FromHours(_appointmentSettings.StartHour) || appointment.Time.TimeOfDay >= TimeSpan.FromHours(_appointmentSettings.EndHour))
