@@ -46,15 +46,20 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.appointmentService.loadAppointments();
-    this.appointmentService.loadPrescriptions();
-    this.authService.loadUserPsermissions();
+    this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn;
+      if (isLoggedIn) {
+        this.appointmentService.loadAppointments();
+        this.appointmentService.loadPrescriptions();
+        this.authService.loadUserPsermissions();
+      }
+    }));
 
-    this.subscriptions.push(this.appointmentService.appointments$.subscribe(appointments => this.appointments = appointments));
     this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
-    this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
     this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
     this.subscriptions.push(this.authService.userPermissions$.subscribe(userPermissions => this.userPermissions = userPermissions));
+
+    this.subscriptions.push(this.appointmentService.appointments$.subscribe(appointments => this.appointments = appointments));
     this.subscriptions.push(this.appointmentService.prescriptions$.subscribe(prescriptions => this.prescriptions = prescriptions));
   }
 
