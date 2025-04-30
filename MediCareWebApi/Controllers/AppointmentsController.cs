@@ -181,7 +181,7 @@ namespace MediCare.Controllers
 		[HttpGet("medicaments")]
 		public async Task<IActionResult> GetMedicamentsAsync()
 		{
-			return Ok(_mapper.Map<List<MedicamentDTO>>(await _context.Medicaments.ToListAsync()));
+			return Ok(_mapper.Map<List<MedicamentDTO>>(await _context.Medicaments.OrderBy(x => x.Name).ToListAsync()));
 		}
 
 		[Authorize]
@@ -244,11 +244,24 @@ namespace MediCare.Controllers
 		}
 
 		[Authorize(Roles = "Doctor")]
+		[HttpPost("prescription-medicament")]
+		public async Task<IActionResult> AddPrescriptionMedicamentAsync([FromBody] PrescriptionMedicamentRequestDTO prescriptionMedicamentRequestDTO)
+		{
+			await _context.PrescriptionMedicaments.AddAsync(_mapper.Map<PrescriptionMedicament>(prescriptionMedicamentRequestDTO));
+			await _context.SaveChangesAsync();
+
+			var prescriptionMedicament = await _context.PrescriptionMedicaments
+				.Include(x => x.Medicament)
+				.FirstOrDefaultAsync(x => x.PrescriptionAppointmentId == prescriptionMedicamentRequestDTO.PrescriptionAppointmentId && x.MedicamentId == prescriptionMedicamentRequestDTO.MedicamentId);
+			return Ok(_mapper.Map<PrescriptionMedicamentDTO>(prescriptionMedicament));
+		}
+
+		[Authorize(Roles = "Doctor")]
 		[HttpDelete("prescription-medicament")]
-		public async Task<IActionResult> DeletePrescriptionMedicamentAsync([FromQuery] int prescriptionId, [FromQuery] int medicamentId)
+		public async Task<IActionResult> DeletePrescriptionMedicamentAsync([FromQuery] int prescriptionAppointmentId, [FromQuery] int medicamentId)
 		{
 			var prescriptionMedicament = await _context.PrescriptionMedicaments
-				.FirstOrDefaultAsync(x => x.PrescriptionId == prescriptionId && x.MedicamentId == medicamentId);
+				.FirstOrDefaultAsync(x => x.PrescriptionAppointmentId == prescriptionAppointmentId && x.MedicamentId == medicamentId);
 			if (prescriptionMedicament == null)
 				return BadRequest("Prescription medicament does not exist.");
 

@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -17,6 +17,7 @@ import { AuthService } from '../../services/auth.service';
 import { PrescriptionRequestDTO } from '../../DTOs/request/prescription-request.dto';
 import { LoadingService } from '../../services/loading.service';
 import { Prescription } from '../../DTOs/models/prescription';
+import { MedicamentDialogComponent } from '../medicament-dialog/medicament-dialog.component';
 
 @Component({
   selector: 'app-prescription-dialog',
@@ -33,6 +34,8 @@ import { Prescription } from '../../DTOs/models/prescription';
   styleUrl: './prescription-dialog.component.scss'
 })
 export class PrescriptionDialogComponent implements OnInit, OnDestroy {
+  private medicamentDialogRef: MatDialogRef<MedicamentDialogComponent> | null = null;
+
   prescriptionForm: FormGroup;
   subscriptions: Subscription[] = [];
   medicaments: Medicament[] = [];
@@ -44,21 +47,13 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private loadingService: LoadingService,
     private fb: FormBuilder,
+    private dialog: MatDialog,
     private dialogRef: MatDialogRef<PrescriptionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { prescription: Prescription | undefined, appointmentId: number }
   ) {
     this.prescriptionForm = this.fb.group({
       description: [ data.prescription ? data.prescription.description : '', Validators.required],
       expirationDate: [ data.prescription ? new Date(data.prescription.expirationDate) : '', Validators.required]
-    });
-  }
-
-  private createMedicament(): FormGroup {
-    return this.fb.group({
-      medicamentId: ['', Validators.required],
-      dosage: ['', Validators.required],
-      quantity: ['', [Validators.required]],
-      notes: ['']
     });
   }
 
@@ -100,18 +95,26 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  addMedicament(): void {
+  openAddMedicamentDialog(appointmentId: number): void {
+    this.medicamentDialogRef = this.dialog.open(MedicamentDialogComponent, {
+      width: '500px',
+      data: appointmentId
+    });
 
+    this.medicamentDialogRef.afterClosed().subscribe((prescriptionMedicament) => {
+      if (prescriptionMedicament)
+        this.data.prescription?.prescriptionMedicaments.push(prescriptionMedicament);
+    });
   }
 
   removeMedicament(event: MouseEvent, prescriptionMedicament: PrescriptionMedicament): void {
     event.stopPropagation();
     this.loadingService.show();
 
-    this.appointmentService.removePrescriptionMedicament(prescriptionMedicament.prescriptionId, prescriptionMedicament.medicamentId).subscribe({
+    this.appointmentService.removePrescriptionMedicament(prescriptionMedicament.prescriptionAppointmentId, prescriptionMedicament.medicamentId).subscribe({
       next: () => {
         this.data.prescription!.prescriptionMedicaments = this.data.prescription!.prescriptionMedicaments
-          .filter(x => !(x.prescriptionId === prescriptionMedicament.prescriptionId && x.medicamentId === prescriptionMedicament.medicamentId))
+          .filter(x => !(x.prescriptionAppointmentId === prescriptionMedicament.prescriptionAppointmentId && x.medicamentId === prescriptionMedicament.medicamentId))
         this.loadingService.hide();
         this.loadingService.showMessage('Medicament has been removed.');
       },
@@ -124,7 +127,7 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
 
   closeDialog = (): void => this.dialogRef.close();
 
-  getMedicamentTypeName = (type: MedicamentType): string => MedicamentType[type].replace(/([a-z])([A-Z])/g, '$1 $2');
+  getMedicamentTypeName = (type: MedicamentType): string => this.appointmentService.getMedicamentTypeName(type);
 
-  getMedicamentUnitName = (unit: MedicamentUnit): string => MedicamentUnit[unit].replace(/([a-z])([A-Z])/g, '$1 $2');
+  getMedicamentUnitName = (unit: MedicamentUnit): string => this.appointmentService.getMedicamentUnitName(unit);
 }

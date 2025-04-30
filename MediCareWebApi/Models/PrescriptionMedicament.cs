@@ -20,9 +20,9 @@ namespace MediCare.Models
 
 		[Key]
 		[Column(Order = 1)]
-		public int PrescriptionId { get; set; }
+		public int PrescriptionAppointmentId { get; set; }
 
-		[ForeignKey("PrescriptionId")]
+		[ForeignKey("PrescriptionAppointmentId")]
 		public Prescription Prescription { get; set; }
 
 		[Key]

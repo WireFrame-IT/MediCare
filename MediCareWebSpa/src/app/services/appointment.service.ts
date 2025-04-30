@@ -10,6 +10,10 @@ import { ReducedDoctor } from "../DTOs/models/reduced-doctor";
 import { Medicament } from "../DTOs/models/medicament";
 import { PrescriptionRequestDTO } from "../DTOs/request/prescription-request.dto";
 import { Prescription } from "../DTOs/models/prescription";
+import { MedicamentType } from "../enums/medicament-type";
+import { MedicamentUnit } from "../enums/medicament-unit";
+import { PrescriptionMedicamentRequestDTO } from "../DTOs/request/prescription-medicament-request.dto";
+import { PrescriptionMedicament } from "../DTOs/models/prescription-medicament";
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
@@ -64,8 +68,8 @@ export class AppointmentService {
     this.http.get<Prescription[]>(`${this.apiUrl}/prescriptions`).pipe(catchError(() => [])).subscribe(prescriptions => this._prescriptions.next(prescriptions as Prescription[]));
   }
 
-  removePrescriptionMedicament(prescriptionId: number, medicamentId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/prescription-medicament`, { params: { prescriptionId, medicamentId }});
+  removePrescriptionMedicament(prescriptionAppointmentId: number, medicamentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/prescription-medicament`, { params: { prescriptionAppointmentId, medicamentId }});
   }
 
   loadAppointments(): void {
@@ -80,6 +84,10 @@ export class AppointmentService {
     return this.http.post<Prescription>(`${this.apiUrl}/prescription`, prescription);
   }
 
+  savePrescriptionMedicament(prescriptionMedicament: PrescriptionMedicamentRequestDTO): Observable<PrescriptionMedicament> {
+    return this.http.post<PrescriptionMedicament>(`${this.apiUrl}/prescription-medicament`, prescriptionMedicament);
+  }
+
   acceptAppointment(id: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/accept?id=${id}`, null);
   }
@@ -91,4 +99,8 @@ export class AppointmentService {
   cancelAppointment(id: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/cancel?id=${id}`, null);
   }
+
+  getMedicamentTypeName = (type: MedicamentType): string => MedicamentType[type].replace(/([a-z])([A-Z])/g, '$1 $2');
+
+  getMedicamentUnitName = (unit: MedicamentUnit): string => MedicamentUnit[unit].replace(/([a-z])([A-Z])/g, '$1 $2');
 }

@@ -1,13 +1,11 @@
 import { MedicamentUnit } from "../../enums/medicament-unit";
-import { Medicament } from "./medicament";
 
-export class PrescriptionMedicament {
+export class PrescriptionMedicamentRequestDTO {
   dosage: string;
   quantity: number;
   medicamentUnit: MedicamentUnit;
   prescriptionAppointmentId: number;
   medicamentId: number;
-  medicament!: Medicament;
   notes: string | null;
 
   constructor(

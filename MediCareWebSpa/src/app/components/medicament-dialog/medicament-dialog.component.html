@@ -1,0 +1,35 @@
+<h2 class="title" mat-dialog-title>Medicament</h2>
+<form class="form" [formGroup]="medicamentForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="form-field">
+    <mat-label>Medicament</mat-label>
+    <mat-select formControlName="medicamentId">
+      @for (medicament of medicaments; track medicament.id) {
+        <mat-option [value]="medicament.id">{{ medicament.name }} ({{ getMedicamentTypeName(medicament.medicamentType) }})</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Quantity</mat-label>
+    <input matInput type="number" formControlName="quantity" min="1" step="1"/>
+  </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Measurement Unit</mat-label>
+    <mat-select formControlName="medicamentUnit">
+      @for (unit of medicamentUnitOptions; track unit.value) {
+        <mat-option [value]="unit.value">{{ unit.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="text-area">
+    <mat-label>Dosage</mat-label>
+    <textarea matInput formControlName="dosage" cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"></textarea>
+  </mat-form-field>
+  <mat-form-field class="text-area">
+    <mat-label>Notes</mat-label>
+    <textarea matInput formControlName="notes" cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"></textarea>
+  </mat-form-field>
+  <div class="buttons" mat-dialog-actions>
+    <button class="btn-submit" mat-raised-button type="submit" [disabled]="medicamentForm.invalid">Save</button>
+    <button class="btn-cancel" mat-button mat-dialog-close type="button" (click)="closeDialog()">Cancel</button>
+  </div>
+</form>

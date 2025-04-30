@@ -343,7 +343,7 @@ namespace MediCare.Migrations
                 name: "PrescriptionMedicaments",
                 columns: table => new
                 {
-                    PrescriptionId = table.Column<int>(type: "int", nullable: false),
+                    PrescriptionAppointmentId = table.Column<int>(type: "int", nullable: false),
                     MedicamentId = table.Column<int>(type: "int", nullable: false),
                     Dosage = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
@@ -352,7 +352,7 @@ namespace MediCare.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrescriptionMedicaments", x => new { x.PrescriptionId, x.MedicamentId });
+                    table.PrimaryKey("PK_PrescriptionMedicaments", x => new { x.PrescriptionAppointmentId, x.MedicamentId });
                     table.ForeignKey(
                         name: "FK_PrescriptionMedicaments_Medicaments_MedicamentId",
                         column: x => x.MedicamentId,
@@ -360,8 +360,8 @@ namespace MediCare.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PrescriptionMedicaments_Prescriptions_PrescriptionId",
-                        column: x => x.PrescriptionId,
+                        name: "FK_PrescriptionMedicaments_Prescriptions_PrescriptionAppointmentId",
+                        column: x => x.PrescriptionAppointmentId,
                         principalTable: "Prescriptions",
                         principalColumn: "AppointmentId",
                         onDelete: ReferentialAction.Cascade);

@@ -69,7 +69,7 @@ namespace MediCare.Models
 				.HasForeignKey(x => x.PermissionId);
 
 			modelBuilder.Entity<PrescriptionMedicament>()
-				.HasKey(x => new { x.PrescriptionId, x.MedicamentId });
+				.HasKey(x => new { x.PrescriptionAppointmentId, x.MedicamentId });
 
 			modelBuilder.Entity<PrescriptionMedicament>()
 				.HasOne(x => x.Medicament)
@@ -79,7 +79,7 @@ namespace MediCare.Models
 			modelBuilder.Entity<PrescriptionMedicament>()
 				.HasOne(x => x.Prescription)
 				.WithMany(x => x.PrescriptionMedicaments)
-				.HasForeignKey(x => x.PrescriptionId);
+				.HasForeignKey(x => x.PrescriptionAppointmentId);
 
 			modelBuilder.Entity<User>()
 				.HasIndex(u => u.Email)

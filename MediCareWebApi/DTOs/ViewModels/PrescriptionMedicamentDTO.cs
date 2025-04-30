@@ -12,7 +12,7 @@ namespace MediCare.DTOs.ViewModels
 
 		public string? Notes { get; set; }
 
-		public int PrescriptionId { get; set; }
+		public int PrescriptionAppointmentId { get; set; }
 
 		public PrescriptionDTO Prescription { get; set; }
 

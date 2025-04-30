@@ -305,7 +305,7 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.PrescriptionMedicament", b =>
                 {
-                    b.Property<int>("PrescriptionId")
+                    b.Property<int>("PrescriptionAppointmentId")
                         .HasColumnType("int")
                         .HasColumnOrder(1);
 
@@ -327,7 +327,7 @@ namespace MediCare.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("PrescriptionId", "MedicamentId");
+                    b.HasKey("PrescriptionAppointmentId", "MedicamentId");
 
                     b.HasIndex("MedicamentId");
 
@@ -617,7 +617,7 @@ namespace MediCare.Migrations
 
                     b.HasOne("MediCare.Models.Prescription", "Prescription")
                         .WithMany("PrescriptionMedicaments")
-                        .HasForeignKey("PrescriptionId")
+                        .HasForeignKey("PrescriptionAppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
