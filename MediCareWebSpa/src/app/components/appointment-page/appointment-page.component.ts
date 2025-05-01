@@ -49,6 +49,9 @@ export class AppointmentPageComponent implements OnInit {
       this.appointmentService.loadAppointments();
       this.appointmentService.loadPrescriptions();
       this.authService.loadUserPsermissions();
+    } else {
+      this.appointmentDialogRef?.close();
+      this.prescriptionDialogRef?.close();
     }
   });
 

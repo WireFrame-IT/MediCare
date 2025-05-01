@@ -37,6 +37,10 @@ export class AdminPanelComponent implements OnInit {
   private patientsEffect = effect(() => this.patients = this.appointmentService.patients());
   private permissionsEffect = effect(() => this.permissions = this.authService.permissions());
 
+  private isLoggedInEffect = effect(() => {
+    if(!this.authService.isLoggedIn())
+      this.dialogRef?.close();
+  });
 
   permissions: Permission[] = [];
   displayedColumns: string[] = [];

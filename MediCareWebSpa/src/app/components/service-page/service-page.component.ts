@@ -39,8 +39,9 @@ export class ServicePageComponent implements OnInit {
 
   private isLoggedInEffect = effect(() => {
     this.isLoggedIn = this.authService.isLoggedIn();
-    if(!this.isLoggedIn && this.dialogRef)
-      this.dialogRef.close();
+
+    if(!this.isLoggedIn)
+      this.dialogRef?.close();
   });
 
   private specialitiesEffect = effect(() => this.specialityOptions = this.authService.specialities().map(x => ({ label: x.name, value: x.id})));

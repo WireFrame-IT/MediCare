@@ -35,6 +35,11 @@ export class PrescriptionDialogComponent {
   private medicamentDialogRef: MatDialogRef<MedicamentDialogComponent> | null = null;
   private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
 
+  private isLoggedInEffect = effect(() => {
+    if(!this.authService.isLoggedIn())
+      this.medicamentDialogRef?.close();
+  });
+
   prescriptionForm: FormGroup;
   isDoctor: boolean = false;
   minDate: Date = new Date();

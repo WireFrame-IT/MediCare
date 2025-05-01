@@ -26,6 +26,11 @@ export class AvailabilityPageComponent implements OnInit {
   private isAdminEffect = effect(() => this.isAdmin = this.authService.isAdmin());
   private availabilitiesEffect = effect(() => this.availabilities = this.authService.availabilities());
 
+  private isLoggedInEffect = effect(() => {
+    if(!this.authService.isLoggedIn())
+      this.dialogRef?.close();
+  });
+
   availabilities: DoctorsAvailability[] = [];
   isAdmin: boolean = false;
 
