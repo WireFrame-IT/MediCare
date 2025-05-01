@@ -193,7 +193,8 @@ export class AppointmentPageComponent implements OnInit {
       data: {
         prescription: this.prescriptions.find(x => x.appointmentId === appointment.id),
         appointmentId: appointment.id
-      }
+      },
+      autoFocus: false
     });
 
     this.prescriptionDialogRef.afterClosed().subscribe(() => {
@@ -204,7 +205,8 @@ export class AppointmentPageComponent implements OnInit {
   openEditAppointmentDialog(appointment: Appointment): void {
     this.appointmentDialogRef = this.dialog.open(AppointmentDialogComponent, {
       width: '500px',
-      data: appointment
+      data: appointment,
+      autoFocus: false
     });
 
     this.appointmentDialogRef.afterClosed().subscribe(() => {

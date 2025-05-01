@@ -88,7 +88,8 @@ export class ServicePageComponent implements OnInit {
 
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
       width: '500px',
-      data: { service: service, serviceId: service.id, status: AppointmentStatus.New } as Appointment
+      data: { service: service, serviceId: service.id, status: AppointmentStatus.New } as Appointment,
+      autoFocus: false
     });
 
     this.dialogRef.afterClosed().subscribe(() => {

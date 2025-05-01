@@ -84,7 +84,8 @@ export class PrescriptionDialogComponent {
   openAddMedicamentDialog(appointmentId: number): void {
     this.medicamentDialogRef = this.dialog.open(MedicamentDialogComponent, {
       width: '500px',
-      data: appointmentId
+      data: appointmentId,
+      autoFocus: false
     });
 
     this.medicamentDialogRef.afterClosed().subscribe((prescriptionMedicament) => {

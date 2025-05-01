@@ -8,9 +8,7 @@
         </mat-card-header>
         <mat-card-content class="content">
           <button class="email" mat-raised-button (click)="copyEmail(person.user.email)">{{ person.user.email }}</button>
-          @if (isDoctor(person)) {
-            <mat-icon class="icon">medical_services</mat-icon>
-          }
+          <mat-icon class="icon">{{ isDoctor(person) ? 'medical_services' : 'person' }}</mat-icon>
         </mat-card-content>
         <mat-card-actions class="actions">
           <button mat-raised-button (click)="openEditUserDialog(person)">Edit</button>

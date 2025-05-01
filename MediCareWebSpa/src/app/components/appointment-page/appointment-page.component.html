@@ -70,7 +70,7 @@
           @if (isDoctor && canConfirm(appointment)) {
             <button mat-flat-button (click)="onConfirm(appointment)">Confirm</button>
           }
-          @if (isAdmin || isRightUser(appointment) && isConfirmed(appointment) && (isDoctor || existsPrescription(appointment))) {
+          @if (isConfirmed(appointment) && (isDoctor || (isAdmin || isRightUser(appointment)) && existsPrescription(appointment))) {
             <button mat-raised-button (click)="openPrescriptionDialog(appointment)">Prescription</button>
           }
           @if (isAdmin || isDoctor && isRightUser(appointment) && isConfirmed(appointment)) {

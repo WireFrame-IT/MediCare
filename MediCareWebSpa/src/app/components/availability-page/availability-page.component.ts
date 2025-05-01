@@ -56,7 +56,8 @@ export class AvailabilityPageComponent implements OnInit {
   openAvailabilityDialog(availability: DoctorsAvailabilityRequest | null): void {
     this.dialogRef = this.dialog.open(AvailabilityDialogComponent, {
       width: '500px',
-      data: availability
+      data: availability,
+      autoFocus: false
     });
 
     this.dialogRef.afterClosed().subscribe(() => {

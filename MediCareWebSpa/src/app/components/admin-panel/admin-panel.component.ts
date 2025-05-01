@@ -112,7 +112,8 @@ export class AdminPanelComponent implements OnInit {
   openEditUserDialog(person: Doctor | Patient): void {
     this.dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '500px',
-      data: person
+      data: person,
+      autoFocus: false
     });
 
     this.dialogRef.afterClosed().subscribe((updatedPerson: Doctor | Patient) => {
