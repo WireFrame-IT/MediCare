@@ -1,6 +1,45 @@
-@if (appointments.length) {
+@if (isLoggedIn) {
+  <div class="filter">
+    <mat-form-field class="search">
+      <input matInput type="text" placeholder="Search..." [(ngModel)]="search" (input)="applyFilter()" />
+    </mat-form-field>
+    <mat-form-field class="speciality">
+      <mat-label>Speciality</mat-label>
+      <mat-select [(ngModel)]="selectedSpecialityId" (selectionChange)="applyFilter()">
+        <mat-option [value]="0">All specialities</mat-option>
+        @for (speciality of specialityOptions; track speciality.value) {
+          <mat-option [value]="speciality.value">
+            {{ speciality.label }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="status">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilter()">
+        <mat-option [value]="0">All statuses</mat-option>
+        @for (speciality of statusOptions; track speciality.value) {
+          <mat-option [value]="speciality.value">
+            {{ speciality.label }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="sort">
+      <mat-label>Sort by...</mat-label>
+      <mat-select [(ngModel)]="selectedSort" (selectionChange)="onSortChange()">
+        @for (option of sortOptions; track option.value) {
+          <mat-option [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+}
+@if (filteredAppointments.length) {
   <div class="appointments-container">
-    @for (appointment of appointments; track appointment.id) {
+    @for (appointment of filteredAppointments; track appointment.id) {
       <mat-card class="appointment-card">
         <mat-card-header class="header">
           <mat-card-title class="title">{{ appointment.service.name }}</mat-card-title>
@@ -42,9 +81,11 @@
     }
   </div>
 }
-@if (isLoggedIn && !appointments || appointments.length === 0) {
+@if (isLoggedIn && !filteredAppointments || filteredAppointments.length === 0) {
   <div class="no-appointments">
     <p>No appointments.</p>
+    @if (!appointments || appointments.length === 0) {
       <button mat-flat-button routerLink="/services">See services</button>
+    }
   </div>
 }

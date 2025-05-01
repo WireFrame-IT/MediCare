@@ -36,28 +36,25 @@ import { ReducedDoctor } from '../../DTOs/models/reduced-doctor';
   styleUrl: './appointment-dialog.component.scss'
 })
 export class AppointmentDialogComponent implements OnInit {
-  private servicesEffect = effect(() => this.services = this.appointmentService.services());
-  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
-  private userPermissionsEffect = effect(() => this.userPermissions = this.authService.userPermissions());
+  private servicesEffect = effect(() => {
+    this.services = this.appointmentService.services();
+    this.servicesBySpeciality = this.services.filter(x => x.specialityId == this.data.service.specialityId);
+  });
 
   private doctorsEffect = effect(() => {
     this.doctors = this.appointmentService.reducedDoctors();
     this.doctorsBySpeciality = this.doctors.filter(x => x.specialityId === this.data?.service?.specialityId);
   });
 
-  private isAdminEffect = effect(() => {
-    this.isAdmin = this.authService.isAdmin();
-
-    if (this.isAdmin)
-      this.appointmentService.loadDoctors();
-    else
-      this.appointmentService.loadReducedDoctors();
-  });
+  private isAdminEffect = effect(() => this.isAdmin = this.authService.isAdmin());
+  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
+  private userPermissionsEffect = effect(() => this.userPermissions = this.authService.userPermissions());
 
   appointmentForm: FormGroup;
   isDoctor: boolean = false;
   isAdmin: boolean = false;
   services: Service[] = [];
+  servicesBySpeciality: Service[] = [];
   doctors: ReducedDoctor[] = [];
   doctorsBySpeciality: ReducedDoctor[] = [];
   userPermissions: PermissionType[] = [];
@@ -83,8 +80,9 @@ export class AppointmentDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appointmentService.loadServices();
     this.authService.loadUserPsermissions();
+    this.appointmentService.loadServices();
+    this.appointmentService.loadReducedDoctors();
   }
 
   onServiceChange(event: any) {

@@ -140,8 +140,13 @@ export class AuthService {
     sessionStorage.removeItem('userName');
     sessionStorage.removeItem('userSurname');
     sessionStorage.removeItem('roleType');
-    sessionStorage.removeItem('servicesFilter');
+    sessionStorage.removeItem('servicesSearch');
+    sessionStorage.removeItem('servicesSpecialityId');
     sessionStorage.removeItem('servicesSortBy');
+    sessionStorage.removeItem('appointmentsSearch');
+    sessionStorage.removeItem('appointmentsSpecialityId');
+    sessionStorage.removeItem('appointmentsStatus');
+    sessionStorage.removeItem('appointmentsSortBy');
   }
 
   retrieveCredentials(): void {

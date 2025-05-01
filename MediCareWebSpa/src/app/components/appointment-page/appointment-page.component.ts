@@ -1,5 +1,4 @@
-import { Component, effect } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, effect, OnInit } from '@angular/core';
 import { Appointment } from '../../DTOs/models/appointment';
 import { AppointmentService } from '../../services/appointment.service';
 import { MatCardModule } from '@angular/material/card';
@@ -14,11 +13,18 @@ import { PermissionType } from '../../enums/permission-type';
 import { LoadingService } from '../../services/loading.service';
 import { PrescriptionDialogComponent } from '../prescription-dialog/prescription-dialog.component';
 import { Prescription } from '../../DTOs/models/prescription';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-appointment-page',
   imports: [
     MatCardModule,
+    FormsModule,
+    MatInputModule,
+    MatSelect,
+    MatOption,
     MatButtonModule,
     RouterModule,
     DatePipe
@@ -26,15 +32,16 @@ import { Prescription } from '../../DTOs/models/prescription';
   templateUrl: './appointment-page.component.html',
   styleUrl: './appointment-page.component.scss'
 })
-export class AppointmentPageComponent {
+export class AppointmentPageComponent implements OnInit {
   private appointmentDialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
   private prescriptionDialogRef: MatDialogRef<PrescriptionDialogComponent> | null = null;
 
   private userPermissionsEffect = effect(() => this.userPermissions = this.authService.userPermissions());
   private prescriptionsEffect = effect(() => this.prescriptions = this.appointmentService.prescriptions());
-  private appointmentsEffect = effect(() => this.appointments = this.appointmentService.appointments());
+  private specialitiesEffect = effect(() => this.specialityOptions = this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
   private isAdminEffect = effect(() => this.isAdmin = this.authService.isAdmin());
   private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
+
   private isLoggedInEffect = effect(() => {
     this.isLoggedIn = this.authService.isLoggedIn();
 
@@ -45,13 +52,36 @@ export class AppointmentPageComponent {
     }
   });
 
-  subscriptions: Subscription[] = [];
+  private appointmentsEffect = effect(() => {
+    this.appointments = this.appointmentService.appointments();
+    this.applyFilter();
+  });
+
+  readonly sortOptions = [
+    { label: 'Date', value: 'date' },
+    { label: 'Service', value: 'service' },
+    { label: 'Speciality', value: 'speciality' },
+    { label: 'Status', value: 'status' },
+    { label: 'Doctor', value: 'doctor' },
+    { label: 'Patient', value: 'patient' }
+  ];
+  readonly statusOptions = Object.keys(AppointmentStatus).filter(key => isNaN(Number(key))).map(key => ({
+    label: key,
+    value: AppointmentStatus[key as keyof typeof AppointmentStatus]
+  }));
+  specialityOptions: { label: string, value: number}[] = [];
+
   appointments: Appointment[] = [];
+  filteredAppointments: Appointment[] = [];
   userPermissions: PermissionType[] = [];
   prescriptions: Prescription[] = [];
   isDoctor: boolean = false;
   isAdmin: boolean = false;
   isLoggedIn: boolean = false;
+  search: string = '';
+  selectedSpecialityId: number = 0;
+  selectedStatus = 0;
+  selectedSort: string = '';
 
   constructor(
     private appointmentService: AppointmentService,
@@ -59,6 +89,15 @@ export class AppointmentPageComponent {
     private loadingService: LoadingService,
     private dialog: MatDialog
   ) {}
+
+  ngOnInit(): void {
+    this.authService.loadSpecialities();
+
+    this.search = sessionStorage.getItem('appointmentsSearch') ?? '';
+    this.selectedSpecialityId = Number(sessionStorage.getItem('appointmentsSpecialityId')) ?? 0;
+    this.selectedStatus = Number(sessionStorage.getItem('appointmentsStatus')) ?? 0;
+    this.selectedSort = sessionStorage.getItem('appointmentsSortBy') ?? '';
+  }
 
   onCancel(appointment: Appointment): void {
     this.appointmentService.cancelAppointment(appointment.id).subscribe({
@@ -171,5 +210,48 @@ export class AppointmentPageComponent {
     this.appointmentDialogRef.afterClosed().subscribe(() => {
       this.appointmentService.loadAppointments();
     });
+  }
+
+  applyFilter(): void {
+    const query = this.search.toLowerCase();
+    sessionStorage.setItem('appointmentsSearch', query);
+    sessionStorage.setItem('appointmentsSpecialityId', this.selectedSpecialityId.toString());
+    sessionStorage.setItem('appointmentsStatus', this.selectedStatus.toString());
+    this.filteredAppointments = this.appointments.filter(appointment => (this.selectedSpecialityId === 0 || appointment.service.specialityId === this.selectedSpecialityId)
+      && (this.selectedStatus === 0 || appointment.status === this.selectedStatus)
+      && (appointment.service.name.toLowerCase().includes(query) || appointment.service.description.toLocaleLowerCase().includes(query)
+      || appointment.doctor.user.name.toLocaleLowerCase().includes(query) ||  appointment.doctor.user.surname.toLocaleLowerCase().includes(query)
+      || appointment.patient.user.name.toLocaleLowerCase().includes(query) ||  appointment.patient.user.surname.toLocaleLowerCase().includes(query)));
+    this.onSortChange();
+  }
+
+  onSortChange(): void {
+    sessionStorage.setItem('appointmentsSortBy', this.selectedSort);
+    this.filteredAppointments = [...this.filteredAppointments].sort((a, b) => {
+      switch(this.selectedSort) {
+        case 'date':
+          return new Date(b.time).getTime() - new Date(a.time).getTime();
+        case 'service':
+          return a.service.name.localeCompare(b.service.name);
+        case 'speciality':
+          return a.service.speciality.name.localeCompare(b.service.speciality.name);
+        case 'status':
+          return a.status - b.status;
+        case 'doctor':
+          return this.compareUsers(a.doctor.user, b.doctor.user);
+        case 'patient':
+          return this.compareUsers(a.patient.user, b.patient.user);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  private compareUsers(userA: { name: string, surname: string }, userB: { name: string, surname: string }): number {
+    const nameCompare = userA.name.localeCompare(userB.name);
+    if (nameCompare !== 0)
+      return nameCompare;
+
+    return userA.surname.localeCompare(userB.surname);
   }
 }

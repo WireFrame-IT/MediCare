@@ -1,9 +1,17 @@
-<div class="services">
-  <h1>Our Services</h1>
-</div>
 <div class="filter">
   <mat-form-field class="search">
-    <input matInput type="text" placeholder="Search..." [(ngModel)]="filter" (input)="applyFilter()" />
+    <input matInput type="text" placeholder="Search..." [(ngModel)]="search" (input)="applyFilter()" />
+  </mat-form-field>
+  <mat-form-field class="speciality">
+    <mat-label>Speciality</mat-label>
+    <mat-select [(ngModel)]="selectedSpecialityId" (selectionChange)="applyFilter()">
+      <mat-option [value]="0">All specialities</mat-option>
+      @for (speciality of specialityOptions; track speciality.value) {
+        <mat-option [value]="speciality.value">
+          {{ speciality.label }}
+        </mat-option>
+      }
+    </mat-select>
   </mat-form-field>
   <mat-form-field class="sort">
     <mat-label>Sort by...</mat-label>
@@ -25,15 +33,24 @@
           <h3 class="service-title">{{ service.name }}</h3>
           <p class="service-description">{{ service.description }}</p>
         </div>
-        <div class="service-duration">
-           <mat-icon>access_time</mat-icon>
-          <p>{{ getDuration(service.durationMinutes) }}</p>
+        <div class="service-speciality">
+          <mat-icon>badge</mat-icon>
+          <i>{{ service.speciality.name }}</i>
         </div>
         <div class="service-duration">
+          <mat-icon>access_time</mat-icon>
+          <p>{{ getDuration(service.durationMinutes) }}</p>
+        </div>
+        <div class="service-price">
           <mat-icon>payment</mat-icon>
           <p>{{ service.price }} PLN</p>
         </div>
       </mat-card>
     }
+  </div>
+}
+@if (!filteredServices || filteredServices.length === 0) {
+  <div class="no-services">
+    <p>No services.</p>
   </div>
 }

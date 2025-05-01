@@ -18,6 +18,8 @@ namespace MedicalFacility.Controllers
 	[Route("[controller]")]
 	public class AccountsController : BaseController
 	{
+		private static readonly AppointmentStatus[] _cannotCancelAppointmentStatuses = [ AppointmentStatus.Accepted, AppointmentStatus.Confirmed ];
+
 		public AccountsController(MediCareDbContext context, IConfiguration configuration, IMapper mapper,
 			IAccountsService accountsService)
 			: base(context, configuration, mapper, accountsService)
@@ -199,7 +201,7 @@ namespace MedicalFacility.Controllers
 				: await _context.Doctors.Include(x => x.User).Include(x => x.Speciality).FirstAsync(x => x.UserId == doctor.UserId));
 		}
 
-		[Authorize(Roles = "Admin")]
+		[AllowAnonymous]
 		[HttpGet("specialities")]
 		public async Task<IActionResult> GetSpecialitiesAsync()
 		{
@@ -290,6 +292,9 @@ namespace MedicalFacility.Controllers
 			if (availability == null)
 				return BadRequest("Availability does not exist.");
 
+			if (await _context.Appointments.AnyAsync(x => x.DoctorsUserId == user.Id && _cannotCancelAppointmentStatuses.Contains(x.Status) && x.Time < availability.To && availability.From < x.Time.AddMinutes(x.Service.DurationMinutes)))
+				return BadRequest("Cancel accepted and confirmed appointments without availability first.");
+
 			_context.DoctorsAvailabilities.Remove(availability);
 			await _context.SaveChangesAsync();
 			return Ok();
@@ -313,6 +318,10 @@ namespace MedicalFacility.Controllers
 			if (availabilityDTO.Id.HasValue)
 			{
 				var availability = await _context.DoctorsAvailabilities.FirstOrDefaultAsync(x => x.Id == availabilityDTO.Id.Value);
+
+				if (await _context.Appointments.AnyAsync(x => x.DoctorsUserId == user.Id && _cannotCancelAppointmentStatuses.Contains(x.Status) && availability.From <= x.Time && x.Time < availability.To && !(availabilityDTO.From <= x.Time && x.Time.AddMinutes(x.Service.DurationMinutes) <= availabilityDTO.To)))
+					return BadRequest("Cancel accepted and confirmed appointments without availability first.");
+
 				availability.From = availabilityDTO.From;
 				availability.To = availabilityDTO.To;
 			}

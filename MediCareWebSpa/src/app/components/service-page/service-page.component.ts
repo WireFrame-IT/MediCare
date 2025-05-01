@@ -43,18 +43,23 @@ export class ServicePageComponent implements OnInit {
       this.dialogRef.close();
   });
 
+  private specialitiesEffect = effect(() => this.specialityOptions = this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
+
+  specialityOptions: { label: string, value: number}[] = [];
+  readonly sortOptions = [
+    { label: 'Name', value: 'name' },
+    { label: 'Speciality', value: 'speciality' },
+    { label: 'Duration', value: 'duration' },
+    { label: 'Price', value: 'price' }
+  ];
+
   services: Service[] = [];
   filteredServices: Service[] = [];
   isLoggedIn: boolean = false;
   isDoctor: boolean = false;
-  filter: string = '';
+  search: string = '';
+  selectedSpecialityId: number = 0;
   selectedSort: string = '';
-
-  sortOptions = [
-    { label: 'Name', value: 'name' },
-    { label: 'Duration', value: 'duration' },
-    { label: 'Price', value: 'price' }
-  ];
 
   constructor(
     private appointmentService: AppointmentService,
@@ -65,9 +70,11 @@ export class ServicePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedSort = sessionStorage.getItem('servicesSortBy') ?? '';
-    this.filter = sessionStorage.getItem('servicesFilter') ?? '';
+    this.search = sessionStorage.getItem('servicesSearch') ?? '';
+    this.selectedSpecialityId = Number(sessionStorage.getItem('servicesSpecialityId')) ?? 0;
 
     this.appointmentService.loadServices();
+    this.authService.loadSpecialities();
   }
 
   openAppointmentDialog(service: Service): void {
@@ -90,9 +97,11 @@ export class ServicePageComponent implements OnInit {
   }
 
   applyFilter(): void {
-    const query = this.filter.toLowerCase();
-    sessionStorage.setItem('servicesFilter', query);
-    this.filteredServices = this.services.filter(service => service.name.toLowerCase().includes(query) || service.description.toLocaleLowerCase().includes(query));
+    const query = this.search.toLowerCase();
+    sessionStorage.setItem('servicesSearch', query);
+    sessionStorage.setItem('servicesSpecialityId', this.selectedSpecialityId.toString());
+    this.filteredServices = this.services.filter(service =>
+      (this.selectedSpecialityId === 0 || service.specialityId === this.selectedSpecialityId) && (service.name.toLowerCase().includes(query) || service.description.toLocaleLowerCase().includes(query)));
     this.onSortChange();
   }
 
@@ -102,6 +111,8 @@ export class ServicePageComponent implements OnInit {
       switch(this.selectedSort) {
         case 'name':
           return a.name.localeCompare(b.name);
+        case 'speciality':
+          return a.speciality.name.localeCompare(b.speciality.name);
         case 'duration':
           return a.durationMinutes - b .durationMinutes;
         case 'price':

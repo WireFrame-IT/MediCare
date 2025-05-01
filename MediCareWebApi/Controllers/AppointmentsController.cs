@@ -174,7 +174,7 @@ namespace MediCare.Controllers
 		[HttpGet("services")]
 		public async Task<IActionResult> GetServicesAsync()
 		{
-			return Ok(_mapper.Map<List<ServiceDTO>>(await _context.Services.ToListAsync()));
+			return Ok(_mapper.Map<List<ServiceDTO>>(await _context.Services.Include(x => x.Speciality).ToListAsync()));
 		}
 
 		[AllowAnonymous]
