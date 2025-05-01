@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,7 +7,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { Subscription } from 'rxjs';
 import { UserRegisterRequestDTO } from '../../DTOs/request/user-register-request.dto';
 import { Speciality } from '../../DTOs/models/speciality';
 import { LoadingService } from '../../services/loading.service';
@@ -26,8 +25,8 @@ import { RoleType } from '../../enums/role-type';
   templateUrl: './user-register-page.component.html',
   styleUrl: './user-register-page.component.scss'
 })
-export class UserRegisterPageComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class UserRegisterPageComponent implements OnInit {
+  private specialitiesEffect = effect(() => this.specialities = this.authService.specialities());
 
   registerForm!: FormGroup;
   specialities: Speciality[] = [];
@@ -48,11 +47,6 @@ export class UserRegisterPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authService.loadSpecialities();
-    this.subscriptions.push(this.authService.specialities$.subscribe(specialities => this.specialities = specialities));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   private buildForm(selectedRoleType: RoleType): void {

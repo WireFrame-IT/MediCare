@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +24,12 @@ import { MatIcon } from '@angular/material/icon';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit, OnDestroy{
+  private effect = effect(() => {
+    this.isAdmin = this.authService.isAdmin();
+    this.isDoctor = this.authService.isDoctor();
+    this.isLoggedIn = this.authService.isLoggedIn();
+  });
+
   private subscriptions: Subscription[] = [];
   isAdmin: boolean = false;
   isDoctor: boolean = false;
@@ -40,9 +46,6 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnInit(): void {
     this.authService.retrieveCredentials();
 
-    this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
-    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
-    this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn));
     this.subscriptions.push(this.loadingService.isLoading$.subscribe(isLoading => this.isLoading = isLoading));
     this.subscriptions.push(this.loadingService.message$.subscribe(message => this.message = message));
     this.subscriptions.push(this.loadingService.errorMessage$.subscribe(errorMessage => this.errorMessage = errorMessage));

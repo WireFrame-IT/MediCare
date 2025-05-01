@@ -352,7 +352,7 @@ namespace MediCare.Controllers
 				query = query.Where(x => (doctor ? x.DoctorsUserId : x.PatientsUserId) == userId);
 			}
 
-			return await query.ToListAsync();
+			return await query.OrderByDescending(x => x.Time).ToListAsync();
 		}
 
 		private IActionResult? ValidateAppointment(Appointment appointment, RoleType roleType)

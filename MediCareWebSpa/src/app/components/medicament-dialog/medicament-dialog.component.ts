@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, Inject, OnInit } from '@angular/core';
 import { MedicamentUnit } from '../../enums/medicament-unit';
 import { MedicamentType } from '../../enums/medicament-type';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AppointmentService } from '../../services/appointment.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadingService } from '../../services/loading.service';
-import { Subscription } from 'rxjs';
 import { Medicament } from '../../DTOs/models/medicament';
 import { PrescriptionMedicamentRequestDTO } from '../../DTOs/request/prescription-medicament-request.dto';
 import { PrescriptionMedicament } from '../../DTOs/models/prescription-medicament';
@@ -28,8 +27,8 @@ import { PrescriptionMedicament } from '../../DTOs/models/prescription-medicamen
   templateUrl: './medicament-dialog.component.html',
   styleUrl: './medicament-dialog.component.scss'
 })
-export class MedicamentDialogComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class MedicamentDialogComponent implements OnInit {
+  private medicamentsEffect = effect(() => this.medicaments = this.appointmentService.medicaments());
 
   medicamentForm: FormGroup;
   medicaments: Medicament[] = []
@@ -57,12 +56,6 @@ export class MedicamentDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.appointmentService.loadMedicaments();
-
-    this.subscriptions.push(this.appointmentService.medicaments$.subscribe(medicaments => this.medicaments = medicaments));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(x => x.unsubscribe());
   }
 
   onSubmit(): void {

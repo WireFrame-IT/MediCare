@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppointmentService } from '../../services/appointment.service';
-import { Subscription } from 'rxjs';
 import { Service } from '../../DTOs/models/service';
 import { ICON_MAP } from '../../shared/icon-map';
 import { MatCard } from '@angular/material/card';
@@ -28,9 +27,21 @@ import { MatOption, MatSelect } from '@angular/material/select';
   templateUrl: './service-page.component.html',
   styleUrl: './service-page.component.scss'
 })
-export class ServicePageComponent {
-  private subscriptions: Subscription[] = [];
+export class ServicePageComponent implements OnInit {
   private dialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
+
+  private servicesEffect = effect(() => {
+    this.services = this.appointmentService.services();
+    this.applyFilter();
+  });
+
+  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
+
+  private isLoggedInEffect = effect(() => {
+    this.isLoggedIn = this.authService.isLoggedIn();
+    if(!this.isLoggedIn && this.dialogRef)
+      this.dialogRef.close();
+  });
 
   services: Service[] = [];
   filteredServices: Service[] = [];
@@ -57,24 +68,6 @@ export class ServicePageComponent {
     this.filter = sessionStorage.getItem('servicesFilter') ?? '';
 
     this.appointmentService.loadServices();
-    this.subscriptions.push(this.appointmentService.services$.subscribe(services => {
-      this.services = services;
-      this.applyFilter();
-    }));
-
-    this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => {
-      this.isLoggedIn = isLoggedIn;
-      if(!this.isLoggedIn && this.dialogRef)
-        this.dialogRef.close();
-    }));
-
-    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscriotion => subscriotion.unsubscribe());
-    if(this.dialogRef)
-      this.dialogRef.close();
   }
 
   openAppointmentDialog(service: Service): void {

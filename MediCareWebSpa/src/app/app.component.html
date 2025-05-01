@@ -11,7 +11,9 @@
         <button mat-button routerLink="/availability-page" routerLinkActive="active">Availabilities</button>
       }
       <button mat-button routerLink="/services" routerLinkActive="active">Services</button>
-      <button mat-button routerLink="/appointments" routerLinkActive="active">Appointments</button>
+      @if (isLoggedIn) {
+        <button mat-button routerLink="/appointments" routerLinkActive="active">Appointments</button>
+      }
       <button mat-button routerLink="/about-page" routerLinkActive="active">About us</button>
       <div class="auth-buttons">
         @if(isLoggedIn) {

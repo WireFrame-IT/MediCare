@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppointmentService } from '../../services/appointment.service';
@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { Service } from '../../DTOs/models/service';
-import { Subscription } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,8 +35,24 @@ import { ReducedDoctor } from '../../DTOs/models/reduced-doctor';
   templateUrl: './appointment-dialog.component.html',
   styleUrl: './appointment-dialog.component.scss'
 })
-export class AppointmentDialogComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class AppointmentDialogComponent implements OnInit {
+  private servicesEffect = effect(() => this.services = this.appointmentService.services());
+  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
+  private userPermissionsEffect = effect(() => this.userPermissions = this.authService.userPermissions());
+
+  private doctorsEffect = effect(() => {
+    this.doctors = this.appointmentService.reducedDoctors();
+    this.doctorsBySpeciality = this.doctors.filter(x => x.specialityId === this.data?.service?.specialityId);
+  });
+
+  private isAdminEffect = effect(() => {
+    this.isAdmin = this.authService.isAdmin();
+
+    if (this.isAdmin)
+      this.appointmentService.loadDoctors();
+    else
+      this.appointmentService.loadReducedDoctors();
+  });
 
   appointmentForm: FormGroup;
   isDoctor: boolean = false;
@@ -70,26 +85,6 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.appointmentService.loadServices();
     this.authService.loadUserPsermissions();
-
-    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
-    this.subscriptions.push(this.authService.userPermissions$.subscribe(userPermissions => this.userPermissions = userPermissions));
-    this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => {
-      this.isAdmin = isAdmin;
-      if (this.isAdmin)
-        this.appointmentService.loadDoctors();
-      else
-        this.appointmentService.loadReducedDoctors();
-    }));
-
-    this.subscriptions.push(this.appointmentService.services$.subscribe(services => this.services = services));
-    this.subscriptions.push(this.appointmentService.reducedDoctors$.subscribe(doctors => {
-      this.doctors = doctors;
-      this.doctorsBySpeciality = doctors.filter(x => x.specialityId === this.data?.service?.specialityId);
-    }));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onServiceChange(event: any) {
@@ -115,8 +110,8 @@ export class AppointmentDialogComponent implements OnInit, OnDestroy {
 
       this.loadingService.show();
       this.appointmentService.saveAppointment(appointment).subscribe({
-        next: (response: Appointment) => {
-          this.dialogRef.close(response);
+        next: () => {
+          this.dialogRef.close();
           this.loadingService.hide();
           this.loadingService.showMessage(this.isDoctor ? 'Diagnosis has been saved.' : 'Appointment has been saved.');
         },

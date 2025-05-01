@@ -1,10 +1,9 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { LoadingService } from '../../services/loading.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Doctor } from '../../DTOs/models/doctor';
-import { Subscription } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UserRequestDTO } from '../../DTOs/request/user-request.dto';
 import { Speciality } from '../../DTOs/models/speciality';
@@ -29,11 +28,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
   templateUrl: './edit-user-dialog.component.html',
   styleUrl: './edit-user-dialog.component.scss'
 })
-export class EditUserDialogComponent implements OnInit, OnDestroy {
+export class EditUserDialogComponent implements OnInit {
+  private specialitiesEffect = effect(() => this.specialities = this.authService.specialities());
+
   userForm: FormGroup;
   specialities: Speciality[] = [];
   isDoctor: boolean;
-  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -68,16 +68,9 @@ export class EditUserDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authService.loadSpecialities();
-    this.subscriptions.push(this.authService.specialities$.subscribe(specialities => this.specialities = specialities));
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close();
-  }
+  closeDialog = (): void => this.dialogRef.close();
 
   onSubmit(): void {
     if (this.userForm.valid) {

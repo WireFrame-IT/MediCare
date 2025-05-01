@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, finalize, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, Observable, of } from 'rxjs';
 import { PatientRegisterRequestDTO } from '../DTOs/request/patient-register-request.dto';
 import { LoginRequestDTO } from '../DTOs/request/login-request.dto';
 import { RefreshResponseDTO } from '../DTOs/response/refresh-response.dto';
@@ -22,23 +22,18 @@ import { DoctorsAvailabilityRequest } from '../DTOs/request/doctors-availability
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _isAdmin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private _isDoctor: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private _isLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private _specialities: BehaviorSubject<Speciality[]> = new BehaviorSubject<Speciality[]>([]);
-  private _permissions: BehaviorSubject<Permission[]> = new BehaviorSubject<Permission[]>([]);
-  private _userPermissions: BehaviorSubject<PermissionType[]> = new BehaviorSubject<PermissionType[]>([]);
-  private _availabilities: BehaviorSubject<DoctorsAvailability[]> = new BehaviorSubject<DoctorsAvailability[]>([]);
-
-  isAdmin$: Observable<boolean> = this._isAdmin.asObservable();
-  isDoctor$: Observable<boolean> = this._isDoctor.asObservable();
-  isLoggedIn$: Observable<boolean> = this._isLoggedIn.asObservable();
-  specialities$: Observable<Speciality[]> = this._specialities.asObservable();
-  permissions$: Observable<Permission[]> = this._permissions.asObservable();
-  userPermissions$: Observable<PermissionType[]> = this._userPermissions.asObservable();
-  availabilities$: Observable<DoctorsAvailability[]> = this._availabilities.asObservable();
-
   readonly apiUrl = 'https://localhost:5001/MediCareWebApi/accounts';
+
+  isAdmin = signal<boolean>(false);
+  isDoctor = signal<boolean>(false);
+  isLoggedIn = signal<boolean>(false);
+  permissions = signal<Permission[]>([]);
+  userPermissions = signal<PermissionType[]>([]);
+  specialities = signal<Speciality[]>([]);
+  availabilities = signal<DoctorsAvailability[]>([]);
+
+  private readonly isLoggedInSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
+  readonly isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -90,33 +85,33 @@ export class AuthService {
     sessionStorage.setItem('roleType', roleType?.toString() ?? RoleType.Patient.toString());
     sessionStorage.setItem('accessToken', accessToken);
     sessionStorage.setItem('refreshToken', refreshToken);
-    this._isAdmin.next(roleType === RoleType.Admin);
-    this._isDoctor.next(roleType === RoleType.Doctor);
-    this._isLoggedIn.next(true);
+    this.isAdmin.set(roleType === RoleType.Admin);
+    this.isDoctor.set(roleType === RoleType.Doctor);
+    this.isLoggedIn.set(true);
   }
 
   loadSpecialities(): void {
     this.http.get(`${this.apiUrl}/specialities`)
-      .pipe(catchError(() => []))
-      .subscribe(specialities => this._specialities.next(specialities as Speciality[]));
+      .pipe(catchError(() => of([])))
+      .subscribe(specialities => this.specialities.set(specialities as Speciality[]));
   }
 
   loadPermissions(): void {
     this.http.get(`${this.apiUrl}/permissions`)
-      .pipe(catchError(() => []))
-      .subscribe(permissions => this._permissions.next(permissions as Permission[]));
+      .pipe(catchError(() => of([])))
+      .subscribe(permissions => this.permissions.set(permissions as Permission[]));
   }
 
   loadUserPsermissions(): void {
     this.http.get(`${this.apiUrl}/user-permissions`)
-      .pipe(catchError(() => []))
-      .subscribe(userPermissions => this._userPermissions.next(userPermissions as PermissionType[]));
+      .pipe(catchError(() => of([])))
+      .subscribe(userPermissions => this.userPermissions.set(userPermissions as PermissionType[]));
   }
 
   loadDoctorsAvailabilities(): void {
     this.http.get(`${this.apiUrl}/availabilities`)
-      .pipe(catchError(() => []))
-      .subscribe(availabilities => this._availabilities.next(availabilities as DoctorsAvailability[]));
+      .pipe(catchError(() => of([])))
+      .subscribe(availabilities => this.availabilities.set(availabilities as DoctorsAvailability[]));
   }
 
   addRolePermission(rolePermission: RolePermissionRequest): Observable<void> {
@@ -136,9 +131,9 @@ export class AuthService {
   }
 
   cleanCredentials(): void {
-    this._isAdmin.next(false);
-    this._isDoctor.next(false);
-    this._isLoggedIn.next(false);
+    this.isAdmin.set(false);
+    this.isDoctor.set(false);
+    this.isLoggedIn.set(false);
     sessionStorage.removeItem('accessToken');
     sessionStorage.removeItem('refreshToken');
     sessionStorage.removeItem('userId');
@@ -154,11 +149,11 @@ export class AuthService {
     if (!accessToken)
       return;
 
-    this._isLoggedIn.next(true);
+    this.isLoggedIn.set(true);
     const roleType = this.getRoleType();
     if (roleType) {
-      this._isAdmin.next(roleType === RoleType.Admin);
-      this._isDoctor.next(roleType === RoleType.Doctor);
+      this.isAdmin.set(roleType === RoleType.Admin);
+      this.isDoctor.set(roleType === RoleType.Doctor);
     }
   }
 

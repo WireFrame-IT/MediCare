@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import { AppointmentService } from '../../services/appointment.service';
 import { Doctor } from '../../DTOs/models/doctor';
 import { MatCardModule } from '@angular/material/card';
-import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
@@ -30,11 +29,14 @@ import { MatIcon } from '@angular/material/icon';
   templateUrl: './admin-panel.component.html',
   styleUrl: './admin-panel.component.scss'
 })
-export class AdminPanelComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class AdminPanelComponent implements OnInit {
   private dialogRef: MatDialogRef<EditUserDialogComponent> | null = null;
   private doctors: Doctor[] = [];
   private patients: Patient[] = [];
+  private doctorsEffect = effect(() => this.doctors = this.appointmentService.doctors());
+  private patientsEffect = effect(() => this.patients = this.appointmentService.patients());
+  private permissionsEffect = effect(() => this.permissions = this.authService.permissions());
+
 
   permissions: Permission[] = [];
   displayedColumns: string[] = [];
@@ -57,15 +59,7 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
     this.appointmentService.loadPatients();
     this.authService.loadPermissions();
 
-    this.subscriptions.push(this.appointmentService.doctors$.subscribe(doctors => this.doctors = doctors));
-    this.subscriptions.push(this.appointmentService.patients$.subscribe(patients => this.patients = patients));
-    this.subscriptions.push(this.authService.permissions$.subscribe(permissions => this.permissions = permissions));
-
     this.displayedColumns = ['description', ...this.roleTypes.map(x => x.label.toLowerCase())];
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   getPersons = (): (Doctor | Patient)[] => [...this.doctors, ...this.patients];

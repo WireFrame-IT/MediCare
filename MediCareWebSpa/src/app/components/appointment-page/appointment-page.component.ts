@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Appointment } from '../../DTOs/models/appointment';
 import { AppointmentService } from '../../services/appointment.service';
@@ -26,9 +26,24 @@ import { Prescription } from '../../DTOs/models/prescription';
   templateUrl: './appointment-page.component.html',
   styleUrl: './appointment-page.component.scss'
 })
-export class AppointmentPageComponent implements OnInit, OnDestroy {
+export class AppointmentPageComponent {
   private appointmentDialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
   private prescriptionDialogRef: MatDialogRef<PrescriptionDialogComponent> | null = null;
+
+  private userPermissionsEffect = effect(() => this.userPermissions = this.authService.userPermissions());
+  private prescriptionsEffect = effect(() => this.prescriptions = this.appointmentService.prescriptions());
+  private appointmentsEffect = effect(() => this.appointments = this.appointmentService.appointments());
+  private isAdminEffect = effect(() => this.isAdmin = this.authService.isAdmin());
+  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
+  private isLoggedInEffect = effect(() => {
+    this.isLoggedIn = this.authService.isLoggedIn();
+
+    if (this.isLoggedIn) {
+      this.appointmentService.loadAppointments();
+      this.appointmentService.loadPrescriptions();
+      this.authService.loadUserPsermissions();
+    }
+  });
 
   subscriptions: Subscription[] = [];
   appointments: Appointment[] = [];
@@ -44,28 +59,6 @@ export class AppointmentPageComponent implements OnInit, OnDestroy {
     private loadingService: LoadingService,
     private dialog: MatDialog
   ) {}
-
-  ngOnInit(): void {
-    this.subscriptions.push(this.authService.isLoggedIn$.subscribe(isLoggedIn => {
-      this.isLoggedIn = isLoggedIn;
-      if (isLoggedIn) {
-        this.appointmentService.loadAppointments();
-        this.appointmentService.loadPrescriptions();
-        this.authService.loadUserPsermissions();
-      }
-    }));
-
-    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
-    this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
-    this.subscriptions.push(this.authService.userPermissions$.subscribe(userPermissions => this.userPermissions = userPermissions));
-
-    this.subscriptions.push(this.appointmentService.appointments$.subscribe(appointments => this.appointments = appointments));
-    this.subscriptions.push(this.appointmentService.prescriptions$.subscribe(prescriptions => this.prescriptions = prescriptions));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
-  }
 
   onCancel(appointment: Appointment): void {
     this.appointmentService.cancelAppointment(appointment.id).subscribe({

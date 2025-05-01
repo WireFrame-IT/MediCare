@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -6,8 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { AppointmentService } from '../../services/appointment.service';
-import { Subscription } from 'rxjs';
-import { Medicament } from '../../DTOs/models/medicament';
 import { PrescriptionMedicament } from '../../DTOs/models/prescription-medicament';
 import { MedicamentType } from '../../enums/medicament-type';
 import { MedicamentUnit } from '../../enums/medicament-unit';
@@ -33,12 +31,11 @@ import { MedicamentDialogComponent } from '../medicament-dialog/medicament-dialo
   templateUrl: './prescription-dialog.component.html',
   styleUrl: './prescription-dialog.component.scss'
 })
-export class PrescriptionDialogComponent implements OnInit, OnDestroy {
+export class PrescriptionDialogComponent {
   private medicamentDialogRef: MatDialogRef<MedicamentDialogComponent> | null = null;
+  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
 
   prescriptionForm: FormGroup;
-  subscriptions: Subscription[] = [];
-  medicaments: Medicament[] = [];
   isDoctor: boolean = false;
   minDate: Date = new Date();
 
@@ -55,17 +52,6 @@ export class PrescriptionDialogComponent implements OnInit, OnDestroy {
       description: [ data.prescription ? data.prescription.description : '', Validators.required],
       expirationDate: [ data.prescription ? new Date(data.prescription.expirationDate) : '', Validators.required]
     });
-  }
-
-  ngOnInit(): void {
-    this.appointmentService.loadMedicaments();
-
-    this.subscriptions.push(this.authService.isDoctor$.subscribe(isDoctor => this.isDoctor = isDoctor));
-    this.subscriptions.push(this.appointmentService.medicaments$.subscribe(medicaments => this.medicaments = medicaments));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onSubmit(): void {

@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import { DoctorsAvailability } from '../../DTOs/models/doctors-availability';
 import { AuthService } from '../../services/auth.service';
-import { Subscription } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -22,9 +21,10 @@ import { DoctorsAvailabilityRequest } from '../../DTOs/request/doctors-availabil
   templateUrl: './availability-page.component.html',
   styleUrl: './availability-page.component.scss'
 })
-export class AvailabilityPageComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class AvailabilityPageComponent implements OnInit {
   private dialogRef: MatDialogRef<AvailabilityDialogComponent> | null = null;
+  private isAdminEffect = effect(() => this.isAdmin = this.authService.isAdmin());
+  private availabilitiesEffect = effect(() => this.availabilities = this.authService.availabilities());
 
   availabilities: DoctorsAvailability[] = [];
   isAdmin: boolean = false;
@@ -37,13 +37,6 @@ export class AvailabilityPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authService.loadDoctorsAvailabilities();
-
-    this.subscriptions.push(this.authService.isAdmin$.subscribe(isAdmin => this.isAdmin = isAdmin));
-    this.subscriptions.push(this.authService.availabilities$.subscribe(availabilities => this.availabilities = availabilities));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onRemove(availability: DoctorsAvailability): void {
