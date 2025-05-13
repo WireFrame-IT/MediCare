@@ -4,20 +4,20 @@
     <span class="title">MediCare</span>
     <div class="links">
       <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</button>
-      @if (isAdmin) {
+      @if (isAdmin()) {
         <button mat-button routerLink="/admin-panel" routerLinkActive="active">Admin panel</button>
       }
-      @if (isDoctor) {
+      @if (isDoctor()) {
         <button mat-button routerLink="/availability-page" routerLinkActive="active">Availabilities</button>
       }
       <button mat-button routerLink="/services" routerLinkActive="active">Services</button>
-      @if (isLoggedIn) {
+      @if (isLoggedIn()) {
         <button mat-button routerLink="/appointments" routerLinkActive="active">Appointments</button>
       }
       <button mat-button routerLink="/about-page" routerLinkActive="active">About us</button>
       <div class="auth-buttons">
-        @if(isLoggedIn) {
-          @if (isAdmin) {
+        @if(isLoggedIn()) {
+          @if (isAdmin()) {
             <button mat-raised-button routerLink="/register-user" routerLinkActive="active">User Registration</button>
           }
           <button mat-raised-button (click)="logout()" routerLinkActive="active">Log out</button>
@@ -31,18 +31,18 @@
       </div>
     </div>
   </mat-toolbar>
-  @if(isLoading) {
+  @if(isLoading()) {
     <mat-progress-bar class="progress-bar" mode="indeterminate"></mat-progress-bar>
   }
 </div>
-@if (message) {
+@if (message()) {
   <div class="message">
-    <p>{{ message }}</p>
+    <p>{{ message() }}</p>
   </div>
 }
-@if (errorMessage) {
+@if (errorMessage()) {
   <div class="message error">
-    <p>{{ errorMessage }}</p>
+    <p>{{ errorMessage() }}</p>
   </div>
 }
 <router-outlet></router-outlet>

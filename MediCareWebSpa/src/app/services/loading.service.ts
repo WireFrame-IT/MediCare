@@ -1,74 +1,69 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
   private readonly DURATION_IN_MILLISECNDS = 2000;
 
-  private _isLoading = new BehaviorSubject<boolean>(false);
-  private _messageSubject = new BehaviorSubject<string | null>(null);
-  private _errorMessageSubject = new BehaviorSubject<string | null>(null);
-  private _showingMessage = new BehaviorSubject<boolean>(false);
+  isLoading = signal<boolean>(false);
+  message = signal<string | null>(null);
+  errorMessage = signal<string | null>(null);
+  showingMessage = signal<boolean>(false);
+
   private messageQueue: { message: string, error: boolean }[] = [];
 
-  isLoading$ = this._isLoading.asObservable();
-  message$ = this._messageSubject.asObservable();
-  errorMessage$ = this._errorMessageSubject.asObservable();
-  showingMessage$ = this._showingMessage.asObservable();
-
   show() {
-    this._isLoading.next(true);
+    this.isLoading.set(true);
   }
 
   hide() {
-    this._isLoading.next(false);
+    this.isLoading.set(false);
 
-    if (!this._showingMessage.value)
+    if (!this.showingMessage())
       this.displayNextMessage();
   }
 
   private displayNextMessage() {
     if (this.messageQueue.length > 0) {
-      this._showingMessage.next(true);
+      this.showingMessage.set(true);
       const nextMessage = this.messageQueue.shift()!;
 
       if (nextMessage.error)
-        this._errorMessageSubject.next(nextMessage.message);
+        this.errorMessage.set(nextMessage.message);
       else
-        this._messageSubject.next(nextMessage.message);
+        this.message.set(nextMessage.message);
 
       setTimeout(() => {
-        this._messageSubject.next(null);
-        this._errorMessageSubject.next(null);
-        this._showingMessage.next(false);
+        this.message.set(null)
+        this.errorMessage.set(null);
+        this.showingMessage.set(false);
         this.displayNextMessage();
       }, this.DURATION_IN_MILLISECNDS);
     }
   }
 
   showMessage(message: string) {
-    if (this._isLoading.value || this._showingMessage.value) {
+    if (this.isLoading() || this.showingMessage()) {
       this.messageQueue.push({message: message, error: false});
     } else {
-      this._showingMessage.next(true);
-      this._messageSubject.next(message);
+      this.showingMessage.set(true);
+      this.message.set(message);
       setTimeout(() => {
-        this._messageSubject.next(null);
-        this._showingMessage.next(false);
+        this.message.set(null);
+        this.showingMessage.set(false);
         this.displayNextMessage();
       }, this.DURATION_IN_MILLISECNDS);
     }
   }
 
   showErrorMessage(message: string) {
-    if (this._isLoading.value || this._showingMessage.value) {
+    if (this.isLoading() || this.showingMessage()) {
       this.messageQueue.push({message: message, error: true});
     } else {
-      this._showingMessage.next(true);
-      this._errorMessageSubject.next(message);
+      this.showingMessage.set(true);
+      this.errorMessage.set(message);
       setTimeout(() => {
-        this._errorMessageSubject.next(null);
-        this._showingMessage.next(false);
+        this.errorMessage.set(null);
+        this.showingMessage.set(false);
         this.displayNextMessage();
       }, this.DURATION_IN_MILLISECNDS);
     }

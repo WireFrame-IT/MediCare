@@ -101,11 +101,6 @@ namespace MediCare.Models
 				.HasOne(x => x.Patient)
 				.WithMany(x => x.Feedbacks)
 				.HasForeignKey(x => x.PatientsUserId);
-
-			modelBuilder.Entity<Feedback>()
-				.HasOne(x => x.Appointment)
-				.WithMany(x => x.Feedbacks)
-				.HasForeignKey(x => x.AppointmentId);
 		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

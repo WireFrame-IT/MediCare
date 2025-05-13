@@ -1,6 +1,5 @@
 import { AppointmentStatus } from "../../enums/appointment-status";
 import { Doctor } from "./doctor";
-import { Feedback } from "./feedback";
 import { Patient } from "./patient";
 import { Service } from "./service";
 
@@ -15,7 +14,6 @@ export class Appointment {
   doctor: Doctor;
   serviceId: number;
   service: Service;
-  feedbacks: Feedback[] = [];
 
   constructor(
     id: number,

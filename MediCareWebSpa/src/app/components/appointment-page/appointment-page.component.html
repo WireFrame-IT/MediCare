@@ -47,7 +47,7 @@
         </mat-card-header>
         <mat-card-content class="content">
           <button class="status" [class]="getStatusClass(appointment)" mat-raised-button>{{ getStatus(appointment) }}</button>
-          @if (!isDoctor || canSeeAllAppointments()) {
+          @if (!isDoctor() || canSeeAllAppointments()) {
             <div class="doctors-info">
               <p class="doctor-name">{{ appointment.doctor.user.name }} {{ appointment.doctor.user.surname }}</p>
               <i class="doctor-speciality">{{ appointment.doctor.speciality.name }}</i>
@@ -58,22 +58,29 @@
               <p>{{ appointment.patient.user.name }} {{ appointment.patient.user.surname }}</p>
               <i>Patient</i>
             </div>
+          } @else if (appointment.diagnosis) {
+            <div class="diagnosis">
+              <i>{{ appointment.diagnosis }}</i>
+            </div>
           }
         </mat-card-content>
         <mat-card-actions class="actions">
-          @if (canCancel(appointment)) {()
+          @if (canCancel(appointment)) {
             <button mat-raised-button (click)="onCancel(appointment)">Cancel</button>
           }
-          @if (isDoctor() && canAccept(appointment)) {
+          @if (canAccept(appointment)) {
             <button mat-flat-button (click)="onAccept(appointment)">Accept</button>
           }
-          @if (isDoctor() && canConfirm(appointment)) {
+          @if (canConfirm(appointment)) {
             <button mat-flat-button (click)="onConfirm(appointment)">Confirm</button>
           }
-          @if (isConfirmed(appointment) && (isDoctor() || (isAdmin() || isRightUser(appointment)) && existsPrescription(appointment))) {
+          @if (isConfirmed(appointment) && (isThisDoctor(appointment) || (existsPrescription(appointment) && (isAdmin() || isThisPatient(appointment) || isDoctor())))) {
             <button mat-raised-button (click)="openPrescriptionDialog(appointment)">Prescription</button>
           }
-          @if (isAdmin() || isDoctor() && isRightUser(appointment) && isConfirmed(appointment)) {
+          @if (isConfirmed(appointment)) {
+            <button mat-raised-button (click)="openFeedbackDialog(appointment)">Review</button>
+          }
+          @if (isAdmin() || isThisDoctor(appointment) && isConfirmed(appointment)) {
             <button mat-flat-button (click)="openEditAppointmentDialog(appointment)">{{ isAdmin() ? "Edit" : "Diagnosis"}}</button>
           }
         </mat-card-actions>

@@ -14,6 +14,8 @@ import { MedicamentType } from "../enums/medicament-type";
 import { MedicamentUnit } from "../enums/medicament-unit";
 import { PrescriptionMedicamentRequestDTO } from "../DTOs/request/prescription-medicament-request.dto";
 import { PrescriptionMedicament } from "../DTOs/models/prescription-medicament";
+import { Feedback } from "../DTOs/models/feedback";
+import { FeedbackRequestDTO } from "../DTOs/request/feedback-request.dto";
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
@@ -26,6 +28,7 @@ export class AppointmentService {
   medicaments = signal<Medicament[]>([]);
   prescriptions = signal<Prescription[]>([]);
   appointments = signal<Appointment[]>([]);
+  feedbacks = signal<Feedback[]>([]);
 
   constructor(private http: HttpClient) {}
 
@@ -67,8 +70,14 @@ export class AppointmentService {
 
   loadAppointments(): void {
     this.http.get<Appointment[]>(`${this.apiUrl}`)
-    .pipe(catchError(() => of([])))
-    .subscribe(appointments => this.appointments.set(appointments as Appointment[]));
+      .pipe(catchError(() => of([])))
+      .subscribe(appointments => this.appointments.set(appointments as Appointment[]));
+  }
+
+  loadFeedbacks(): void {
+    this.http.get<Feedback[]>(`${this.apiUrl}/feedbacks`)
+      .pipe(catchError(() => of([])))
+      .subscribe(feedbacks => this.feedbacks.set(feedbacks as Feedback[]))
   }
 
   removePrescriptionMedicament(prescriptionAppointmentId: number, medicamentId: number): Observable<void> {
@@ -97,6 +106,10 @@ export class AppointmentService {
 
   cancelAppointment(id: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/cancel?id=${id}`, null);
+  }
+
+  saveFeedback(feedback: FeedbackRequestDTO): Observable<Feedback> {
+    return this.http.post<Feedback>(`${this.apiUrl}/feedback`, feedback);
   }
 
   getMedicamentTypeName = (type: MedicamentType): string => MedicamentType[type].replace(/([a-z])([A-Z])/g, '$1 $2');

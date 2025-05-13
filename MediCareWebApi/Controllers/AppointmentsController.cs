@@ -240,13 +240,17 @@ namespace MediCare.Controllers
 			}
 
 			await _context.SaveChangesAsync();
-			return Ok(_mapper.Map<PrescriptionDTO>(prescription));
+			return Ok();
 		}
 
 		[Authorize(Roles = "Doctor")]
 		[HttpPost("prescription-medicament")]
 		public async Task<IActionResult> AddPrescriptionMedicamentAsync([FromBody] PrescriptionMedicamentRequestDTO prescriptionMedicamentRequestDTO)
 		{
+			var result = await ValidateDoctorAsync(prescriptionMedicamentRequestDTO.PrescriptionAppointmentId);
+			if (result != null)
+				return result;
+
 			await _context.PrescriptionMedicaments.AddAsync(_mapper.Map<PrescriptionMedicament>(prescriptionMedicamentRequestDTO));
 			await _context.SaveChangesAsync();
 
@@ -260,6 +264,10 @@ namespace MediCare.Controllers
 		[HttpDelete("prescription-medicament")]
 		public async Task<IActionResult> DeletePrescriptionMedicamentAsync([FromQuery] int prescriptionAppointmentId, [FromQuery] int medicamentId)
 		{
+			var result = await ValidateDoctorAsync(prescriptionAppointmentId);
+			if (result != null)
+				return result;
+
 			var prescriptionMedicament = await _context.PrescriptionMedicaments
 				.FirstOrDefaultAsync(x => x.PrescriptionAppointmentId == prescriptionAppointmentId && x.MedicamentId == medicamentId);
 			if (prescriptionMedicament == null)
@@ -314,6 +322,70 @@ namespace MediCare.Controllers
 			return Ok();
 		}
 
+		[HttpGet("feedbacks")]
+		public async Task<IActionResult> GetFeedbacksAsync()
+		{
+			var user = await GetCurrentUserAsync();
+			var query = _context.Feedbacks.AsQueryable();
+
+			switch (user.Role.RoleType)
+			{
+				case RoleType.Patient:
+					query = query.Where(x => x.PatientsUserId == user.Id);
+					break;
+				case RoleType.Doctor:
+					query = query.Where(x => x.Appointment.DoctorsUserId == user.Id);
+					break;
+			}
+
+			return Ok(_mapper.Map<List<FeedbackDTO>>(await query.ToListAsync()));
+		}
+
+		[Authorize(Roles = "Patient")]
+		[HttpPost("feedback")]
+		public async Task<IActionResult> SaveFeedbackAsync([FromBody] FeedbackRequestDTO feedbackRequestDto)
+		{
+			var userId = GetCurrentUserId();
+			var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == feedbackRequestDto.AppointmentId);
+
+			if (appointment == null)
+				return NotFound("Appointment not found.");
+
+			if (appointment.PatientsUserId != userId)
+				return Unauthorized("Lack of appropriate permissions.");
+
+			var feedback = await _context.Feedbacks.FirstOrDefaultAsync(x => x.PatientsUserId == userId && x.AppointmentId == feedbackRequestDto.AppointmentId);
+			if (feedback == null)
+			{
+				feedback = _mapper.Map<Feedback>(feedbackRequestDto);
+				feedback.PatientsUserId = userId;
+				feedback.CreatedAt = DateTime.Now;
+				await _context.Feedbacks.AddAsync(feedback);
+			}
+			else
+			{
+				feedback.Rate = feedbackRequestDto.Rate;
+				feedback.Description = feedbackRequestDto.Description;
+			}
+
+			await _context.SaveChangesAsync();
+			return Ok(_mapper.Map<FeedbackDTO>(feedback));
+		}
+
+		private async Task<IActionResult?> ValidateDoctorAsync(int appointmentId)
+		{
+			var userId = GetCurrentUserId();
+			var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == appointmentId);
+
+			if (appointment == null)
+				return NotFound("Appointment not found.");
+
+			if (appointment.DoctorsUserId != userId)
+				return Unauthorized("Lack of appropriate permissions.");
+
+			return null;
+		}
+
 		private async Task<Appointment?> GetAppointmentAsync(int id)
 		{
 			var userId = GetCurrentUserId();
@@ -336,16 +408,15 @@ namespace MediCare.Controllers
 
 		private async Task<IEnumerable<Appointment>> GetAllAppointmentsAsync(int? userId = null, bool doctor = false)
 		{
-			var baseQuery = _context.Appointments
+			var query = _context.Appointments
 				.Include(x => x.Doctor)
 					.ThenInclude(x => x.User)
 				.Include(x => x.Doctor)
 					.ThenInclude(x => x.Speciality)
 				.Include(x => x.Patient)
 					.ThenInclude(x => x.User)
-				.Include(x => x.Service);
-
-			IQueryable<Appointment> query = baseQuery;
+				.Include(x => x.Service)
+				.AsQueryable();
 
 			if (userId.HasValue)
 			{

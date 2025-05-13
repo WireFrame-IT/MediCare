@@ -1,0 +1,20 @@
+<h2 class="title" mat-dialog-title>Review</h2>
+<form class="form" [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
+  <div class="stars" [class.non-editable]="!data.isThisPatient">
+    @for (star of stars; track star) {
+      <mat-icon class="star" (click)="setRating(star)" (mouseenter)="setHovered(star)" (mouseleave)="clearHovered()">
+        {{ star <= (hovered || rating) ? 'star' : 'star_border' }}
+      </mat-icon>
+    }
+  </div>
+  <mat-form-field class="text-area" [class.non-editable]="!data.isThisPatient">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" cdkTextareaAutosize cdkAutosizeMinRows="10" cdkAutosizeMaxRows="20" [readonly]="!data.isThisPatient"></textarea>
+  </mat-form-field>
+  <div class="buttons" mat-dialog-actions>
+    @if (data.isThisPatient) {
+      <button class="btn-submit" mat-raised-button type="submit" [disabled]="feedbackForm.invalid">Save</button>
+    }
+    <button class="btn-cancel" mat-button mat-dialog-close type="button" (click)="closeDialog()">Cancel</button>
+  </div>
+</form>

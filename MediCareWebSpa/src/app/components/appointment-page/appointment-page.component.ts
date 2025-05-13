@@ -15,6 +15,7 @@ import { PrescriptionDialogComponent } from '../prescription-dialog/prescription
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { FeedbackDialogComponent } from '../feedback-dialog/feedback-dialog.component';
 
 @Component({
   selector: 'app-appointment-page',
@@ -34,6 +35,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
 export class AppointmentPageComponent implements OnInit {
   private appointmentDialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
   private prescriptionDialogRef: MatDialogRef<PrescriptionDialogComponent> | null = null;
+  private feedbackDialogRef: MatDialogRef<FeedbackDialogComponent> | null = null;
 
   isDoctor = computed(() => this.authService.isDoctor());
   isAdmin = computed(() => this.authService.isAdmin());
@@ -41,6 +43,7 @@ export class AppointmentPageComponent implements OnInit {
   userPermissions = computed(() => this.authService.userPermissions());
   prescriptions = computed(() => this.appointmentService.prescriptions());
   appointments = computed(() => this.appointmentService.appointments());
+  feedbacks = computed(() => this.appointmentService.feedbacks());
   specialityOptions = computed(() => this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
 
   readonly sortOptions = [
@@ -85,6 +88,7 @@ export class AppointmentPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.loadSpecialities();
+    this.appointmentService.loadFeedbacks();
 
     this.search = sessionStorage.getItem('appointmentsSearch') ?? '';
     this.selectedSpecialityId = Number(sessionStorage.getItem('appointmentsSpecialityId')) ?? 0;
@@ -154,20 +158,31 @@ export class AppointmentPageComponent implements OnInit {
 
   getStatus = (appointment: Appointment): string => AppointmentStatus[appointment.status];
 
-  isRightUser = (appointment: Appointment): boolean => {
+  isThisDoctor = (appointment: Appointment): boolean => {
     const userId = sessionStorage.getItem('userId');
 
     if (userId == null)
       return false;
 
-    return Number(userId) === appointment.doctorsUserId || Number(userId) === appointment.patientsUserId;
-  };
+    return Number(userId) === appointment.doctorsUserId;
+  }
+
+  isThisPatient = (appointment: Appointment): boolean => {
+    const userId = sessionStorage.getItem('userId');
+
+    if (userId == null)
+      return false;
+
+    return Number(userId) === appointment.patientsUserId;
+  }
+
+  isRightUser = (appointment: Appointment): boolean => this.isThisDoctor(appointment) || this.isThisPatient(appointment);
 
   canSeeAllAppointments = () => this.userPermissions().some(x => x === PermissionType.ViewAllAppointments);
 
-  canAccept = (appointment: Appointment): boolean => this.isRightUser(appointment) && appointment.status === AppointmentStatus.New;
+  canAccept = (appointment: Appointment): boolean => this.isThisDoctor(appointment) && appointment.status === AppointmentStatus.New;
 
-  canConfirm = (appointment: Appointment): boolean => this.isRightUser(appointment) && appointment.status === AppointmentStatus.Accepted;
+  canConfirm = (appointment: Appointment): boolean => this.isThisDoctor(appointment) && appointment.status === AppointmentStatus.Accepted;
 
   isConfirmed = (appointment: Appointment): boolean => appointment.status === AppointmentStatus.Confirmed;
 
@@ -185,14 +200,13 @@ export class AppointmentPageComponent implements OnInit {
       maxWidth: '700px',
       data: {
         prescription: this.prescriptions().find(x => x.appointmentId === appointment.id),
-        appointmentId: appointment.id
+        appointmentId: appointment.id,
+        doctorsUserId: appointment.doctorsUserId
       },
       autoFocus: false
     });
 
-    this.prescriptionDialogRef.afterClosed().subscribe(() => {
-      this.appointmentService.loadPrescriptions();
-    });
+    this.prescriptionDialogRef.afterClosed().subscribe(() => this.appointmentService.loadPrescriptions());
   }
 
   openEditAppointmentDialog(appointment: Appointment): void {
@@ -202,8 +216,34 @@ export class AppointmentPageComponent implements OnInit {
       autoFocus: false
     });
 
-    this.appointmentDialogRef.afterClosed().subscribe(() => {
-      this.appointmentService.loadAppointments();
+    this.appointmentDialogRef.afterClosed().subscribe(() => this.appointmentService.loadAppointments());
+  }
+
+  openFeedbackDialog(appointment: Appointment): void {
+    this.feedbackDialogRef = this.dialog.open(FeedbackDialogComponent, {
+      width: '500px',
+      data: {
+        feedback: this.feedbacks().find(x => x.appointmentId === appointment.id),
+        appointmentId: appointment.id,
+        isThisPatient: this.isThisPatient(appointment)
+      },
+      autoFocus: false
+    });
+
+    this.feedbackDialogRef.afterClosed().subscribe(response => {
+      if (response) {
+        this.appointmentService.feedbacks.update(current => {
+        const index = current.findIndex(f => f.appointmentId === appointment.id);
+
+        if (index === -1) {
+          return [...current, response];
+        } else {
+          const updated = [...current];
+          updated[index] = response;
+          return updated;
+        }
+      });
+      }
     });
   }
 

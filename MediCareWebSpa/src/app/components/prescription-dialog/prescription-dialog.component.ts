@@ -1,4 +1,4 @@
-import { Component, computed, effect, Inject } from '@angular/core';
+import { Component, effect, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -34,8 +34,6 @@ import { MedicamentDialogComponent } from '../medicament-dialog/medicament-dialo
 export class PrescriptionDialogComponent {
   private medicamentDialogRef: MatDialogRef<MedicamentDialogComponent> | null = null;
 
-  isDoctor = computed(() => this.authService.isDoctor());
-
   prescriptionForm: FormGroup;
   minDate: Date = new Date();
 
@@ -46,7 +44,7 @@ export class PrescriptionDialogComponent {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private dialogRef: MatDialogRef<PrescriptionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { prescription: Prescription | undefined, appointmentId: number }
+    @Inject(MAT_DIALOG_DATA) public data: { prescription: Prescription | undefined, appointmentId: number, doctorsUserId: number }
   ) {
     this.prescriptionForm = this.fb.group({
       description: [ data.prescription ? data.prescription.description : '', Validators.required],
@@ -59,6 +57,15 @@ export class PrescriptionDialogComponent {
     });
   }
 
+  isThisDoctor = (): boolean => {
+    const userId = sessionStorage.getItem('userId');
+
+    if (userId == null)
+      return false;
+
+    return Number(userId) === this.data.doctorsUserId;
+  }
+
   onSubmit(): void {
     if (this.prescriptionForm.valid) {
       const prescription = new PrescriptionRequestDTO(
@@ -69,12 +76,7 @@ export class PrescriptionDialogComponent {
 
       this.loadingService.show();
       this.appointmentService.savePrescription(prescription).subscribe({
-        next: (prescription: Prescription) => {
-          if (this.data.prescription)
-            this.dialogRef.close();
-
-          this.data.prescription = prescription;
-
+        next: () => {
           this.loadingService.hide();
           this.loadingService.showMessage('Prescription has been saved.');
         },

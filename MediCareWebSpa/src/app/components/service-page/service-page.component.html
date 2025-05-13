@@ -27,7 +27,7 @@
 @if (filteredServices.length) {
   <div class="services-container">
     @for (service of filteredServices; track service.id) {
-      <mat-card class="service-card" [style.cursor]="isDoctor() ? 'not-allowed' : 'pointer'" (click)="openAppointmentDialog(service)">
+      <mat-card class="service-card" [style.cursor]="isDoctor() || isAdmin() ? 'default' : 'pointer'" (click)="openAppointmentDialog(service)">
         <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
         <div class="service-info">
           <h3 class="service-title">{{ service.name }}</h3>

@@ -63,8 +63,6 @@ export class AvailabilityPageComponent implements OnInit {
       autoFocus: false
     });
 
-    this.dialogRef.afterClosed().subscribe(() => {
-      this.authService.loadDoctorsAvailabilities();
-    });
+    this.dialogRef.afterClosed().subscribe(() => this.authService.loadDoctorsAvailabilities());
   }
 }

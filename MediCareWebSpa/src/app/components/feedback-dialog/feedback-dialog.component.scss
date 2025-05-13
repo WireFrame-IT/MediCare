@@ -1,0 +1,22 @@
+@use '../../shared/styles/variables.scss' as variables;
+@use '../../shared/styles/dialog.scss';
+
+.stars {
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  direction: ltr;
+
+  .star {
+    cursor: pointer;
+    color: variables.$secondary-color;
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+    transition: all 0.1s ease-in-out;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}

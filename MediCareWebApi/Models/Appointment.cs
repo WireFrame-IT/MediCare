@@ -32,7 +32,5 @@ namespace MediCare.Models
 
 		[ForeignKey("ServiceId")]
 		public Service Service { get; set; }
-
-		public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 	}
 }

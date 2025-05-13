@@ -31,6 +31,7 @@ export class ServicePageComponent implements OnInit {
   private dialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
 
   isDoctor = computed(() => this.authService.isDoctor());
+  isAdmin = computed(() => this.authService.isAdmin());
   isLoggedIn = computed(() => this.authService.isLoggedIn());
   services = computed(() => this.appointmentService.services());
   specialityOptions = computed(() => this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
@@ -75,7 +76,7 @@ export class ServicePageComponent implements OnInit {
       return;
     }
 
-    if (this.isDoctor())
+    if (this.isDoctor() || this.isAdmin())
       return;
 
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
@@ -84,9 +85,7 @@ export class ServicePageComponent implements OnInit {
       autoFocus: false
     });
 
-    this.dialogRef.afterClosed().subscribe(() => {
-      this.appointmentService.loadAppointments();
-    });
+    this.dialogRef.afterClosed().subscribe(() => this.appointmentService.loadAppointments());
   }
 
   applyFilter(): void {

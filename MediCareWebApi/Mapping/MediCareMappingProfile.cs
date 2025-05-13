@@ -32,8 +32,7 @@ namespace MediCare.Mapping
 				.ForMember(x => x.PatientsUserId, y => y.Ignore())
 				.ForMember(x => x.Patient, y => y.Ignore())
 				.ForMember(x => x.Doctor, y => y.Ignore())
-				.ForMember(x => x.Service, y => y.Ignore())
-				.ForMember(x => x.Feedbacks, y => y.Ignore());
+				.ForMember(x => x.Service, y => y.Ignore());
 
 			CreateMap<Appointment, AppointmentDTO>();
 
@@ -46,6 +45,8 @@ namespace MediCare.Mapping
 			CreateMap<DoctorsAvailability, DoctorsAvailabilityDTO>();
 
 			CreateMap<DoctorsAvailabilityRequestDTO, DoctorsAvailability>();
+
+			CreateMap<FeedbackRequestDTO, Feedback>();
 
 			CreateMap<Feedback, FeedbackDTO>();
 
