@@ -1,4 +1,4 @@
-import { Component, effect, Inject, OnInit } from '@angular/core';
+import { Component, computed, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { LoadingService } from '../../services/loading.service';
@@ -6,7 +6,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Doctor } from '../../DTOs/models/doctor';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UserRequestDTO } from '../../DTOs/request/user-request.dto';
-import { Speciality } from '../../DTOs/models/speciality';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,10 +28,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
   styleUrl: './edit-user-dialog.component.scss'
 })
 export class EditUserDialogComponent implements OnInit {
-  private specialitiesEffect = effect(() => this.specialities = this.authService.specialities());
+  specialities = computed(() => this.authService.specialities());
 
   userForm: FormGroup;
-  specialities: Speciality[] = [];
   isDoctor: boolean;
 
   constructor(

@@ -1,4 +1,4 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, computed, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,7 +8,6 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserRegisterRequestDTO } from '../../DTOs/request/user-register-request.dto';
-import { Speciality } from '../../DTOs/models/speciality';
 import { LoadingService } from '../../services/loading.service';
 import { RoleType } from '../../enums/role-type';
 
@@ -26,15 +25,15 @@ import { RoleType } from '../../enums/role-type';
   styleUrl: './user-register-page.component.scss'
 })
 export class UserRegisterPageComponent implements OnInit {
-  private specialitiesEffect = effect(() => this.specialities = this.authService.specialities());
+  specialities = computed(() => this.authService.specialities());
 
-  registerForm!: FormGroup;
-  specialities: Speciality[] = [];
-  isDoctor: boolean = false;
-  roleTypes = [
+  readonly roleTypes = [
     { label: RoleType[RoleType.Patient], value: RoleType.Patient },
     { label: RoleType[RoleType.Doctor], value: RoleType.Doctor }
   ];
+
+  registerForm!: FormGroup;
+  isDoctor: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,

@@ -1,4 +1,4 @@
-import { Component, effect, Inject, OnInit } from '@angular/core';
+import { Component, computed, Inject, OnInit } from '@angular/core';
 import { MedicamentUnit } from '../../enums/medicament-unit';
 import { MedicamentType } from '../../enums/medicament-type';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AppointmentService } from '../../services/appointment.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoadingService } from '../../services/loading.service';
-import { Medicament } from '../../DTOs/models/medicament';
 import { PrescriptionMedicamentRequestDTO } from '../../DTOs/request/prescription-medicament-request.dto';
 import { PrescriptionMedicament } from '../../DTOs/models/prescription-medicament';
 
@@ -28,15 +27,14 @@ import { PrescriptionMedicament } from '../../DTOs/models/prescription-medicamen
   styleUrl: './medicament-dialog.component.scss'
 })
 export class MedicamentDialogComponent implements OnInit {
-  private medicamentsEffect = effect(() => this.medicaments = this.appointmentService.medicaments());
-
-  medicamentForm: FormGroup;
-  medicaments: Medicament[] = []
+  medicaments = computed(() => this.appointmentService.medicaments());
 
   readonly medicamentUnitOptions = Object.keys(MedicamentUnit).filter(key => isNaN(Number(key))).map(key => ({
     label: key,
     value: MedicamentUnit[key as keyof typeof MedicamentUnit]
   }));
+
+  medicamentForm: FormGroup;
 
   constructor(
     private appointmentService: AppointmentService,

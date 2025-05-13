@@ -1,4 +1,4 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, computed, effect, OnInit } from '@angular/core';
 import { Appointment } from '../../DTOs/models/appointment';
 import { AppointmentService } from '../../services/appointment.service';
 import { MatCardModule } from '@angular/material/card';
@@ -12,7 +12,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PermissionType } from '../../enums/permission-type';
 import { LoadingService } from '../../services/loading.service';
 import { PrescriptionDialogComponent } from '../prescription-dialog/prescription-dialog.component';
-import { Prescription } from '../../DTOs/models/prescription';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
@@ -36,29 +35,13 @@ export class AppointmentPageComponent implements OnInit {
   private appointmentDialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
   private prescriptionDialogRef: MatDialogRef<PrescriptionDialogComponent> | null = null;
 
-  private userPermissionsEffect = effect(() => this.userPermissions = this.authService.userPermissions());
-  private prescriptionsEffect = effect(() => this.prescriptions = this.appointmentService.prescriptions());
-  private specialitiesEffect = effect(() => this.specialityOptions = this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
-  private isAdminEffect = effect(() => this.isAdmin = this.authService.isAdmin());
-  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
-
-  private isLoggedInEffect = effect(() => {
-    this.isLoggedIn = this.authService.isLoggedIn();
-
-    if (this.isLoggedIn) {
-      this.appointmentService.loadAppointments();
-      this.appointmentService.loadPrescriptions();
-      this.authService.loadUserPsermissions();
-    } else {
-      this.appointmentDialogRef?.close();
-      this.prescriptionDialogRef?.close();
-    }
-  });
-
-  private appointmentsEffect = effect(() => {
-    this.appointments = this.appointmentService.appointments();
-    this.applyFilter();
-  });
+  isDoctor = computed(() => this.authService.isDoctor());
+  isAdmin = computed(() => this.authService.isAdmin());
+  isLoggedIn = computed(() => this.authService.isLoggedIn());
+  userPermissions = computed(() => this.authService.userPermissions());
+  prescriptions = computed(() => this.appointmentService.prescriptions());
+  appointments = computed(() => this.appointmentService.appointments());
+  specialityOptions = computed(() => this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
 
   readonly sortOptions = [
     { label: 'Date', value: 'date' },
@@ -68,19 +51,13 @@ export class AppointmentPageComponent implements OnInit {
     { label: 'Doctor', value: 'doctor' },
     { label: 'Patient', value: 'patient' }
   ];
+
   readonly statusOptions = Object.keys(AppointmentStatus).filter(key => isNaN(Number(key))).map(key => ({
     label: key,
     value: AppointmentStatus[key as keyof typeof AppointmentStatus]
   }));
-  specialityOptions: { label: string, value: number}[] = [];
 
-  appointments: Appointment[] = [];
   filteredAppointments: Appointment[] = [];
-  userPermissions: PermissionType[] = [];
-  prescriptions: Prescription[] = [];
-  isDoctor: boolean = false;
-  isAdmin: boolean = false;
-  isLoggedIn: boolean = false;
   search: string = '';
   selectedSpecialityId: number = 0;
   selectedStatus = 0;
@@ -91,7 +68,20 @@ export class AppointmentPageComponent implements OnInit {
     private authService: AuthService,
     private loadingService: LoadingService,
     private dialog: MatDialog
-  ) {}
+  ) {
+    effect(() => {
+      if (this.isLoggedIn()) {
+        this.appointmentService.loadAppointments();
+        this.appointmentService.loadPrescriptions();
+        this.authService.loadUserPermissions();
+      } else {
+        this.appointmentDialogRef?.close();
+        this.prescriptionDialogRef?.close();
+      }
+    });
+
+    effect(() => this.applyFilter());
+  }
 
   ngOnInit(): void {
     this.authService.loadSpecialities();
@@ -173,7 +163,7 @@ export class AppointmentPageComponent implements OnInit {
     return Number(userId) === appointment.doctorsUserId || Number(userId) === appointment.patientsUserId;
   };
 
-  canSeeAllAppointments = () => this.userPermissions.some(x => x === PermissionType.ViewAllAppointments);
+  canSeeAllAppointments = () => this.userPermissions().some(x => x === PermissionType.ViewAllAppointments);
 
   canAccept = (appointment: Appointment): boolean => this.isRightUser(appointment) && appointment.status === AppointmentStatus.New;
 
@@ -181,9 +171,9 @@ export class AppointmentPageComponent implements OnInit {
 
   isConfirmed = (appointment: Appointment): boolean => appointment.status === AppointmentStatus.Confirmed;
 
-  existsPrescription = (appointment: Appointment): boolean => this.prescriptions.some(x => x.appointmentId == appointment.id);
+  existsPrescription = (appointment: Appointment): boolean => this.prescriptions().some(x => x.appointmentId == appointment.id);
 
-  canCancel = (appointment: Appointment): boolean => this.userPermissions.some(x => x === PermissionType.CancelAppointment)
+  canCancel = (appointment: Appointment): boolean => this.userPermissions().some(x => x === PermissionType.CancelAppointment)
     && this.isRightUser(appointment)
     && appointment.status !== AppointmentStatus.Canceled
     && appointment.status !== AppointmentStatus.Absent
@@ -194,7 +184,7 @@ export class AppointmentPageComponent implements OnInit {
       width: '700px',
       maxWidth: '700px',
       data: {
-        prescription: this.prescriptions.find(x => x.appointmentId === appointment.id),
+        prescription: this.prescriptions().find(x => x.appointmentId === appointment.id),
         appointmentId: appointment.id
       },
       autoFocus: false
@@ -218,15 +208,24 @@ export class AppointmentPageComponent implements OnInit {
   }
 
   applyFilter(): void {
-    const query = this.search.toLowerCase();
+    const normalize = (text: string): string => text.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
+    const matchesQuery = (...fields: string[]) => fields.some(field => normalize(field).includes(query));
+    const query = normalize(this.search);
+
     sessionStorage.setItem('appointmentsSearch', query);
     sessionStorage.setItem('appointmentsSpecialityId', this.selectedSpecialityId.toString());
     sessionStorage.setItem('appointmentsStatus', this.selectedStatus.toString());
-    this.filteredAppointments = this.appointments.filter(appointment => (this.selectedSpecialityId === 0 || appointment.service.specialityId === this.selectedSpecialityId)
-      && (this.selectedStatus === 0 || appointment.status === this.selectedStatus)
-      && (appointment.service.name.toLowerCase().includes(query) || appointment.service.description.toLocaleLowerCase().includes(query)
-      || appointment.doctor.user.name.toLocaleLowerCase().includes(query) ||  appointment.doctor.user.surname.toLocaleLowerCase().includes(query)
-      || appointment.patient.user.name.toLocaleLowerCase().includes(query) ||  appointment.patient.user.surname.toLocaleLowerCase().includes(query)));
+
+    this.filteredAppointments = this.appointments().filter(x => (this.selectedSpecialityId === 0 || x.service.specialityId === this.selectedSpecialityId)
+      && (this.selectedStatus === 0 || x.status === this.selectedStatus));
+
+    if (!this.isAdmin && !this.isDoctor)
+      this.filteredAppointments = this.filteredAppointments.filter(x =>
+        matchesQuery(x.service.name, x.service.description, `${x.doctor.user.name} ${x.doctor.user.surname}`, `${x.doctor.user.surname} ${x.doctor.user.name}`));
+    else if (this.isAdmin() || (this.isDoctor() && this.canSeeAllAppointments()))
+      this.filteredAppointments = this.filteredAppointments.filter(x =>
+        matchesQuery(x.service.name, x.service.description, `${x.doctor.user.name} ${x.doctor.user.surname}`, `${x.doctor.user.surname} ${x.doctor.user.name}`, `${x.patient.user.name} ${x.patient.user.surname}`, `${x.patient.user.surname} ${x.patient.user.name}`));
+
     this.onSortChange();
   }
 

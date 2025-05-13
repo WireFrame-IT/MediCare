@@ -1,7 +1,7 @@
 <button mat-flat-button class="btn-new" (click)="openAvailabilityDialog(null)">New Availability</button>
 @if (availabilities.length) {
   <div class="availability-container">
-    @for (availability of availabilities; track availability.id) {
+    @for (availability of availabilities(); track availability.id) {
       <mat-card class="availability-card">
         <mat-icon class="availability-icon">calendar_month</mat-icon>
         <div class="availability-info">

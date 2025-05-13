@@ -6,7 +6,7 @@
     <mat-label>Speciality</mat-label>
     <mat-select [(ngModel)]="selectedSpecialityId" (selectionChange)="applyFilter()">
       <mat-option [value]="0">All specialities</mat-option>
-      @for (speciality of specialityOptions; track speciality.value) {
+      @for (speciality of specialityOptions(); track speciality.value) {
         <mat-option [value]="speciality.value">
           {{ speciality.label }}
         </mat-option>
@@ -27,7 +27,7 @@
 @if (filteredServices.length) {
   <div class="services-container">
     @for (service of filteredServices; track service.id) {
-      <mat-card class="service-card" [style.cursor]="isDoctor ? 'not-allowed' : 'pointer'" (click)="openAppointmentDialog(service)">
+      <mat-card class="service-card" [style.cursor]="isDoctor() ? 'not-allowed' : 'pointer'" (click)="openAppointmentDialog(service)">
         <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
         <div class="service-info">
           <h3 class="service-title">{{ service.name }}</h3>

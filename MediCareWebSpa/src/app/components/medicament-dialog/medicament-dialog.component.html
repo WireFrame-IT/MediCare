@@ -3,7 +3,7 @@
   <mat-form-field class="form-field">
     <mat-label>Medicament</mat-label>
     <mat-select formControlName="medicamentId">
-      @for (medicament of medicaments; track medicament.id) {
+      @for (medicament of medicaments(); track medicament.id) {
         <mat-option [value]="medicament.id">{{ medicament.name }} ({{ getMedicamentTypeName(medicament.medicamentType) }})</mat-option>
       }
     </mat-select>

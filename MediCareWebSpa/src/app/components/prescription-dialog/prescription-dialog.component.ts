@@ -1,4 +1,4 @@
-import { Component, effect, Inject } from '@angular/core';
+import { Component, computed, effect, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,15 +33,10 @@ import { MedicamentDialogComponent } from '../medicament-dialog/medicament-dialo
 })
 export class PrescriptionDialogComponent {
   private medicamentDialogRef: MatDialogRef<MedicamentDialogComponent> | null = null;
-  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
 
-  private isLoggedInEffect = effect(() => {
-    if(!this.authService.isLoggedIn())
-      this.medicamentDialogRef?.close();
-  });
+  isDoctor = computed(() => this.authService.isDoctor());
 
   prescriptionForm: FormGroup;
-  isDoctor: boolean = false;
   minDate: Date = new Date();
 
   constructor(
@@ -56,6 +51,11 @@ export class PrescriptionDialogComponent {
     this.prescriptionForm = this.fb.group({
       description: [ data.prescription ? data.prescription.description : '', Validators.required],
       expirationDate: [ data.prescription ? new Date(data.prescription.expirationDate) : '', Validators.required]
+    });
+
+    effect(() => {
+      if(!this.authService.isLoggedIn())
+        this.medicamentDialogRef?.close();
     });
   }
 

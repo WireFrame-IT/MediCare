@@ -43,7 +43,7 @@
     <mat-form-field class="form-field">
       <mat-label>Speciality</mat-label>
       <mat-select formControlName="specialityId">
-        @for (speciality of specialities; track speciality.id) {
+        @for (speciality of specialities(); track speciality.id) {
           <mat-option [value]="speciality.id">{{speciality.name}}</mat-option>
         }
       </mat-select>

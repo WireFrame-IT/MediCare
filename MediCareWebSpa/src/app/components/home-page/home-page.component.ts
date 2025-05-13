@@ -1,4 +1,4 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, computed, OnInit } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,9 +23,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './home-page.component.scss'
 })
 export class HomePageComponent implements OnInit {
-  private servicesEffect = effect(() => this.services = this.getRandomServices(this.appointmentService.services(), 6));
-
-  services: Service[] = [];
+  services = computed(() => this.getRandomServices(this.appointmentService.services(), 6));
 
   constructor(private appointmentService: AppointmentService) {}
 

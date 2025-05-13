@@ -5,7 +5,7 @@
 <div class="services">
   <h1>Our services</h1>
   <div class="grid">
-    @for (service of services; track service.id) {
+    @for (service of services(); track service.id) {
       <mat-card class="service-card">
         <mat-icon class="service-icon">{{ getIcon(service.name) }}</mat-icon>
         <div class="service-info">

@@ -1,4 +1,4 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, computed, effect, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppointmentService } from '../../services/appointment.service';
 import { Service } from '../../DTOs/models/service';
@@ -30,23 +30,11 @@ import { MatOption, MatSelect } from '@angular/material/select';
 export class ServicePageComponent implements OnInit {
   private dialogRef: MatDialogRef<AppointmentDialogComponent> | null = null;
 
-  private servicesEffect = effect(() => {
-    this.services = this.appointmentService.services();
-    this.applyFilter();
-  });
+  isDoctor = computed(() => this.authService.isDoctor());
+  isLoggedIn = computed(() => this.authService.isLoggedIn());
+  services = computed(() => this.appointmentService.services());
+  specialityOptions = computed(() => this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
 
-  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
-
-  private isLoggedInEffect = effect(() => {
-    this.isLoggedIn = this.authService.isLoggedIn();
-
-    if(!this.isLoggedIn)
-      this.dialogRef?.close();
-  });
-
-  private specialitiesEffect = effect(() => this.specialityOptions = this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
-
-  specialityOptions: { label: string, value: number}[] = [];
   readonly sortOptions = [
     { label: 'Name', value: 'name' },
     { label: 'Speciality', value: 'speciality' },
@@ -54,10 +42,7 @@ export class ServicePageComponent implements OnInit {
     { label: 'Price', value: 'price' }
   ];
 
-  services: Service[] = [];
   filteredServices: Service[] = [];
-  isLoggedIn: boolean = false;
-  isDoctor: boolean = false;
   search: string = '';
   selectedSpecialityId: number = 0;
   selectedSort: string = '';
@@ -67,7 +52,13 @@ export class ServicePageComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private dialog: MatDialog
-  ) {}
+  ) {
+    effect(() => this.applyFilter());
+    effect(() => {
+      if(!this.isLoggedIn())
+        this.dialogRef?.close();
+    });
+  }
 
   ngOnInit(): void {
     this.selectedSort = sessionStorage.getItem('servicesSortBy') ?? '';
@@ -79,12 +70,12 @@ export class ServicePageComponent implements OnInit {
   }
 
   openAppointmentDialog(service: Service): void {
-    if (!this.isLoggedIn) {
+    if (!this.isLoggedIn()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    if (this.isDoctor)
+    if (this.isDoctor())
       return;
 
     this.dialogRef = this.dialog.open(AppointmentDialogComponent, {
@@ -99,11 +90,14 @@ export class ServicePageComponent implements OnInit {
   }
 
   applyFilter(): void {
-    const query = this.search.toLowerCase();
+    const normalize = (text: string): string => text.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
+    const matchesQuery = (...fields: string[]) => fields.some(field => normalize(field).includes(query));
+    const query = normalize(this.search);
+
     sessionStorage.setItem('servicesSearch', query);
     sessionStorage.setItem('servicesSpecialityId', this.selectedSpecialityId.toString());
-    this.filteredServices = this.services.filter(service =>
-      (this.selectedSpecialityId === 0 || service.specialityId === this.selectedSpecialityId) && (service.name.toLowerCase().includes(query) || service.description.toLocaleLowerCase().includes(query)));
+    this.filteredServices = this.services().filter(x => (this.selectedSpecialityId === 0 || x.specialityId === this.selectedSpecialityId) && matchesQuery(x.name, x.description));
+
     this.onSortChange();
   }
 

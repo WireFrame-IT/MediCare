@@ -102,7 +102,7 @@ export class AuthService {
       .subscribe(permissions => this.permissions.set(permissions as Permission[]));
   }
 
-  loadUserPsermissions(): void {
+  loadUserPermissions(): void {
     this.http.get(`${this.apiUrl}/user-permissions`)
       .pipe(catchError(() => of([])))
       .subscribe(userPermissions => this.userPermissions.set(userPermissions as PermissionType[]));

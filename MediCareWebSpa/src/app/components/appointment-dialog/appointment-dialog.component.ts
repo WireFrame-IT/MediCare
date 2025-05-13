@@ -1,4 +1,4 @@
-import { Component, effect, Inject, OnInit } from '@angular/core';
+import { Component, computed, effect, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppointmentService } from '../../services/appointment.service';
@@ -36,28 +36,15 @@ import { ReducedDoctor } from '../../DTOs/models/reduced-doctor';
   styleUrl: './appointment-dialog.component.scss'
 })
 export class AppointmentDialogComponent implements OnInit {
-  private servicesEffect = effect(() => {
-    this.services = this.appointmentService.services();
-    this.servicesBySpeciality = this.services.filter(x => x.specialityId == this.data.service.specialityId);
-  });
-
-  private doctorsEffect = effect(() => {
-    this.doctors = this.appointmentService.reducedDoctors();
-    this.doctorsBySpeciality = this.doctors.filter(x => x.specialityId === this.data?.service?.specialityId);
-  });
-
-  private isAdminEffect = effect(() => this.isAdmin = this.authService.isAdmin());
-  private isDoctorEffect = effect(() => this.isDoctor = this.authService.isDoctor());
-  private userPermissionsEffect = effect(() => this.userPermissions = this.authService.userPermissions());
+  isDoctor = computed(() => this.authService.isDoctor());
+  isAdmin = computed(() => this.authService.isAdmin());
+  services = computed(() => this.appointmentService.services());
+  doctors = computed(() => this.appointmentService.reducedDoctors());
+  userPermissions = computed(() => this.authService.userPermissions());
 
   appointmentForm: FormGroup;
-  isDoctor: boolean = false;
-  isAdmin: boolean = false;
-  services: Service[] = [];
   servicesBySpeciality: Service[] = [];
-  doctors: ReducedDoctor[] = [];
   doctorsBySpeciality: ReducedDoctor[] = [];
-  userPermissions: PermissionType[] = [];
   minDate: Date = new Date();
   statusEnum = Object.entries(AppointmentStatus).filter(([key, value]) => !isNaN(Number(value))).map(([key, value]) => ({ key, value }));
 
@@ -77,19 +64,22 @@ export class AppointmentDialogComponent implements OnInit {
       status: [data?.status ?? AppointmentStatus.New, Validators.required],
       diagnosis: [data?.diagnosis || '']
     });
+
+    effect(() => this.servicesBySpeciality = this.services().filter(x => x.specialityId == this.data.service.specialityId));
+    effect(() => this.doctorsBySpeciality = this.doctors().filter(x => x.specialityId === this.data?.service?.specialityId));
   }
 
   ngOnInit(): void {
-    this.authService.loadUserPsermissions();
+    this.authService.loadUserPermissions();
     this.appointmentService.loadServices();
     this.appointmentService.loadReducedDoctors();
   }
 
   onServiceChange(event: any) {
-    this.doctorsBySpeciality = this.doctors.filter(x => x.specialityId === this.findSpecialityIdByServiceId(event.value));
+    this.doctorsBySpeciality = this.doctors().filter(x => x.specialityId === this.findSpecialityIdByServiceId(event.value));
   }
 
-  hasChooseDoctorPermission = (): boolean => this.userPermissions.some(x => x === PermissionType.ChooseDoctor);
+  hasChooseDoctorPermission = (): boolean => this.userPermissions().some(x => x === PermissionType.ChooseDoctor);
 
   closeDialog = (): void => this.dialogRef.close();
 
@@ -111,7 +101,7 @@ export class AppointmentDialogComponent implements OnInit {
         next: () => {
           this.dialogRef.close();
           this.loadingService.hide();
-          this.loadingService.showMessage(this.isDoctor ? 'Diagnosis has been saved.' : 'Appointment has been saved.');
+          this.loadingService.showMessage(this.isDoctor() ? 'Diagnosis has been saved.' : 'Appointment has been saved.');
         },
         error: (error) => {
           this.loadingService.hide();
@@ -122,7 +112,7 @@ export class AppointmentDialogComponent implements OnInit {
   }
 
   findSpecialityIdByServiceId(serviceId: number): number | null {
-    const specialityId = this.services.find(service => service.id === serviceId)?.specialityId;
+    const specialityId = this.services().find(service => service.id === serviceId)?.specialityId;
     if (specialityId)
       return specialityId
     return null;

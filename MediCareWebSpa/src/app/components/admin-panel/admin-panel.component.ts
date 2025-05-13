@@ -1,4 +1,4 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, computed, effect, OnInit } from '@angular/core';
 import { AppointmentService } from '../../services/appointment.service';
 import { Doctor } from '../../DTOs/models/doctor';
 import { MatCardModule } from '@angular/material/card';
@@ -31,18 +31,11 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class AdminPanelComponent implements OnInit {
   private dialogRef: MatDialogRef<EditUserDialogComponent> | null = null;
-  private doctors: Doctor[] = [];
-  private patients: Patient[] = [];
-  private doctorsEffect = effect(() => this.doctors = this.appointmentService.doctors());
-  private patientsEffect = effect(() => this.patients = this.appointmentService.patients());
-  private permissionsEffect = effect(() => this.permissions = this.authService.permissions());
 
-  private isLoggedInEffect = effect(() => {
-    if(!this.authService.isLoggedIn())
-      this.dialogRef?.close();
-  });
+  doctors = computed(() => this.appointmentService.doctors());
+  patients = computed(() => this.appointmentService.patients());
+  permissions = computed(() => this.authService.permissions());
 
-  permissions: Permission[] = [];
   displayedColumns: string[] = [];
   roleTypes = [
     { label: RoleType[RoleType.Patient], value: RoleType.Patient },
@@ -56,7 +49,12 @@ export class AdminPanelComponent implements OnInit {
       private dialog: MatDialog,
       private clipboard: Clipboard,
       private snackBar: MatSnackBar
-    ) {}
+  ) {
+    effect(() => {
+      if(!this.authService.isLoggedIn())
+        this.dialogRef?.close();
+    });
+  }
 
   ngOnInit(): void {
     this.appointmentService.loadDoctors();
@@ -66,7 +64,7 @@ export class AdminPanelComponent implements OnInit {
     this.displayedColumns = ['description', ...this.roleTypes.map(x => x.label.toLowerCase())];
   }
 
-  getPersons = (): (Doctor | Patient)[] => [...this.doctors, ...this.patients];
+  getPersons = (): (Doctor | Patient)[] => [...this.doctors(), ...this.patients()];
 
   isDoctor = (person: Doctor | Patient): boolean => 'specialityId' in person;
 
@@ -123,13 +121,13 @@ export class AdminPanelComponent implements OnInit {
     this.dialogRef.afterClosed().subscribe((updatedPerson: Doctor | Patient) => {
       if (updatedPerson) {
         const index = this.isDoctor(person)
-          ? this.doctors.findIndex(x => x.userId === updatedPerson.userId)
-          : this.patients.findIndex(x => x.userId === updatedPerson.userId);
+          ? this.doctors().findIndex(x => x.userId === updatedPerson.userId)
+          : this.patients().findIndex(x => x.userId === updatedPerson.userId);
 
         if (index !== -1) {
           this.isDoctor(person)
-            ? this.doctors[index] = updatedPerson as Doctor
-            : this.patients[index] = updatedPerson as Patient;
+            ? this.doctors()[index] = updatedPerson as Doctor
+            : this.patients()[index] = updatedPerson as Patient;
         }
       }
     });

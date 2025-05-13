@@ -1,4 +1,4 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, computed, effect, OnInit } from '@angular/core';
 import { DoctorsAvailability } from '../../DTOs/models/doctors-availability';
 import { AuthService } from '../../services/auth.service';
 import { MatCardModule } from '@angular/material/card';
@@ -23,22 +23,20 @@ import { DoctorsAvailabilityRequest } from '../../DTOs/request/doctors-availabil
 })
 export class AvailabilityPageComponent implements OnInit {
   private dialogRef: MatDialogRef<AvailabilityDialogComponent> | null = null;
-  private isAdminEffect = effect(() => this.isAdmin = this.authService.isAdmin());
-  private availabilitiesEffect = effect(() => this.availabilities = this.authService.availabilities());
 
-  private isLoggedInEffect = effect(() => {
-    if(!this.authService.isLoggedIn())
-      this.dialogRef?.close();
-  });
-
-  availabilities: DoctorsAvailability[] = [];
-  isAdmin: boolean = false;
+  isAdmin = computed(() => this.authService.isAdmin());
+  availabilities = computed(() => this.authService.availabilities());
 
   constructor(
     private authService: AuthService,
     private loadingService: LoadingService,
     private dialog: MatDialog
-  ) {}
+  ) {
+    effect(() => {
+      if(!this.authService.isLoggedIn())
+        this.dialogRef?.close();
+    });
+  }
 
   ngOnInit(): void {
     this.authService.loadDoctorsAvailabilities();
