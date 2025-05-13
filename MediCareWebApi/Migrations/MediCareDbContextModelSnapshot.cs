@@ -560,7 +560,7 @@ namespace MediCare.Migrations
             modelBuilder.Entity("MediCare.Models.Feedback", b =>
                 {
                     b.HasOne("MediCare.Models.Appointment", "Appointment")
-                        .WithMany("Feedbacks")
+                        .WithMany()
                         .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -665,11 +665,6 @@ namespace MediCare.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("MediCare.Models.Appointment", b =>
-                {
-                    b.Navigation("Feedbacks");
                 });
 
             modelBuilder.Entity("MediCare.Models.Doctor", b =>

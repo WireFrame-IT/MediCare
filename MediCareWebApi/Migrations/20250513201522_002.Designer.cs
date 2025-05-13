@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20250430125657_001")]
-    partial class _001
+    [Migration("20250513201522_002")]
+    partial class _002
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -563,7 +563,7 @@ namespace MediCare.Migrations
             modelBuilder.Entity("MediCare.Models.Feedback", b =>
                 {
                     b.HasOne("MediCare.Models.Appointment", "Appointment")
-                        .WithMany("Feedbacks")
+                        .WithMany()
                         .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -668,11 +668,6 @@ namespace MediCare.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("MediCare.Models.Appointment", b =>
-                {
-                    b.Navigation("Feedbacks");
                 });
 
             modelBuilder.Entity("MediCare.Models.Doctor", b =>
