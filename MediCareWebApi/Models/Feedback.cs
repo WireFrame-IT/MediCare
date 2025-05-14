@@ -16,12 +16,6 @@ namespace MediCare.Models
 		public byte Rate { get; set; }
 
 		[Key]
-		public int PatientsUserId { get; set; }
-
-		[ForeignKey("PatientsUserId")]
-		public Patient Patient { get; set; }
-
-		[Key]
 		public int AppointmentId { get; set; }
 
 		[ForeignKey("AppointmentId")]

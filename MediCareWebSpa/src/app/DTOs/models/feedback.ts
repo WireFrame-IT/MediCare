@@ -6,7 +6,6 @@ export class Feedback {
   createdAt: Date;
   description: string;
   rate: number;
-  patientsUserId: number;
   patient: Patient;
   appointmentId: number;
   appointment: Appointment;
@@ -16,7 +15,6 @@ export class Feedback {
     createdAt: Date,
     description: string,
     rate: number,
-    patientsUserId: number,
     patient: Patient,
     appointmentId: number,
     appointment: Appointment
@@ -25,7 +23,6 @@ export class Feedback {
     this.createdAt = createdAt;
     this.description = description;
     this.rate = rate;
-    this.patientsUserId = patientsUserId;
     this.patient = patient;
     this.appointmentId = appointmentId;
     this.appointment = appointment;

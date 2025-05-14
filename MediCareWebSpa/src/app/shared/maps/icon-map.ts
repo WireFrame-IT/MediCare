@@ -36,4 +36,8 @@ export const ICON_MAP: { [key: string]: string } = {
   'Leczenie osteoporozy': 'elderly',
   'Testy alergiczne': 'bug_report',
   'Immunoterapia': 'vaccines',
+  'Przegląd stomatologiczny': 'search',
+  'Wypełnienie zęba': 'construction',
+  'Skaling i piaskowanie': 'cleaning_services',
+  'Ekstrakcja zęba': 'remove_circle'
 };

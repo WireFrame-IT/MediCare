@@ -15,8 +15,7 @@ namespace MediCare.Mapping
 				.ForMember(x => x.RefreshToken, y => y.Ignore())
 				.ForMember(x => x.RefreshTokenExpiration, y => y.Ignore())
 				.ForMember(x => x.RoleId, y => y.Ignore())
-				.ForMember(x => x.Role, y => y.Ignore())
-				.ForMember(x => x.Logs, y => y.Ignore());
+				.ForMember(x => x.Role, y => y.Ignore());
 
 			CreateMap<PatientRegisterRequestDTO, User>();
 

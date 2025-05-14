@@ -33,7 +33,7 @@ namespace MediCare.Models
 		[MaxLength(512)]
 		public string QueryString { get; set; }
 
-		[MaxLength(2000)]
+		[MaxLength(1024)]
 		public string? Payload { get; set; }
 
 		[MaxLength(512)]

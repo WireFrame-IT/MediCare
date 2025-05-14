@@ -203,7 +203,7 @@ namespace MediCare.Migrations
                     UserAgent = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     Success = table.Column<bool>(type: "bit", nullable: false),
                     QueryString = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Payload = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    Payload = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
                     ErrorMessage = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -296,7 +296,6 @@ namespace MediCare.Migrations
                 name: "Feedbacks",
                 columns: table => new
                 {
-                    PatientsUserId = table.Column<int>(type: "int", nullable: false),
                     AppointmentId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -304,18 +303,12 @@ namespace MediCare.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Feedbacks", x => new { x.PatientsUserId, x.AppointmentId });
+                    table.PrimaryKey("PK_Feedbacks", x => x.AppointmentId);
                     table.ForeignKey(
                         name: "FK_Feedbacks_Appointments_AppointmentId",
                         column: x => x.AppointmentId,
                         principalTable: "Appointments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Feedbacks_Patients_PatientsUserId",
-                        column: x => x.PatientsUserId,
-                        principalTable: "Patients",
-                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -393,9 +386,9 @@ namespace MediCare.Migrations
                 column: "DoctorsUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_AppointmentId",
-                table: "Feedbacks",
-                column: "AppointmentId");
+                name: "IX_Logs_CreatedAt",
+                table: "Logs",
+                column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Logs_UserId",

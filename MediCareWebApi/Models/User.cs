@@ -44,7 +44,5 @@ namespace MediCare.Models
 
 		[ForeignKey("RoleId")]
 		public Role Role { get; set; }
-
-		public ICollection<Log> Logs { get; set; } = new List<Log>();
 	}
 }

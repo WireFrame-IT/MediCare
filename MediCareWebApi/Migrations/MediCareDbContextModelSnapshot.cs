@@ -120,9 +120,6 @@ namespace MediCare.Migrations
 
             modelBuilder.Entity("MediCare.Models.Feedback", b =>
                 {
-                    b.Property<int>("PatientsUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("AppointmentId")
                         .HasColumnType("int");
 
@@ -137,9 +134,7 @@ namespace MediCare.Migrations
                     b.Property<byte>("Rate")
                         .HasColumnType("tinyint");
 
-                    b.HasKey("PatientsUserId", "AppointmentId");
-
-                    b.HasIndex("AppointmentId");
+                    b.HasKey("AppointmentId");
 
                     b.ToTable("Feedbacks");
                 });
@@ -175,8 +170,8 @@ namespace MediCare.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Payload")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("QueryString")
                         .IsRequired()
@@ -198,6 +193,9 @@ namespace MediCare.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt")
+                        .HasDatabaseName("IX_Logs_CreatedAt");
 
                     b.HasIndex("UserId");
 
@@ -571,21 +569,13 @@ namespace MediCare.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MediCare.Models.Patient", "Patient")
-                        .WithMany("Feedbacks")
-                        .HasForeignKey("PatientsUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Appointment");
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("MediCare.Models.Log", b =>
                 {
                     b.HasOne("MediCare.Models.User", "User")
-                        .WithMany("Logs")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -688,8 +678,6 @@ namespace MediCare.Migrations
             modelBuilder.Entity("MediCare.Models.Patient", b =>
                 {
                     b.Navigation("Appointments");
-
-                    b.Navigation("Feedbacks");
                 });
 
             modelBuilder.Entity("MediCare.Models.Permission", b =>
@@ -705,11 +693,6 @@ namespace MediCare.Migrations
             modelBuilder.Entity("MediCare.Models.Role", b =>
                 {
                     b.Navigation("RolePermissions");
-                });
-
-            modelBuilder.Entity("MediCare.Models.User", b =>
-                {
-                    b.Navigation("Logs");
                 });
 #pragma warning restore 612, 618
         }

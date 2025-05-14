@@ -59,12 +59,37 @@ namespace MediCare.Migrations.CustomScripts
 				    SET status = 50
 				    WHERE Time < DATEADD(MINUTE, -15, GETDATE());
 				END;
+
+				GO
+
+				CREATE PROCEDURE DeleteOldLogsAndRebuildIndexes
+				AS
+				BEGIN
+				    SET NOCOUNT ON;
+
+				    DECLARE @RowsAffected INT = 1;
+
+				    WHILE @RowsAffected > 0
+				    BEGIN
+				        DELETE TOP (1000)
+					        FROM Logs
+					        WHERE CreatedAt < DATEADD(DAY, -30, GETDATE());
+
+				        SET @RowsAffected = @@ROWCOUNT;
+				    END;
+
+				    ALTER INDEX ALL ON Logs REBUILD WITH (ONLINE = ON);
+				END;
 		    ");
 		}
 
 		public static void Down(MigrationBuilder migrationBuilder)
 		{
 			migrationBuilder.Sql(@"
+				DROP PROCEDURE IF EXISTS DeleteOldLogsAndRebuildIndexes;
+
+				GO
+
 				DROP PROCEDURE IF EXISTS UpdateAppointmentStatus;
 
 				GO

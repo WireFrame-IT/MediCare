@@ -8,7 +8,7 @@
   </mat-form-field>
   <mat-form-field class="form-field">
     <mat-label>Czas od</mat-label>
-    <input matInput [matTimepicker]="timeFromPicker" formControlName="timeFrom" matTimepickerMin="08:00" matTimepickerMax="16:00">
+    <input matInput [matTimepicker]="timeFromPicker" formControlName="timeFrom" matTimepickerMin="08:00" matTimepickerMax="15:45">
     <mat-timepicker-toggle matIconSuffix [for]="timeFromPicker"/>
     <mat-timepicker #timeFromPicker/>
   </mat-form-field>
@@ -20,7 +20,7 @@
   </mat-form-field>
   <mat-form-field class="form-field">
     <mat-label>Czas do</mat-label>
-    <input matInput [matTimepicker]="timeToPicker" formControlName="timeTo" matTimepickerMin="08:00" matTimepickerMax="16:00">
+    <input matInput [matTimepicker]="timeToPicker" formControlName="timeTo" matTimepickerMin="08:15" matTimepickerMax="16:00">
     <mat-timepicker-toggle matIconSuffix [for]="timeToPicker"/>
     <mat-timepicker #timeToPicker/>
   </mat-form-field>

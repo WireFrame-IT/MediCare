@@ -328,7 +328,7 @@ namespace MediCare.Controllers
 			switch (user.Role.RoleType)
 			{
 				case RoleType.Patient:
-					query = query.Where(x => x.PatientsUserId == user.Id);
+					query = query.Where(x => x.Appointment.PatientsUserId == user.Id);
 					break;
 				case RoleType.Doctor:
 					query = query.Where(x => x.Appointment.DoctorsUserId == user.Id);
@@ -355,11 +355,10 @@ namespace MediCare.Controllers
 			if (appointment.PatientsUserId != userId)
 				return Unauthorized("Brak odpowiednich uprawnień.");
 
-			var feedback = await _context.Feedbacks.FirstOrDefaultAsync(x => x.PatientsUserId == userId && x.AppointmentId == feedbackRequestDto.AppointmentId);
+			var feedback = await _context.Feedbacks.FirstOrDefaultAsync(x => x.Appointment.PatientsUserId == userId && x.AppointmentId == feedbackRequestDto.AppointmentId);
 			if (feedback == null)
 			{
 				feedback = _mapper.Map<Feedback>(feedbackRequestDto);
-				feedback.PatientsUserId = userId;
 				feedback.CreatedAt = DateTime.Now;
 				await _context.Feedbacks.AddAsync(feedback);
 			}

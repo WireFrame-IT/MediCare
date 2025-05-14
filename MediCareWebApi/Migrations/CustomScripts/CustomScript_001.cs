@@ -136,8 +136,8 @@ namespace MediCare.Migrations.CustomScripts
 					{ 21, "Sesja chemioterapii", "Leczenie nowotworów chemioterapią.", 1000.00m, 90, 11 },
 					{ 22, "Badania diagnostyczne", "Kompleksowe testy diagnostyczne, w tym analiza krwi, moczu i próbek tkanek.", 100.00m, 30, 12 },
 					{ 23, "Pobieranie próbki krwi", "Usługa pobierania krwi do różnych badań.", 30.00m, 15, 12 },
-					{ 24, "Konsultacja przedoperacyjna anestezjologiczna", "Ocena i planowanie znieczulenia przed zabiegiem chirurgicznym.", 150.00m, 30, 13 },
-					{ 25, "Podanie znieczulenia ogólnego", "Podanie znieczulenia podczas zabiegów chirurgicznych.", 300.00m, 45, 13 },
+					{ 24, "Konsultacja przedoperacyjna anestezjologiczna", "Ocena i planowanie znieczulenia przed zabiegiem chirurgicznym.", 150.00m, 30, 14 },
+					{ 25, "Podanie znieczulenia ogólnego", "Podanie znieczulenia podczas zabiegów chirurgicznych.", 300.00m, 45, 14 },
 					{ 26, "Obrazowanie rentgenowskie", "Usługa diagnostyczna wykorzystująca zdjęcia rentgenowskie do oceny kości, płuc i innych obszarów.", 120.00m, 30, 15 },
 					{ 27, "Tomografia komputerowa (CT)", "Szczegółowe obrazowanie do badania wewnętrznych struktur ciała.", 400.00m, 60, 15 },
 					{ 28, "Leczenie infekcji dróg moczowych", "Diagnoza i leczenie infekcji dróg moczowych.", 150.00m, 30, 16 },
@@ -149,7 +149,11 @@ namespace MediCare.Migrations.CustomScripts
 					{ 34, "Konsultacja w sprawie artretyzmu", "Ocena i leczenie bólu i stanów zapalnych stawów.", 120.00m, 30, 19 },
 					{ 35, "Leczenie osteoporozy", "Diagnoza i zarządzanie osteoporozą.", 200.00m, 45, 19 },
 					{ 36, "Testy alergiczne", "Testy skórne lub krwi do identyfikacji alergii.", 100.00m, 30, 20 },
-					{ 37, "Immunoterapia", "Leczenie mające na celu odczulanie układu odpornościowego na alergeny.", 150.00m, 45, 20 }
+					{ 37, "Immunoterapia", "Leczenie mające na celu odczulanie układu odpornościowego na alergeny.", 150.00m, 45, 20 },
+					{ 38, "Przegląd stomatologiczny", "Rutynowy przegląd stanu uzębienia i jamy ustnej.", 80.00m, 20, 13 },
+					{ 39, "Wypełnienie zęba", "Zabieg leczenia próchnicy i uzupełnienia ubytku.", 150.00m, 40, 13 },
+					{ 40, "Skaling i piaskowanie", "Profesjonalne czyszczenie zębów z kamienia i osadu.", 200.00m, 30, 13 },
+					{ 41, "Ekstrakcja zęba", "Usunięcie zęba, w tym zęba mądrości.", 250.00m, 45, 13 }
 				});
 
 			migrationBuilder.InsertData(
