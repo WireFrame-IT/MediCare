@@ -24,6 +24,7 @@ import { LoginResponseDTO } from '../../DTOs/response/login-response.dto';
 })
 export class RegisterPageComponent {
   public registerForm: FormGroup;
+  maxDate: Date = new Date();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -59,7 +60,7 @@ export class RegisterPageComponent {
         next: (response: LoginResponseDTO) => {
           this.authService.storeUserData(response.userId, response.userName, response. userSurname, response.accessToken, response.refreshToken);
           this.loadingService.hide();
-          this.loadingService.showMessage('Registered.');
+          this.loadingService.showMessage('Poprawnie zarejestrowano.');
           this.router.navigate(['/']);
         },
         error: (error) => {

@@ -6,12 +6,12 @@ namespace MediCare.DTOs.Request
 	{
 		public int Id { get; set; }
 
-		[StringLength(256, ErrorMessage = "Password must not exceed 256 characters.")]
+		[MaxLength(256, ErrorMessage = "Hasło nie może przekroczyć 256 znaków.")]
 		public string? Password { get; set; }
 
 		public int? SpecialityId { get; set; }
 
-		[DataType(DataType.Date, ErrorMessage = "Invalid date format.")]
+		[DataType(DataType.Date, ErrorMessage = "Nieprawidłowy format daty.")]
 		public DateTime? BirthDate { get; set; }
 	}
 }

@@ -28,12 +28,13 @@ export class UserRegisterPageComponent implements OnInit {
   specialities = computed(() => this.authService.specialities());
 
   readonly roleTypes = [
-    { label: RoleType[RoleType.Patient], value: RoleType.Patient },
-    { label: RoleType[RoleType.Doctor], value: RoleType.Doctor }
+    { label: 'Pacjent', value: RoleType.Patient },
+    { label: 'Lekarz', value: RoleType.Doctor }
   ];
 
   registerForm!: FormGroup;
   isDoctor: boolean = false;
+  maxDate: Date = new Date();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -97,7 +98,7 @@ export class UserRegisterPageComponent implements OnInit {
       this.authService.registerUser(registerRequest).subscribe({
         next: () => {
           this.loadingService.hide();
-          this.loadingService.showMessage('The user has been registered.');
+          this.loadingService.showMessage('Użytkownik został zarejestrowany.');
           this.router.navigate(['/']);
         },
         error: (error) => {

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediCare.Migrations
 {
     [DbContext(typeof(MediCareDbContext))]
-    [Migration("20250513201515_001")]
+    [Migration("20250514103555_001")]
     partial class _001
     {
         /// <inheritdoc />
@@ -134,7 +134,8 @@ namespace MediCare.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<byte>("Rate")
                         .HasColumnType("tinyint");
@@ -158,8 +159,8 @@ namespace MediCare.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ErrorMessage")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
@@ -216,7 +217,8 @@ namespace MediCare.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<int>("MedicamentType")
                         .HasColumnType("int");
@@ -293,7 +295,8 @@ namespace MediCare.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
@@ -325,7 +328,8 @@ namespace MediCare.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -380,7 +384,8 @@ namespace MediCare.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
@@ -414,7 +419,8 @@ namespace MediCare.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()

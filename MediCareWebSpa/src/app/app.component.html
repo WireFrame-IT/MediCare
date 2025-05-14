@@ -1,32 +1,33 @@
 <div class="sticky-container">
   <mat-toolbar color="primary">
-    <img src="assets/logo.svg" alt="MediCare Logo" class="logo">
-    <span class="title">MediCare</span>
     <div class="links">
-      <button mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</button>
+      <div class="home" routerLink="/">
+        <img src="assets/logo.svg" alt="MediCare Logo" class="logo">
+        <span class="title">MediCare</span>
+      </div>
       @if (isAdmin()) {
-        <button mat-button routerLink="/admin-panel" routerLinkActive="active">Admin panel</button>
+        <button mat-button routerLink="/admin-panel" routerLinkActive="active">Panel administratora</button>
       }
       @if (isDoctor()) {
-        <button mat-button routerLink="/availability-page" routerLinkActive="active">Availabilities</button>
+        <button mat-button routerLink="/availability-page" routerLinkActive="active">Lista dostępności</button>
       }
-      <button mat-button routerLink="/services" routerLinkActive="active">Services</button>
+      <button mat-button routerLink="/services" routerLinkActive="active">Usługi</button>
       @if (isLoggedIn()) {
-        <button mat-button routerLink="/appointments" routerLinkActive="active">Appointments</button>
+        <button mat-button routerLink="/appointments" routerLinkActive="active">Wizyty</button>
       }
-      <button mat-button routerLink="/about-page" routerLinkActive="active">About us</button>
+      <button mat-button routerLink="/about-page" routerLinkActive="active">O nas</button>
       <div class="auth-buttons">
         @if(isLoggedIn()) {
           @if (isAdmin()) {
-            <button mat-raised-button routerLink="/register-user" routerLinkActive="active">User Registration</button>
+            <button mat-raised-button routerLink="/register-user" routerLinkActive="active">Rejestracja użytkownika</button>
           }
-          <button mat-raised-button (click)="logout()" routerLinkActive="active">Log out</button>
+          <button mat-raised-button (click)="logout()" routerLinkActive="active">Wyloguj się</button>
           <button mat-raised-button [matTooltip]="getUserNameAndSurname()" class="btn-user">
             <mat-icon class="icon">person</mat-icon>
           </button>
         } @else {
-            <button mat-raised-button routerLink="/login" routerLinkActive="active">Login</button>
-            <button mat-raised-button routerLink="/register" routerLinkActive="active">Register</button>
+            <button mat-raised-button routerLink="/login" routerLinkActive="active">Zaloguj się</button>
+            <button mat-raised-button routerLink="/register" routerLinkActive="active">Zarejestruj się</button>
         }
       </div>
     </div>
@@ -47,5 +48,5 @@
 }
 <router-outlet></router-outlet>
 <div class="footer">
-  <p class="footer-info">© 2025 MediCare. All Rights Reserved.</p>
+  <p class="footer-info">© 2025 MediCare. Wszelkie prawa zastrzeżone.</p>
 </div>

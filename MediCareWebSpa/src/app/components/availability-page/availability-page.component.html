@@ -1,5 +1,5 @@
-<button mat-flat-button class="btn-new" (click)="openAvailabilityDialog(null)">New Availability</button>
-@if (availabilities.length) {
+<button mat-flat-button class="btn-new" (click)="openAvailabilityDialog(null)">Nowa dostępność</button>
+@if (availabilities().length) {
   <div class="availability-container">
     @for (availability of availabilities(); track availability.id) {
       <mat-card class="availability-card">
@@ -14,8 +14,8 @@
           </div>
         </div>
         <div class="actions">
-          <button mat-raised-button (click)="onRemove(availability)">Remove</button>
-          <button mat-flat-button (click)="openAvailabilityDialog(availability)">Edit</button>
+          <button mat-raised-button (click)="onRemove(availability)">Usuń</button>
+          <button mat-flat-button (click)="openAvailabilityDialog(availability)">Edytuj</button>
         </div>
       </mat-card>
     }

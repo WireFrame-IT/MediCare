@@ -32,6 +32,7 @@ export class EditUserDialogComponent implements OnInit {
 
   userForm: FormGroup;
   isDoctor: boolean;
+  maxDate: Date = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -93,7 +94,7 @@ export class EditUserDialogComponent implements OnInit {
         next: (response: Doctor | Patient) => {
           this.dialogRef.close(response);
           this.loadingService.hide();
-          this.loadingService.showMessage('User has been saved.');
+          this.loadingService.showMessage('Użytkownik został zapisany.');
         },
         error: (error) => {
           this.loadingService.hide();

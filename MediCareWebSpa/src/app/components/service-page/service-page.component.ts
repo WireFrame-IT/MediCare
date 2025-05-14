@@ -2,7 +2,7 @@ import { Component, computed, effect, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppointmentService } from '../../services/appointment.service';
 import { Service } from '../../DTOs/models/service';
-import { ICON_MAP } from '../../shared/icon-map';
+import { ICON_MAP } from '../../shared/maps/icon-map';
 import { MatCard } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -37,10 +37,10 @@ export class ServicePageComponent implements OnInit {
   specialityOptions = computed(() => this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
 
   readonly sortOptions = [
-    { label: 'Name', value: 'name' },
-    { label: 'Speciality', value: 'speciality' },
-    { label: 'Duration', value: 'duration' },
-    { label: 'Price', value: 'price' }
+    { label: 'Nazwy', value: 'name' },
+    { label: 'Specjalizacji', value: 'speciality' },
+    { label: 'Czasu trwania', value: 'duration' },
+    { label: 'Ceny', value: 'price' }
   ];
 
   filteredServices: Service[] = [];

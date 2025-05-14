@@ -1,6 +1,6 @@
 <form [formGroup]="registerForm" (ngSubmit)="register()" class="form">
   <mat-form-field class="form-field">
-    <mat-label>Role</mat-label>
+    <mat-label>Rola</mat-label>
     <mat-select formControlName="roleType" (selectionChange)="onRoleTypeChange($event)">
       @for (roleType of roleTypes; track roleType.value) {
         <mat-option [value]="roleType.value">
@@ -10,19 +10,19 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Name</mat-label>
+    <mat-label>Imię</mat-label>
     <input matInput formControlName="name" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Surname</mat-label>
+    <mat-label>Nazwisko</mat-label>
     <input matInput formControlName="surname" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Email</mat-label>
+    <mat-label>E-mail</mat-label>
     <input matInput formControlName="email" type="email" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Password</mat-label>
+    <mat-label>Hasło</mat-label>
     <input matInput formControlName="password" type="password" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
@@ -30,18 +30,18 @@
     <input matInput formControlName="pesel" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Phone Number</mat-label>
+    <mat-label>Telefon</mat-label>
     <input matInput formControlName="phoneNumber" required/>
   </mat-form-field>
   @if (isDoctor) {
     <mat-form-field class="form-field">
-      <mat-label>Employment Date</mat-label>
+      <mat-label>Data zatrudnienia</mat-label>
       <input matInput [matDatepicker]="employmentDatePicker" formControlName="employmentDate">
       <mat-datepicker-toggle matIconSuffix [for]="employmentDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #employmentDatePicker></mat-datepicker>
     </mat-form-field>
     <mat-form-field class="form-field">
-      <mat-label>Speciality</mat-label>
+      <mat-label>Specjalizacja</mat-label>
       <mat-select formControlName="specialityId">
         @for (speciality of specialities(); track speciality.id) {
           <mat-option [value]="speciality.id">{{speciality.name}}</mat-option>
@@ -50,11 +50,11 @@
     </mat-form-field>
   } @else {
     <mat-form-field class="form-field">
-      <mat-label>Birth Date</mat-label>
-      <input matInput [matDatepicker]="birthDatePicker" formControlName="birthDate">
+      <mat-label>Data urodzenia</mat-label>
+      <input matInput [matDatepicker]="birthDatePicker" formControlName="birthDate" [max]="maxDate">
       <mat-datepicker-toggle matIconSuffix [for]="birthDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #birthDatePicker></mat-datepicker>
     </mat-form-field>
   }
-  <button mat-raised-button type="submit" [disabled]="registerForm.invalid" class="btn-submit">Register</button>
+  <button mat-raised-button type="submit" [disabled]="registerForm.invalid" class="btn-submit">Zarejestruj</button>
 </form>

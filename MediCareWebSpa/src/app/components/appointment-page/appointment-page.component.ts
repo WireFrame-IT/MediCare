@@ -47,16 +47,16 @@ export class AppointmentPageComponent implements OnInit {
   specialityOptions = computed(() => this.authService.specialities().map(x => ({ label: x.name, value: x.id})));
 
   readonly sortOptions = [
-    { label: 'Date', value: 'date' },
-    { label: 'Service', value: 'service' },
-    { label: 'Speciality', value: 'speciality' },
-    { label: 'Status', value: 'status' },
-    { label: 'Doctor', value: 'doctor' },
-    { label: 'Patient', value: 'patient' }
+    { label: 'Daty', value: 'date' },
+    { label: 'Usługi', value: 'service' },
+    { label: 'Specjalizacji', value: 'speciality' },
+    { label: 'Statusu', value: 'status' },
+    { label: 'Lekarza', value: 'doctor' },
+    { label: 'Pacjenta', value: 'patient' }
   ];
 
   readonly statusOptions = Object.keys(AppointmentStatus).filter(key => isNaN(Number(key))).map(key => ({
-    label: key,
+    label: this.getStatus(AppointmentStatus[key as keyof typeof AppointmentStatus]),
     value: AppointmentStatus[key as keyof typeof AppointmentStatus]
   }));
 
@@ -101,7 +101,7 @@ export class AppointmentPageComponent implements OnInit {
       next: () => {
         this.loadingService.hide();
         appointment.status = AppointmentStatus.Canceled;
-        this.loadingService.showMessage('Appointment canceled.');
+        this.loadingService.showMessage('Anulowano wizytę.');
       },
       error: (error) => {
         this.loadingService.hide();
@@ -117,7 +117,7 @@ export class AppointmentPageComponent implements OnInit {
       next: () => {
         this.loadingService.hide();
         appointment.status = AppointmentStatus.Accepted;
-        this.loadingService.showMessage('Appointment accepted.');
+        this.loadingService.showMessage('Zaakceptowano wizytę.');
       },
       error: (error) => {
         this.loadingService.hide();
@@ -133,7 +133,7 @@ export class AppointmentPageComponent implements OnInit {
       next: () => {
         this.loadingService.hide();
         appointment.status = AppointmentStatus.Confirmed;
-        this.loadingService.showMessage('Appointment confirmed.');
+        this.loadingService.showMessage('Potwierdzono wizytę.');
       },
       error: (error) => {
         this.loadingService.hide();
@@ -155,8 +155,6 @@ export class AppointmentPageComponent implements OnInit {
     }
     return '';
   }
-
-  getStatus = (appointment: Appointment): string => AppointmentStatus[appointment.status];
 
   isThisDoctor = (appointment: Appointment): boolean => {
     const userId = sessionStorage.getItem('userId');
@@ -187,6 +185,8 @@ export class AppointmentPageComponent implements OnInit {
   isConfirmed = (appointment: Appointment): boolean => appointment.status === AppointmentStatus.Confirmed;
 
   existsPrescription = (appointment: Appointment): boolean => this.prescriptions().some(x => x.appointmentId == appointment.id);
+
+  existsReview = (appointmentId: number): boolean => this.feedbacks().some(x => x.appointmentId === appointmentId);
 
   canCancel = (appointment: Appointment): boolean => this.userPermissions().some(x => x === PermissionType.CancelAppointment)
     && this.isRightUser(appointment)
@@ -259,12 +259,13 @@ export class AppointmentPageComponent implements OnInit {
     this.filteredAppointments = this.appointments().filter(x => (this.selectedSpecialityId === 0 || x.service.specialityId === this.selectedSpecialityId)
       && (this.selectedStatus === 0 || x.status === this.selectedStatus));
 
-    if (!this.isAdmin && !this.isDoctor)
-      this.filteredAppointments = this.filteredAppointments.filter(x =>
-        matchesQuery(x.service.name, x.service.description, `${x.doctor.user.name} ${x.doctor.user.surname}`, `${x.doctor.user.surname} ${x.doctor.user.name}`));
-    else if (this.isAdmin() || (this.isDoctor() && this.canSeeAllAppointments()))
+    if (this.isAdmin() || (this.isDoctor() && this.canSeeAllAppointments())) {
       this.filteredAppointments = this.filteredAppointments.filter(x =>
         matchesQuery(x.service.name, x.service.description, `${x.doctor.user.name} ${x.doctor.user.surname}`, `${x.doctor.user.surname} ${x.doctor.user.name}`, `${x.patient.user.name} ${x.patient.user.surname}`, `${x.patient.user.surname} ${x.patient.user.name}`));
+    } else {
+      this.filteredAppointments = this.filteredAppointments.filter(x =>
+        matchesQuery(x.service.name, x.service.description, `${x.doctor.user.name} ${x.doctor.user.surname}`, `${x.doctor.user.surname} ${x.doctor.user.name}`));
+    }
 
     this.onSortChange();
   }
@@ -297,5 +298,20 @@ export class AppointmentPageComponent implements OnInit {
       return nameCompare;
 
     return userA.surname.localeCompare(userB.surname);
+  }
+
+  getStatus(status: AppointmentStatus): string {
+    switch (status) {
+      case AppointmentStatus.New:
+        return 'Nowa';
+      case AppointmentStatus.Accepted:
+        return 'Zaakceptowana';
+      case AppointmentStatus.Confirmed:
+        return 'Potwierdzona';
+      case AppointmentStatus.Canceled:
+        return 'Anulowana';
+      case AppointmentStatus.Absent:
+        return 'Nieobecność';
+    }
   }
 }

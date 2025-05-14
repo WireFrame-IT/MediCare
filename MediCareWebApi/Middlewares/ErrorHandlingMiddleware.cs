@@ -29,7 +29,7 @@ public class ErrorHandlingMiddleware
 		}
 		catch (Exception ex)
 		{
-			await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest, "An error occurred while processing the request.");
+			await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest, "Wystąpił błąd podczas przetwarzania żądania.");
 		}
 	}
 

@@ -16,6 +16,7 @@ namespace MediCare.Models
 		[Required]
 		public MedicamentUnit MedicamentUnit { get; set; }
 
+		[MaxLength(256)]
 		public string? Notes { get; set; }
 
 		[Key]

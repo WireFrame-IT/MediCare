@@ -9,9 +9,10 @@ namespace MediCare.Models
 		public DateTime CreatedAt { get; set; }
 
 		[Required]
+		[MaxLength(256)]
 		public string Description { get; set; }
 
-		[Range(1, 5, ErrorMessage = "Rate must be between 1 and 5.")]
+		[Range(1, 5)]
 		public byte Rate { get; set; }
 
 		[Key]

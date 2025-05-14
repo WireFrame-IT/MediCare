@@ -43,7 +43,7 @@ export class LoginPageComponent {
         next: (response: LoginResponseDTO) => {
           this.authService.storeUserData(response.userId, response.userName, response.userSurname, response.accessToken, response.refreshToken, response.roleType);
           this.loadingService.hide();
-          this.loadingService.showMessage('Logged in.');
+          this.loadingService.showMessage('Zalogowano.');
           this.router.navigate(['/']);
         },
         error: (error) => {

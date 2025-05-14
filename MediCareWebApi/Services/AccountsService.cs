@@ -46,7 +46,7 @@ namespace MediCare.Services
 			var secretKey = _configuration.GetSection("JwtSettings:SecretKey").Value;
 			if (string.IsNullOrEmpty(secretKey))
 			{
-				throw new InvalidOperationException("SecretKey is not set.");
+				throw new InvalidOperationException("Klucz tajny nie jest ustawiony.");
 			}
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));

@@ -24,7 +24,7 @@ public class TokenValidationMiddleware
 			if (jti != null && accountsService.IsTokenBlacklisted(jti))
 			{
 				context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-				await context.Response.WriteAsync("Token is blacklisted.");
+				await context.Response.WriteAsync("Token jest na czarnej liście.");
 				return;
 			}
 		}

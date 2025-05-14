@@ -6,11 +6,11 @@ namespace MediCare.DTOs.Request
 	{
 		public int? Id { get; set; }
 
-		[Required(ErrorMessage = "Date 'From' is required.")]
-		[DataType(DataType.DateTime, ErrorMessage = "Invalid date-time format.")]
+		[Required(ErrorMessage = "Wymagana jest data 'Od'.")]
+		[DataType(DataType.DateTime, ErrorMessage = "Nieprawidłowy format daty i godziny.")]
 		public DateTime From { get; set; }
 
-		[DataType(DataType.DateTime, ErrorMessage = "Invalid date-time format.")]
+		[DataType(DataType.DateTime, ErrorMessage = "Nieprawidłowy format daty i godziny.")]
 		public DateTime? To { get; set; }
 	}
 }

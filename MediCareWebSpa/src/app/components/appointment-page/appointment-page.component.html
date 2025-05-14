@@ -1,12 +1,12 @@
 @if (isLoggedIn()) {
   <div class="filter">
     <mat-form-field class="search">
-      <input matInput type="text" placeholder="Search..." [(ngModel)]="search" (input)="applyFilter()" />
+      <input matInput type="text" placeholder="Szukaj..." [(ngModel)]="search" (input)="applyFilter()" />
     </mat-form-field>
     <mat-form-field class="speciality">
-      <mat-label>Speciality</mat-label>
+      <mat-label>Specjalizacja</mat-label>
       <mat-select [(ngModel)]="selectedSpecialityId" (selectionChange)="applyFilter()">
-        <mat-option [value]="0">All specialities</mat-option>
+        <mat-option [value]="0">Wszystkie specjalizacje</mat-option>
         @for (speciality of specialityOptions(); track speciality.value) {
           <mat-option [value]="speciality.value">
             {{ speciality.label }}
@@ -17,7 +17,7 @@
     <mat-form-field class="status">
       <mat-label>Status</mat-label>
       <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilter()">
-        <mat-option [value]="0">All statuses</mat-option>
+        <mat-option [value]="0">Wszystkie statusy</mat-option>
         @for (speciality of statusOptions; track speciality.value) {
           <mat-option [value]="speciality.value">
             {{ speciality.label }}
@@ -26,7 +26,7 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field class="sort">
-      <mat-label>Sort by...</mat-label>
+      <mat-label>Sortuj według...</mat-label>
       <mat-select [(ngModel)]="selectedSort" (selectionChange)="onSortChange()">
         @for (option of sortOptions; track option.value) {
           <mat-option [value]="option.value">
@@ -46,7 +46,7 @@
           <mat-card-subtitle class="time">{{ appointment.time | date: 'yyyy-MM-dd HH:mm' }}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="content">
-          <button class="status" [class]="getStatusClass(appointment)" mat-raised-button>{{ getStatus(appointment) }}</button>
+          <button class="status" [class]="getStatusClass(appointment)" mat-raised-button>{{ getStatus(appointment.status) }}</button>
           @if (!isDoctor() || canSeeAllAppointments()) {
             <div class="doctors-info">
               <p class="doctor-name">{{ appointment.doctor.user.name }} {{ appointment.doctor.user.surname }}</p>
@@ -77,7 +77,7 @@
           @if (isConfirmed(appointment) && (isThisDoctor(appointment) || (existsPrescription(appointment) && (isAdmin() || isThisPatient(appointment) || isDoctor())))) {
             <button mat-raised-button (click)="openPrescriptionDialog(appointment)">Prescription</button>
           }
-          @if (isConfirmed(appointment)) {
+          @if (isConfirmed(appointment) && (isThisPatient(appointment) || existsReview(appointment.id))) {
             <button mat-raised-button (click)="openFeedbackDialog(appointment)">Review</button>
           }
           @if (isAdmin() || isThisDoctor(appointment) && isConfirmed(appointment)) {

@@ -1,0 +1,30 @@
+import { MedicamentType } from "../../enums/medicament-type";
+
+export const MEDICAMENT_TYPE_MAP: { [key in MedicamentType]: string } = {
+  [MedicamentType.Analgesic]: "Środek przeciwbólowy",
+  [MedicamentType.Antibiotic]: "Antybiotyk",
+  [MedicamentType.AntiInflammatory]: "Lek przeciwzapalny",
+  [MedicamentType.Antiviral]: "Lek przeciwwirusowy",
+  [MedicamentType.Antifungal]: "Lek przeciwgrzybiczy",
+  [MedicamentType.Antihistamine]: "Lek przeciwhistaminowy",
+  [MedicamentType.Antipyretic]: "Lek przeciwgorączkowy",
+  [MedicamentType.VitaminsAndSupplements]: "Witaminy i suplementy",
+  [MedicamentType.SedativeOrAnxiolytic]: "Środek uspokajający / przeciwlękowy",
+  [MedicamentType.CoughSuppressant]: "Lek przeciwkaszlowy",
+  [MedicamentType.Hypertension]: "Lek na nadciśnienie",
+  [MedicamentType.Antidiabetic]: "Lek przeciwcukrzycowy",
+  [MedicamentType.Hormonal]: "Lek hormonalny",
+  [MedicamentType.Immunosuppressant]: "Lek immunosupresyjny",
+  [MedicamentType.Antacid]: "Lek zobojętniający kwas",
+  [MedicamentType.Ophthalmic]: "Lek okulistyczny",
+  [MedicamentType.Dermatologic]: "Lek dermatologiczny",
+  [MedicamentType.Antiplatelet]: "Lek przeciwpłytkowy",
+  [MedicamentType.MineralSupplement]: "Suplement mineralny",
+  [MedicamentType.Antispasmodic]: "Lek rozkurczowy",
+  [MedicamentType.Antidepressant]: "Lek przeciwdepresyjny",
+  [MedicamentType.Antipsychotic]: "Lek przeciwpsychotyczny",
+  [MedicamentType.Bronchodilator]: "Lek rozszerzający oskrzela",
+  [MedicamentType.Antiemetic]: "Lek przeciwwymiotny",
+  [MedicamentType.Anticoagulant]: "Lek przeciwzakrzepowy",
+  [MedicamentType.Laxative]: "Środek przeczyszczający"
+};

@@ -29,11 +29,7 @@ import { PrescriptionMedicament } from '../../DTOs/models/prescription-medicamen
 export class MedicamentDialogComponent implements OnInit {
   medicaments = computed(() => this.appointmentService.medicaments());
 
-  readonly medicamentUnitOptions = Object.keys(MedicamentUnit).filter(key => isNaN(Number(key))).map(key => ({
-    label: key,
-    value: MedicamentUnit[key as keyof typeof MedicamentUnit]
-  }));
-
+  medicamentUnitOptions: { label: string, value: MedicamentUnit }[] = [];
   medicamentForm: FormGroup;
 
   constructor(
@@ -54,6 +50,11 @@ export class MedicamentDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.appointmentService.loadMedicaments();
+
+    this.medicamentUnitOptions = Object.values(MedicamentUnit).filter(value => typeof value === 'number').map((value) => ({
+      label: this.appointmentService.getMedicamentUnitName(value as MedicamentUnit),
+      value: value
+    }));
   }
 
   onSubmit(): void {
@@ -83,8 +84,6 @@ export class MedicamentDialogComponent implements OnInit {
   }
 
   getMedicamentTypeName = (type: MedicamentType): string => this.appointmentService.getMedicamentTypeName(type);
-
-  getMedicamentUnitName = (unit: MedicamentUnit): string => this.appointmentService.getMedicamentUnitName(unit);
 
   closeDialog = (): void => this.dialogRef.close();
 }

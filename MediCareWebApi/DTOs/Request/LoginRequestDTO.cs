@@ -4,13 +4,13 @@ namespace MediCare.DTOs.Request
 {
     public class LoginRequestDTO
     {
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email format.")]
-        [StringLength(50, ErrorMessage = "Email must not exceed 50 characters.")]
-        public required string Email { get; set; }
+		[Required(ErrorMessage = "Adres e-mail jest wymagany.")]
+		[EmailAddress(ErrorMessage = "Nieprawidłowy format adresu e-mail.")]
+		[MaxLength(50, ErrorMessage = "Adres e-mail nie może przekroczyć 50 znaków.")]
+		public required string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
-        [StringLength(256, ErrorMessage = "Password must not exceed 256 characters.")]
-        public required string Password { get; set; }
+		[Required(ErrorMessage = "Hasło jest wymagane.")]
+		[MaxLength(256, ErrorMessage = "Hasło nie może przekroczyć 256 znaków.")]
+		public required string Password { get; set; }
     }
 }

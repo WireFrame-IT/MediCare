@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { AppointmentService } from '../../services/appointment.service';
 import { Service } from '../../DTOs/models/service';
-import { ICON_MAP } from '../../shared/icon-map';
+import { ICON_MAP } from '../../shared/maps/icon-map';
 import { RouterModule } from '@angular/router';
 
 @Component({

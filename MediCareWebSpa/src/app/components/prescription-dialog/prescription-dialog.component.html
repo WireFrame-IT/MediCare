@@ -1,17 +1,17 @@
-<h2 class="title" mat-dialog-title>Prescription</h2>
+<h2 class="title" mat-dialog-title>Recepta</h2>
 <form class="form" [formGroup]="prescriptionForm" (ngSubmit)="onSubmit()">
   <mat-form-field class="text-area" [class.non-editable]="!isThisDoctor()">
-    <mat-label>Description</mat-label>
+    <mat-label>Opis</mat-label>
     <textarea matInput formControlName="description" cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="10" [readonly]="!isThisDoctor()"></textarea>
   </mat-form-field>
   <mat-form-field class="form-field" [class.non-editable]="!isThisDoctor()">
-    <mat-label>Expiration Date</mat-label>
+    <mat-label>Data ważności</mat-label>
     <input matInput [matDatepicker]="picker" formControlName="expirationDate" [min]="minDate" [readonly]="!isThisDoctor()"/>
     <mat-datepicker-toggle matIconSuffix [for]="picker" [disabled]="!isThisDoctor()"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
   @if (data.prescription?.prescriptionMedicaments?.length) {
-    <h3>Medications</h3>
+    <h3>Lista leków</h3>
     <mat-accordion class="prescription-medicaments">
       @for (prescriptionMedicament of data.prescription!.prescriptionMedicaments; track prescriptionMedicament.medicamentId) {
         <mat-expansion-panel class="expansion-panel">
@@ -22,8 +22,8 @@
                 <p>{{ getMedicamentTypeName(prescriptionMedicament.medicament!.medicamentType) }}</p>
               </div>
               <div class="quantity">
-                <p>Quantity: <span>{{ prescriptionMedicament.quantity }}</span></p>
-                <p>Measurement unit: <span>{{ getMedicamentUnitName(prescriptionMedicament.medicamentUnit) }}</span></p>
+                <p>Ilość: <span>{{ prescriptionMedicament.quantity }}</span></p>
+                <p>Jednostka miary: <span>{{ getMedicamentUnitName(prescriptionMedicament.medicamentUnit) }}</span></p>
               </div>
               @if (isThisDoctor()) {
                 <button class="btn-delete" type="button" mat-button (click)="removeMedicament($event, prescriptionMedicament)">
@@ -35,19 +35,19 @@
           <div class="content">
             <p>{{ prescriptionMedicament.medicament!.description }}</p>
             <div class="dosage">
-              <p>Dosage:</p>
+              <p>Dawkowanie:</p>
               <p>{{ prescriptionMedicament.dosage }}</p>
             </div>
             @if (prescriptionMedicament.notes) {
               <div class="notes">
-                <p>Notes:</p>
+                <p>Uwagi:</p>
                 <p>{{ prescriptionMedicament.notes }}</p>
               </div>
             }
             @if (prescriptionMedicament.medicament!.prescriptionRequired) {
               <div class="info">
                 <mat-icon class="icon-info">info</mat-icon>
-                <i>Prescription only medicine.</i>
+                <i>Lek dostępny wyłącznie na receptę.</i>
               </div>
             }
           </div>
@@ -56,17 +56,17 @@
     </mat-accordion>
   }
   @if (isThisDoctor() && data.prescription) {
-    <button class="btn-add" type="button" mat-flat-button (click)="openAddMedicamentDialog(data.prescription.appointmentId)">Add Medication</button>
+    <button class="btn-add" type="button" mat-flat-button (click)="openAddMedicamentDialog(data.prescription.appointmentId)">Dodaj lek</button>
   } @else if (isThisDoctor() && !data.prescription) {
     <div class="info">
       <mat-icon class="icon-info">info</mat-icon>
-      <i>Save the prescription to add medications.</i>
+      <i>Zapisz receptę, aby dodać leki.</i>
     </div>
   }
   <div class="buttons" mat-dialog-actions>
     @if (isThisDoctor()) {
-      <button class="btn-submit" mat-raised-button type="submit" [disabled]="prescriptionForm.invalid">Save</button>
+      <button class="btn-submit" mat-raised-button type="submit" [disabled]="prescriptionForm.invalid">Zapisz</button>
     }
-    <button class="btn-cancel" mat-button mat-dialog-close type="button" (click)="closeDialog()">Close</button>
+    <button class="btn-cancel" mat-button mat-dialog-close type="button" (click)="closeDialog()">Zamknij</button>
   </div>
 </form>

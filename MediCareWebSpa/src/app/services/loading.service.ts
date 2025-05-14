@@ -71,7 +71,7 @@ export class LoadingService {
 
   extractErrorMessage(error: any): string {
     if (error?.status === 0) {
-      return 'Could not connect to the server. Please check your connection or try again later.';
+      return 'Nie udało się połączyć z serwerem. Sprawdź swoje połączenie lub spróbuj ponownie później.';
     }
 
     if (typeof error?.error === 'string') {
@@ -86,6 +86,6 @@ export class LoadingService {
       return error.message;
     }
 
-    return 'Something went wrong. Please try again later.';
+    return 'Coś poszło nie tak. Spróbuj ponownie później.';
   }
 }

@@ -76,9 +76,14 @@ export class PrescriptionDialogComponent {
 
       this.loadingService.show();
       this.appointmentService.savePrescription(prescription).subscribe({
-        next: () => {
+        next: (prescription: Prescription) => {
+          if (this.data.prescription)
+            this.dialogRef.close();
+
+          this.data.prescription = prescription;
+
           this.loadingService.hide();
-          this.loadingService.showMessage('Prescription has been saved.');
+          this.loadingService.showMessage('Recepta została zapisana.');
         },
         error: (error) => {
           this.loadingService.hide();
@@ -110,7 +115,7 @@ export class PrescriptionDialogComponent {
         this.data.prescription!.prescriptionMedicaments = this.data.prescription!.prescriptionMedicaments
           .filter(x => !(x.prescriptionAppointmentId === prescriptionMedicament.prescriptionAppointmentId && x.medicamentId === prescriptionMedicament.medicamentId))
         this.loadingService.hide();
-        this.loadingService.showMessage('Medicament has been removed.');
+        this.loadingService.showMessage('Lek został usunięty.');
       },
       error: error => {
         this.loadingService.hide();

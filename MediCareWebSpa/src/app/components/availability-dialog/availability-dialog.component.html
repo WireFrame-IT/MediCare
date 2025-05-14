@@ -1,31 +1,31 @@
-<h2 class="title" mat-dialog-title>Availability</h2>
+<h2 class="title" mat-dialog-title>Dostępność</h2>
 <form class="form" [formGroup]="availabilityForm" (ngSubmit)="onSubmit()">
   <mat-form-field class="form-field">
-    <mat-label>Date From</mat-label>
+    <mat-label>Data od</mat-label>
     <input matInput [matDatepicker]="dateFromPicker" [matDatepickerFilter]="dateFilter" formControlName="dateFrom" [min]="minDate"/>
     <mat-datepicker-toggle matIconSuffix [for]="dateFromPicker"></mat-datepicker-toggle>
     <mat-datepicker #dateFromPicker></mat-datepicker>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Time From</mat-label>
+    <mat-label>Czas od</mat-label>
     <input matInput [matTimepicker]="timeFromPicker" formControlName="timeFrom" matTimepickerMin="08:00" matTimepickerMax="16:00">
     <mat-timepicker-toggle matIconSuffix [for]="timeFromPicker"/>
     <mat-timepicker #timeFromPicker/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Date To</mat-label>
+    <mat-label>Data do</mat-label>
     <input matInput [matDatepicker]="dateToPicker" [matDatepickerFilter]="dateFilter" formControlName="dateTo" [min]="getMinDateTo()"/>
     <mat-datepicker-toggle matIconSuffix [for]="dateToPicker"></mat-datepicker-toggle>
     <mat-datepicker #dateToPicker></mat-datepicker>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Time To</mat-label>
+    <mat-label>Czas do</mat-label>
     <input matInput [matTimepicker]="timeToPicker" formControlName="timeTo" matTimepickerMin="08:00" matTimepickerMax="16:00">
     <mat-timepicker-toggle matIconSuffix [for]="timeToPicker"/>
     <mat-timepicker #timeToPicker/>
   </mat-form-field>
   <div class="buttons" mat-dialog-actions>
-    <button class="btn-submit" mat-raised-button type="submit" [disabled]="availabilityForm.invalid">Save</button>
-    <button class="btn-cancel" mat-button mat-dialog-close type="button" (click)="closeDialog()">Cancel</button>
+    <button class="btn-submit" mat-raised-button type="submit" [disabled]="availabilityForm.invalid">Zapisz</button>
+    <button class="btn-cancel" mat-button mat-dialog-close type="button" (click)="closeDialog()">Anuluj</button>
   </div>
 </form>

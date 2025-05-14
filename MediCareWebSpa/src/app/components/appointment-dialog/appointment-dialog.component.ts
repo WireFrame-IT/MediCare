@@ -101,7 +101,7 @@ export class AppointmentDialogComponent implements OnInit {
         next: () => {
           this.dialogRef.close();
           this.loadingService.hide();
-          this.loadingService.showMessage(this.isDoctor() ? 'Diagnosis has been saved.' : 'Appointment has been saved.');
+          this.loadingService.showMessage(this.isDoctor() ? 'Diagnoza została zapisana.' : 'Wizyta została zapisana.');
         },
         error: (error) => {
           this.loadingService.hide();

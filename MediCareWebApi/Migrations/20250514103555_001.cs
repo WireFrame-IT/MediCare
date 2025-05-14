@@ -18,7 +18,7 @@ namespace MediCare.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     MedicamentType = table.Column<int>(type: "int", nullable: false),
                     PrescriptionRequired = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -63,7 +63,7 @@ namespace MediCare.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -129,7 +129,7 @@ namespace MediCare.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     DurationMinutes = table.Column<int>(type: "int", nullable: false),
                     SpecialityId = table.Column<int>(type: "int", nullable: false)
@@ -204,7 +204,7 @@ namespace MediCare.Migrations
                     Success = table.Column<bool>(type: "bit", nullable: false),
                     QueryString = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     Payload = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    ErrorMessage = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    ErrorMessage = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -299,7 +299,7 @@ namespace MediCare.Migrations
                     PatientsUserId = table.Column<int>(type: "int", nullable: false),
                     AppointmentId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Rate = table.Column<byte>(type: "tinyint", nullable: false)
                 },
                 constraints: table =>
@@ -326,7 +326,7 @@ namespace MediCare.Migrations
                     AppointmentId = table.Column<int>(type: "int", nullable: false),
                     IssueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -348,7 +348,7 @@ namespace MediCare.Migrations
                     Dosage = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     MedicamentUnit = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Notes = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {

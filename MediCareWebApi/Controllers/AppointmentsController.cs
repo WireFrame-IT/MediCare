@@ -36,7 +36,7 @@ namespace MediCare.Controllers
 				case RoleType.Doctor:
 					var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (doctor == null)
-						return NotFound("Doctor not found.");
+						return NotFound("Lekarz nie został znaleziony.");
 
 					var actionResult = await CheckPermission(PermissionType.ViewAllAppointments);
 					var appointments = actionResult == null ? await GetAllAppointmentsAsync() : await GetAllAppointmentsAsync(doctor.UserId, true);
@@ -45,7 +45,7 @@ namespace MediCare.Controllers
 				case RoleType.Patient:
 					var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 					if (patient == null)
-						return NotFound("Patient not found.");
+						return NotFound("Pacjent nie został znaleziony.");
 
 					return Ok(_mapper.Map<List<ReducedAppointmentDTO>>(await GetAllAppointmentsAsync(patient.UserId)));
 
@@ -76,7 +76,7 @@ namespace MediCare.Controllers
 					.FirstOrDefaultAsync(x => x.Id == appointmentRequestDTO.Id);
 
 			if (isNew && user.Role.RoleType != RoleType.Patient)
-				return BadRequest("Only patient can make an appointment.");
+				return BadRequest("Tylko pacjent może umówić wizytę.");
 
 			switch (user.Role.RoleType)
 			{
@@ -102,7 +102,7 @@ namespace MediCare.Controllers
 			{
 				appointment.Service = await _context.Services.FirstOrDefaultAsync(x => x.Id == appointmentRequestDTO.ServiceId.Value);
 				if (appointment.Service == null)
-					return NotFound("Service not found.");
+					return NotFound("Usługa nie została znaleziona.");
 			}
 			else
 			{
@@ -117,14 +117,14 @@ namespace MediCare.Controllers
 
 				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service, appointment.Id, appointment.DoctorsUserId);
 				if (doctor == null)
-					return NotFound("The selected doctor is not available at the provided time. If you don't choose a specific doctor, we'll automatically assign an available one for you.");
+					return NotFound("Wybrany lekarz nie jest dostępny o podanej godzinie. Jeśli nie wybierzesz lekarza, przypiszemy dostępnego.");
 				appointment.Doctor = doctor;
 			}
 			else
 			{
 				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service, appointment.Id);
 				if (doctor == null)
-					return NotFound("No available doctor for the specified term.");
+					return NotFound("Brak dostępnego lekarza w wybranym terminie.");
 				appointment.Doctor = doctor;
 			}
 
@@ -135,7 +135,7 @@ namespace MediCare.Controllers
 			if (appointment.Id == 0)
 				_context.Appointments.Add(appointment);
 			else if (user.Role.RoleType == RoleType.Patient)
-				return BadRequest("Patient cannot edit appointment.");
+				return BadRequest("Pacjent nie może edytować wizyty.");
 
 			await _context.SaveChangesAsync();
 			return Ok(_mapper.Map<AppointmentDTO>(appointment));
@@ -198,16 +198,13 @@ namespace MediCare.Controllers
 				case RoleType.Patient:
 					query = query.Where(x => x.Appointment.PatientsUserId == user.Id);
 					break;
-
 				case RoleType.Doctor:
 					var actionResult = await CheckPermission(PermissionType.ViewAllAppointments);
 					if (actionResult != null)
 						query = query.Where(x => x.Appointment.DoctorsUserId == user.Id);
 					break;
-
 				case RoleType.Admin:
 					break;
-
 				default:
 					return Forbid();
 			}
@@ -225,7 +222,7 @@ namespace MediCare.Controllers
 				.FirstOrDefaultAsync(x => x.AppointmentId == prescriptionRequestDto.AppointmentId);
 
 			if (prescriptionRequestDto.ExpirationDate <= DateTime.Now.Date)
-				return BadRequest("Invalid expiration date.");
+				return BadRequest("Nieprawidłowa data ważności.");
 
 			if (prescription == null)
 			{
@@ -240,7 +237,7 @@ namespace MediCare.Controllers
 			}
 
 			await _context.SaveChangesAsync();
-			return Ok();
+			return Ok(_mapper.Map<PrescriptionDTO>(prescription));
 		}
 
 		[Authorize(Roles = "Doctor")]
@@ -271,7 +268,7 @@ namespace MediCare.Controllers
 			var prescriptionMedicament = await _context.PrescriptionMedicaments
 				.FirstOrDefaultAsync(x => x.PrescriptionAppointmentId == prescriptionAppointmentId && x.MedicamentId == medicamentId);
 			if (prescriptionMedicament == null)
-				return BadRequest("Prescription medicament does not exist.");
+				return BadRequest("Przypisany lek nie istnieje.");
 
 			_context.PrescriptionMedicaments.Remove(prescriptionMedicament);
 			await _context.SaveChangesAsync();
@@ -284,7 +281,7 @@ namespace MediCare.Controllers
 		{
 			var appointment = await GetAppointmentAsync(id);
 			if (appointment == null)
-				return NotFound("Appointment doesn't exist or you don't have permission to accept it.");
+				return NotFound("Wizyta nie istnieje lub nie masz uprawnień do jej zaakceptowania.");
 			appointment.Status = AppointmentStatus.Accepted;
 			await _context.SaveChangesAsync();
 			return Ok();
@@ -296,10 +293,10 @@ namespace MediCare.Controllers
 		{
 			var appointment = await GetAppointmentAsync(id);
 			if (appointment == null)
-				return NotFound("Appointment doesn't exist or you don't have permission to accept it.");
+				return NotFound("Wizyta nie istnieje lub nie masz uprawnień do jej potwierdzenia.");
 
 			if (DateTime.Now < appointment.Time)
-				return BadRequest("Too early to confirm the appointment.");
+				return BadRequest("Zbyt wcześnie, aby potwierdzić wizytę.");
 
 			appointment.Status = AppointmentStatus.Confirmed;
 			await _context.SaveChangesAsync();
@@ -316,7 +313,7 @@ namespace MediCare.Controllers
 
 			var appointment = await GetAppointmentAsync(id);
 			if (appointment == null)
-				return NotFound("Appointment doesn't exist or you don't have permission to cancel it.");
+				return NotFound("Wizyta nie istnieje lub nie masz uprawnień do jej anulowania.");
 			appointment.Status = AppointmentStatus.Canceled;
 			await _context.SaveChangesAsync();
 			return Ok();
@@ -336,6 +333,10 @@ namespace MediCare.Controllers
 				case RoleType.Doctor:
 					query = query.Where(x => x.Appointment.DoctorsUserId == user.Id);
 					break;
+				case RoleType.Admin:
+					break;
+				default:
+					return Forbid();
 			}
 
 			return Ok(_mapper.Map<List<FeedbackDTO>>(await query.ToListAsync()));
@@ -349,10 +350,10 @@ namespace MediCare.Controllers
 			var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == feedbackRequestDto.AppointmentId);
 
 			if (appointment == null)
-				return NotFound("Appointment not found.");
+				return NotFound("Wizyta nie została znaleziona.");
 
 			if (appointment.PatientsUserId != userId)
-				return Unauthorized("Lack of appropriate permissions.");
+				return Unauthorized("Brak odpowiednich uprawnień.");
 
 			var feedback = await _context.Feedbacks.FirstOrDefaultAsync(x => x.PatientsUserId == userId && x.AppointmentId == feedbackRequestDto.AppointmentId);
 			if (feedback == null)
@@ -378,10 +379,10 @@ namespace MediCare.Controllers
 			var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == appointmentId);
 
 			if (appointment == null)
-				return NotFound("Appointment not found.");
+				return NotFound("Wizyta nie została znaleziona.");
 
 			if (appointment.DoctorsUserId != userId)
-				return Unauthorized("Lack of appropriate permissions.");
+				return Unauthorized("Brak odpowiednich uprawnień.");
 
 			return null;
 		}
@@ -428,20 +429,30 @@ namespace MediCare.Controllers
 
 		private IActionResult? ValidateAppointment(Appointment appointment, RoleType roleType)
 		{
-			var dayOfWeek = appointment.Time.DayOfWeek.ToString();
-			if (!_appointmentSettings.AvailableDays.Contains(dayOfWeek))
-				return BadRequest($"Appointment is not allowed on {dayOfWeek}.");
+			if (!_appointmentSettings.AvailableDays.Contains((int)appointment.Time.DayOfWeek))
+				return BadRequest($"Wizyta nie jest dozwolona {GetPolishDayName(appointment.Time.DayOfWeek)}.");
 
 			if (appointment.Time.Minute % 15 != 0 || appointment.Time < DateTime.Now && roleType != RoleType.Admin)
-				return BadRequest("Appointment time is not correct.");
+				return BadRequest("Czas wizyty jest nieprawidłowy.");
 
 			if (appointment.Time.TimeOfDay < TimeSpan.FromHours(_appointmentSettings.StartHour) || appointment.Time.TimeOfDay >= TimeSpan.FromHours(_appointmentSettings.EndHour))
-				return BadRequest($"Appointments can only be made within the time range of {_appointmentSettings.StartHour} to {_appointmentSettings.EndHour}.");
+				return BadRequest($"Wizyty można umawiać tylko w godzinach od {_appointmentSettings.StartHour} do {_appointmentSettings.EndHour}.");
 
 			if (appointment.Time.AddMinutes(appointment.Service.DurationMinutes) > appointment.Time.Date.AddHours(_appointmentSettings.EndHour))
-				return BadRequest($"Appointment duration exceeds {TimeSpan.FromHours(_appointmentSettings.EndHour).ToString(@"hh\:mm")}.");
+				return BadRequest($"Czas trwania wizyty przekracza {TimeSpan.FromHours(_appointmentSettings.EndHour).ToString(@"hh\:mm")}.");
 
 			return null;
 		}
+
+		private string GetPolishDayName(DayOfWeek dayOfWeek) => dayOfWeek switch
+		{
+			DayOfWeek.Monday => "w poniedziałek",
+			DayOfWeek.Tuesday => "we wtorek",
+			DayOfWeek.Wednesday => "w środę",
+			DayOfWeek.Thursday => "w czwartek",
+			DayOfWeek.Friday => "w piątek",
+			DayOfWeek.Saturday => "w sobotę",
+			DayOfWeek.Sunday => "w niedzielę"
+		};
 	}
 }

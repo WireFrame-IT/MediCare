@@ -1,18 +1,18 @@
 <form class="form" [formGroup]="registerForm" (ngSubmit)="register()">
   <mat-form-field class="form-field">
-    <mat-label>Name</mat-label>
+    <mat-label>Imię</mat-label>
     <input matInput formControlName="name" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Surname</mat-label>
+    <mat-label>Nazwisko</mat-label>
     <input matInput formControlName="surname" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Email</mat-label>
+    <mat-label>E-mail</mat-label>
     <input matInput formControlName="email" type="email" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Password</mat-label>
+    <mat-label>Hasło</mat-label>
     <input matInput formControlName="password" type="password" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
@@ -20,14 +20,14 @@
     <input matInput formControlName="pesel" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Phone Number</mat-label>
+    <mat-label>Telefon</mat-label>
     <input matInput formControlName="phoneNumber" required/>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Birth Date</mat-label>
-    <input matInput [matDatepicker]="picker" formControlName="birthDate">
+    <mat-label>Data urodzenia</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="maxDate">
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  <button class="btn-submit" mat-raised-button type="submit" [disabled]="registerForm.invalid">Register</button>
+  <button class="btn-submit" mat-raised-button type="submit" [disabled]="registerForm.invalid">Zarejestruj się</button>
 </form>

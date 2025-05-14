@@ -12,6 +12,7 @@ namespace MediCare.Models
 		public DateTime ExpirationDate { get; set; }
 
 		[Required]
+		[MaxLength(256)]
 		public string Description { get; set; }
 
 		[Key]

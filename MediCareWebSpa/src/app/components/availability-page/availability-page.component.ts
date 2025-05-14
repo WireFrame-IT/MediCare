@@ -47,7 +47,7 @@ export class AvailabilityPageComponent implements OnInit {
       next: () => {
         this.authService.loadDoctorsAvailabilities();
         this.loadingService.hide();
-        this.loadingService.showMessage('Availability removed.');
+        this.loadingService.showMessage('Usunięto okres dostępności.');
       },
       error: error => {
         this.loadingService.hide();

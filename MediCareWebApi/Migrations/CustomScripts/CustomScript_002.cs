@@ -43,7 +43,7 @@ namespace MediCare.Migrations.CustomScripts
 				BEGIN
 				    IF EXISTS (SELECT 1 FROM inserted WHERE DoctorOnly = 1 AND PatientOnly = 1)
 				    BEGIN
-				        RAISERROR('The ""DoctorOnly"" and ""PatientOnly"" columns cannot both be set to 1 at the same time.', 16, 1);
+				        RAISERROR('Kolumny ""DoctorOnly"" i ""PatientOnly"" nie mogą być jednocześnie ustawione na 1.', 16, 1);
 				        ROLLBACK TRANSACTION;
 				    END
 				END;

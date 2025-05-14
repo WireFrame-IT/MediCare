@@ -8,7 +8,7 @@ namespace MediCare.Utilities
 		{
 			var userIdString = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 			if (!int.TryParse(userIdString, out var userId))
-				throw new InvalidOperationException("User Id claim is not a valid integer.");
+				throw new InvalidOperationException("Identyfikator użytkownika nie jest prawidłową liczbą.");
 			return userId;
 		}
 	}

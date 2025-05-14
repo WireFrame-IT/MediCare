@@ -178,7 +178,7 @@ export class AuthService {
     .subscribe({
       next: () => {
         this.loadingService.hide();
-        this.loadingService.showMessage('Logged out.');
+        this.loadingService.showMessage('Wylogowano.');
       },
       error: err => {
         this.loadingService.hide();

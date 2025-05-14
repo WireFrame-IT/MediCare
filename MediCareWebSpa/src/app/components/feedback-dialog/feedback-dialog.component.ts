@@ -74,7 +74,7 @@ export class FeedbackDialogComponent {
         next: (feedback: Feedback) => {
           this.dialogRef.close(feedback);
           this.loadingService.hide();
-          this.loadingService.showMessage('Review has been saved.');
+          this.loadingService.showMessage('Opinia została zapisana.');
         },
         error: (error) => {
           this.loadingService.hide();

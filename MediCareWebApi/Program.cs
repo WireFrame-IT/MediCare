@@ -19,7 +19,7 @@ builder.Services.AddDbContext<MediCareDbContext>(opt =>
 var secretKey = builder.Configuration.GetSection("JwtSettings:SecretKey").Value;
 if (string.IsNullOrEmpty(secretKey))
 {
-	throw new InvalidOperationException("SecretKey is not set.");
+	throw new InvalidOperationException("Klucz tajny nie jest ustawiony.");
 }
 
 builder.Services.AddAuthentication(options =>

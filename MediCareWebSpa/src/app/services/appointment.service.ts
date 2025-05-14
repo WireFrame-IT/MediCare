@@ -16,6 +16,8 @@ import { PrescriptionMedicamentRequestDTO } from "../DTOs/request/prescription-m
 import { PrescriptionMedicament } from "../DTOs/models/prescription-medicament";
 import { Feedback } from "../DTOs/models/feedback";
 import { FeedbackRequestDTO } from "../DTOs/request/feedback-request.dto";
+import { MEDICAMENT_TYPE_MAP } from "../shared/maps/medicament-type-map";
+import { MEDICAMENT_UNIT_MAP } from "../shared/maps/medicament-unit-map";
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
@@ -112,7 +114,7 @@ export class AppointmentService {
     return this.http.post<Feedback>(`${this.apiUrl}/feedback`, feedback);
   }
 
-  getMedicamentTypeName = (type: MedicamentType): string => MedicamentType[type].replace(/([a-z])([A-Z])/g, '$1 $2');
+  getMedicamentTypeName = (type: MedicamentType): string => MEDICAMENT_TYPE_MAP[type];
 
-  getMedicamentUnitName = (unit: MedicamentUnit): string => MedicamentUnit[unit].replace(/([a-z])([A-Z])/g, '$1 $2');
+  getMedicamentUnitName = (unit: MedicamentUnit): string => MEDICAMENT_UNIT_MAP[unit];
 }

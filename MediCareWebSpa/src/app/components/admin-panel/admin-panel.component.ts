@@ -38,8 +38,8 @@ export class AdminPanelComponent implements OnInit {
 
   displayedColumns: string[] = [];
   roleTypes = [
-    { label: RoleType[RoleType.Patient], value: RoleType.Patient },
-    { label: RoleType[RoleType.Doctor], value: RoleType.Doctor }
+    { label: 'Pacjent', value: RoleType.Patient },
+    { label: 'Lekarz', value: RoleType.Doctor }
   ];
 
   constructor(
@@ -74,7 +74,7 @@ export class AdminPanelComponent implements OnInit {
 
   copyEmail(email: string): void {
     this.clipboard.copy(email);
-    this.snackBar.open('Email copied to clipboard.', 'Close', {
+    this.snackBar.open('Adres e-mail skopiowany do schowka.', 'Zamknij', {
       duration: 2000,
     });
   }
@@ -87,7 +87,7 @@ export class AdminPanelComponent implements OnInit {
         next: () => {
           this.authService.loadPermissions();
           this.loadingService.hide();
-          this.loadingService.showMessage(`Permission to \"${permission.description}\" granted for the role of ${RoleType[roleType]}.`);
+          this.loadingService.showMessage(`Uprawnienie \"${permission.description}\" zostało przyznane dla roli ${roleType === RoleType.Doctor ? '\"Lekarz\"' : '\"Pacjent\"'}.`);
         },
         error: error => {
           this.loadingService.hide();
@@ -99,7 +99,7 @@ export class AdminPanelComponent implements OnInit {
         next: () => {
           this.authService.loadPermissions();
           this.loadingService.hide();
-          this.loadingService.showMessage(`Permission to \"${permission.description}\" revoked for the role of ${RoleType[roleType]}.`);
+          this.loadingService.showMessage(`Uprawnienie \"${permission.description}\" zostało odebrane dla roli ${roleType === RoleType.Doctor ? '\"Lekarz\"' : '\"Pacjent\"'}.`);
         },
         error: error => {
           this.loadingService.hide();

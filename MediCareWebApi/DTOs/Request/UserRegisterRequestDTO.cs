@@ -5,15 +5,15 @@ namespace MediCare.DTOs.Request
 {
     public class UserRegisterRequestDTO : RegisterRequestDTO
     {
-        [Required(ErrorMessage = "RoleType is required.")]
-        public RoleType RoleType { get; set; }
+		[Required(ErrorMessage = "Typ roli jest wymagany.")]
+		public RoleType RoleType { get; set; }
 
-        [DataType(DataType.Date, ErrorMessage = "Invalid date format.")]
-        public DateTime? EmploymentDate { get; set; }
+		[DataType(DataType.Date, ErrorMessage = "Nieprawidłowy format daty.")]
+		public DateTime? EmploymentDate { get; set; }
 
-        public int? SpecialityId { get; set; }
+		public int? SpecialityId { get; set; }
 
-        [DataType(DataType.Date, ErrorMessage = "Invalid date format.")]
-        public DateTime? BirthDate { get; set; }
+		[DataType(DataType.Date, ErrorMessage = "Nieprawidłowy format daty.")]
+		public DateTime? BirthDate { get; set; }
 	}
 }

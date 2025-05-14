@@ -4,14 +4,14 @@
       <mat-card class="user-card">
         <mat-card-header class="header">
           <mat-card-title class="fullname">{{ person.user.name }} {{ person.user.surname }}</mat-card-title>
-          <mat-card-subtitle class="speciality">{{ isDoctor(person) ? getSpecialityName(person) : "Patient"}}</mat-card-subtitle>
+          <mat-card-subtitle class="speciality">{{ isDoctor(person) ? getSpecialityName(person) : "Pacjent"}}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="content">
           <button class="email" mat-raised-button (click)="copyEmail(person.user.email)">{{ person.user.email }}</button>
           <mat-icon class="icon">{{ isDoctor(person) ? 'medical_services' : 'person' }}</mat-icon>
         </mat-card-content>
         <mat-card-actions class="actions">
-          <button mat-raised-button (click)="openEditUserDialog(person)">Edit</button>
+          <button mat-raised-button (click)="openEditUserDialog(person)">Edytuj</button>
         </mat-card-actions>
       </mat-card>
     }
@@ -19,7 +19,7 @@
   <div class="right">
     <table mat-table [dataSource]="permissions()" class="table">
       <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef>Permission</th>
+        <th mat-header-cell *matHeaderCellDef>Uprawnienia</th>
         <td mat-cell *matCellDef="let permission"> {{ permission.description }} </td>
       </ng-container>
       @for (roleType of roleTypes; track roleType.value) {

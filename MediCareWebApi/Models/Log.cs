@@ -36,7 +36,7 @@ namespace MediCare.Models
 		[MaxLength(2000)]
 		public string? Payload { get; set; }
 
-		[MaxLength(500)]
+		[MaxLength(512)]
 		public string? ErrorMessage { get; set; }
 
 		public int? UserId { get; set; }

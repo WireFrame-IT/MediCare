@@ -18,12 +18,10 @@ namespace MedicalFacility.Controllers
 	[Route("[controller]")]
 	public class AccountsController : BaseController
 	{
-		private static readonly AppointmentStatus[] _cannotCancelAppointmentStatuses = [ AppointmentStatus.Accepted, AppointmentStatus.Confirmed ];
+		private static readonly AppointmentStatus[] CannotCancelAppointmentStatuses = [ AppointmentStatus.Accepted, AppointmentStatus.Confirmed ];
 
-		public AccountsController(MediCareDbContext context, IConfiguration configuration, IMapper mapper,
-			IAccountsService accountsService)
-			: base(context, configuration, mapper, accountsService)
-		{ }
+		public AccountsController(MediCareDbContext context, IConfiguration configuration, IMapper mapper, IAccountsService accountsService)
+			: base(context, configuration, mapper, accountsService) { }
 
 		[AllowAnonymous]
 		[HttpPost("register")]
@@ -38,7 +36,7 @@ namespace MedicalFacility.Controllers
 			};
 
 			if (patient.BirthDate > DateTime.Now)
-				throw new InvalidOperationException("Wrong birth date.");
+				throw new InvalidOperationException("Nieprawidłowa data urodzenia.");
 
 			await _context.Patients.AddAsync(patient);
 			await _context.SaveChangesAsync();
@@ -79,7 +77,7 @@ namespace MedicalFacility.Controllers
 					};
 
 					if (patient.BirthDate > DateTime.Now)
-						throw new InvalidOperationException("Wrong birth date.");
+						throw new InvalidOperationException("Nieprawidłowa data urodzenia.");
 
 					await _context.Patients.AddAsync(patient);
 					break;
@@ -98,7 +96,7 @@ namespace MedicalFacility.Controllers
 				.FirstOrDefaultAsync(x => x.Email == loginRequest.Email);
 
 			if (user == null || _accountsService.HashPassword(loginRequest.Password, user.Salt) != user.Password)
-				return Unauthorized("Invalid email or password.");
+				return Unauthorized("Nieprawidłowy adres e-mail lub hasło.");
 
 			user.RefreshToken = _accountsService.GenerateSalt();
 			user.RefreshTokenExpiration = DateTime.Now.AddMinutes(double.Parse(
@@ -125,10 +123,10 @@ namespace MedicalFacility.Controllers
 				.SingleOrDefaultAsync(x => x.RefreshToken == refreshRequest.RefreshToken);
 
 			if (user == null)
-				return Unauthorized("Invalid refresh token.");
+				return Unauthorized("Nieprawidłowy token odświeżania.");
 
 			if (user.RefreshTokenExpiration.Value < DateTime.Now)
-				return Unauthorized("Refresh token expired.");
+				return Unauthorized("Token odświeżania wygasł.");
 
 			user.RefreshToken = _accountsService.GenerateSalt();
 			await _context.SaveChangesAsync();
@@ -172,7 +170,7 @@ namespace MedicalFacility.Controllers
 		{
 			var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userRequestDTO.Id);
 			if (user == null)
-				return NotFound("User not found.");
+				return NotFound("Użytkownik nie został znaleziony.");
 
 			user.Name = userRequestDTO.Name;
 			user.Surname = userRequestDTO.Surname;
@@ -186,7 +184,7 @@ namespace MedicalFacility.Controllers
 			var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == user.Id);
 			var patient = await _context.Patients.FirstOrDefaultAsync(x => x.UserId == user.Id);
 			if (doctor == null && patient == null)
-				throw new InvalidOperationException("The user is neither a patient nor a doctor.");
+				throw new InvalidOperationException("Użytkownik nie jest ani pacjentem, ani lekarzem.");
 
 			if (doctor != null && userRequestDTO.SpecialityId.HasValue)
 				doctor.SpecialityId = userRequestDTO.SpecialityId.Value;
@@ -239,7 +237,7 @@ namespace MedicalFacility.Controllers
 		public async Task<IActionResult> SaveRolePermissionAsync([FromBody] RolePermissionRequestDTO requestDTO)
 		{
 			if (await _context.RolePermissions.AnyAsync(x => x.Role.RoleType == requestDTO.RoleType && x.PermissionId == requestDTO.PermissionId))
-				return BadRequest("Role permission already exists.");
+				return BadRequest("Uprawnienie roli już istnieje.");
 
 			var roleId = await _context.Roles.Where(x => x.RoleType == requestDTO.RoleType).Select(x => x.Id).FirstOrDefaultAsync();
 			var rolePermission = new RolePermission()
@@ -263,7 +261,7 @@ namespace MedicalFacility.Controllers
 		{
 			var rolePermission = await _context.RolePermissions.FirstOrDefaultAsync(x => x.Role.RoleType == roleType && x.PermissionId == permissionId);
 			if (rolePermission == null)
-				return BadRequest("Role permission does not exist.");
+				return BadRequest("Uprawnienie roli nie istnieje.");
 
 			_context.RolePermissions.Remove(rolePermission);
 			await _context.SaveChangesAsync();
@@ -290,10 +288,10 @@ namespace MedicalFacility.Controllers
 			var user = await GetCurrentUserAsync();
 			var availability = await _context.DoctorsAvailabilities.FirstOrDefaultAsync(x => x.Id == id && x.DoctorsUserId == user.Id);
 			if (availability == null)
-				return BadRequest("Availability does not exist.");
+				return BadRequest("Dostępność nie istnieje.");
 
-			if (await _context.Appointments.AnyAsync(x => x.DoctorsUserId == user.Id && _cannotCancelAppointmentStatuses.Contains(x.Status) && x.Time < availability.To && availability.From < x.Time.AddMinutes(x.Service.DurationMinutes)))
-				return BadRequest("Cancel accepted and confirmed appointments without availability first.");
+			if (await _context.Appointments.AnyAsync(x => x.DoctorsUserId == user.Id && CannotCancelAppointmentStatuses.Contains(x.Status) && x.Time < availability.To && availability.From < x.Time.AddMinutes(x.Service.DurationMinutes)))
+				return BadRequest("Najpierw należy anulować zaakceptowane i potwierdzone wizyty w ramach dostępności.");
 
 			_context.DoctorsAvailabilities.Remove(availability);
 			await _context.SaveChangesAsync();
@@ -305,7 +303,7 @@ namespace MedicalFacility.Controllers
 		public async Task<IActionResult> SaveDoctorsAvailabilityAsync([FromBody] DoctorsAvailabilityRequestDTO availabilityDTO)
 		{
 			if (availabilityDTO.From < DateTime.Now || availabilityDTO.From >= availabilityDTO.To)
-				return BadRequest("Wrong availability period.");
+				return BadRequest("Nieprawidłowy okres dostępności.");
 
 			var user = await GetCurrentUserAsync();
 			var availabilities = await _context.DoctorsAvailabilities
@@ -313,14 +311,14 @@ namespace MedicalFacility.Controllers
 				.ToListAsync();
 
 			if (availabilities.Any())
-				return BadRequest($"Availabilities cannot overlap.");
+				return BadRequest("Okresy dostępności nie mogą się nakładać.");
 
 			if (availabilityDTO.Id.HasValue)
 			{
 				var availability = await _context.DoctorsAvailabilities.FirstOrDefaultAsync(x => x.Id == availabilityDTO.Id.Value);
 
-				if (await _context.Appointments.AnyAsync(x => x.DoctorsUserId == user.Id && _cannotCancelAppointmentStatuses.Contains(x.Status) && availability.From <= x.Time && x.Time < availability.To && !(availabilityDTO.From <= x.Time && x.Time.AddMinutes(x.Service.DurationMinutes) <= availabilityDTO.To)))
-					return BadRequest("Cancel accepted and confirmed appointments without availability first.");
+				if (await _context.Appointments.AnyAsync(x => x.DoctorsUserId == user.Id && CannotCancelAppointmentStatuses.Contains(x.Status) && availability.From <= x.Time && x.Time < availability.To && !(availabilityDTO.From <= x.Time && x.Time.AddMinutes(x.Service.DurationMinutes) <= availabilityDTO.To)))
+					return BadRequest("Najpierw należy anulować zaakceptowane i potwierdzone wizyty, które nie mają przypisanej dostępności.");
 
 				availability.From = availabilityDTO.From;
 				availability.To = availabilityDTO.To;

@@ -34,7 +34,7 @@ namespace MediCare.Controllers
 				.Include(x => x.Role)
 				.FirstOrDefaultAsync(x => x.Id == userId);
 			if (user == null)
-				throw new InvalidOperationException("User not found.");
+				throw new InvalidOperationException("Użytkownik nie został znaleziony.");
 			return user;
 		}
 
@@ -43,7 +43,7 @@ namespace MediCare.Controllers
 			var existingUser = await _context.Users
 				.Where(x => x.Email == registerRequest.Email || x.Pesel == registerRequest.Pesel).FirstOrDefaultAsync();
 			if (existingUser != null)
-				throw new InvalidOperationException("User with the same email or PESEL already exists.");
+				throw new InvalidOperationException("Użytkownik o tym samym adresie e-mail lub PESEL już istnieje.");
 
 			var user = _mapper.Map<User>(registerRequest);
 			user.Role = await _context.Roles.FirstAsync(x => x.RoleType == roleType);
@@ -63,7 +63,7 @@ namespace MediCare.Controllers
 				return null;
 
 			var rolePermission = await _context.RolePermissions.FirstOrDefaultAsync(x => x.Role.Id == user.Role.Id && x.Permission.PermissionType == type);
-			return rolePermission == null ? Unauthorized("Missing required permission.") : null;
+			return rolePermission == null ? Unauthorized("Brak wymaganych uprawnień.") : null;
 		}
 	}
 }
