@@ -50,9 +50,7 @@ export class AppointmentPageComponent implements OnInit {
     { label: 'Daty', value: 'date' },
     { label: 'Usługi', value: 'service' },
     { label: 'Specjalizacji', value: 'speciality' },
-    { label: 'Statusu', value: 'status' },
-    { label: 'Lekarza', value: 'doctor' },
-    { label: 'Pacjenta', value: 'patient' }
+    { label: 'Statusu', value: 'status' }
   ];
 
   readonly statusOptions = Object.keys(AppointmentStatus).filter(key => isNaN(Number(key))).map(key => ({
@@ -282,22 +280,10 @@ export class AppointmentPageComponent implements OnInit {
           return a.service.speciality.name.localeCompare(b.service.speciality.name);
         case 'status':
           return a.status - b.status;
-        case 'doctor':
-          return this.compareUsers(a.doctor.user, b.doctor.user);
-        case 'patient':
-          return this.compareUsers(a.patient.user, b.patient.user);
         default:
           return 0;
       }
     });
-  }
-
-  private compareUsers(userA: { name: string, surname: string }, userB: { name: string, surname: string }): number {
-    const nameCompare = userA.name.localeCompare(userB.name);
-    if (nameCompare !== 0)
-      return nameCompare;
-
-    return userA.surname.localeCompare(userB.surname);
   }
 
   getStatus(status: AppointmentStatus): string {
