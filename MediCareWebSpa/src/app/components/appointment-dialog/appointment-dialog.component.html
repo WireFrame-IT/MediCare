@@ -34,7 +34,7 @@
   @if (!isDoctor()) {
     <mat-form-field class="form-field">
       <mat-label>Data</mat-label>
-      <input matInput [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" formControlName="date" [min]="minDate"/>
+      <input matInput [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" formControlName="date" [min]="isAdmin() ? null : minDate"/>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
