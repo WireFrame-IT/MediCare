@@ -47,6 +47,8 @@ builder.Services.AddCors(options =>
 
 builder.WebHost.ConfigureKestrel(options =>
 {
+	options.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps());
+
 	options.ConfigureHttpsDefaults(httpsOptions =>
 	{
 		httpsOptions.SslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13;
@@ -70,7 +72,7 @@ builder.Services.Configure<AppointmentSettings>(builder.Configuration.GetSection
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
-
+app.UsePathBase("/MediCareWebApi");
 app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();

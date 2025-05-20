@@ -1,6 +1,8 @@
 # .NET Core
 MediCareWebApi/bin/
 MediCareWebApi/obj/
+MediCareWebApi/publish/
+MediCareWebSpa/dist/
 
 # NPM
 MediCareWebSpa/node_modules

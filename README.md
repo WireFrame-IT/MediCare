@@ -33,10 +33,10 @@ Before you begin, make sure you have the following installed on your system:
 ### Step 1: Clone the Repository
 Clone the MediCare repository from GitHub to your local machine:
 ```bash
-git clone https://github.com/bohdansternytskyi7/MediCare.git
+git clone https://github.com/WireFrame-IT/MediCare.git
 ```
 
-### Step 2: Configure the Database
+### Step 2: Configure the Web Api
 Open MediCare solution in the Visual Studio. Build the solution → **Build** → **Build Solution**
 
 ### Step 3: Configure the Database
