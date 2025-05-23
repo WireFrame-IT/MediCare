@@ -66,22 +66,22 @@
         </mat-card-content>
         <mat-card-actions class="actions">
           @if (canCancel(appointment)) {
-            <button mat-raised-button (click)="onCancel(appointment)">Cancel</button>
+            <button mat-raised-button (click)="onCancel(appointment)">Anuluj</button>
           }
           @if (canAccept(appointment)) {
-            <button mat-flat-button (click)="onAccept(appointment)">Accept</button>
+            <button mat-flat-button (click)="onAccept(appointment)">Zaakceptuj</button>
           }
           @if (canConfirm(appointment)) {
-            <button mat-flat-button (click)="onConfirm(appointment)">Confirm</button>
+            <button mat-flat-button (click)="onConfirm(appointment)">Potwierdź</button>
           }
           @if (isConfirmed(appointment) && (isThisDoctor(appointment) || (existsPrescription(appointment) && (isAdmin() || isThisPatient(appointment) || isDoctor())))) {
-            <button mat-raised-button (click)="openPrescriptionDialog(appointment)">Prescription</button>
+            <button mat-raised-button (click)="openPrescriptionDialog(appointment)">Recepta</button>
           }
           @if (isConfirmed(appointment) && (isThisPatient(appointment) || existsReview(appointment.id))) {
-            <button mat-raised-button (click)="openFeedbackDialog(appointment)">Review</button>
+            <button mat-raised-button (click)="openFeedbackDialog(appointment)">Opinia</button>
           }
           @if (isAdmin() || isThisDoctor(appointment) && isConfirmed(appointment)) {
-            <button mat-flat-button (click)="openEditAppointmentDialog(appointment)">{{ isAdmin() ? "Edit" : "Diagnosis"}}</button>
+            <button mat-flat-button (click)="openEditAppointmentDialog(appointment)">{{ isAdmin() ? "Edytuj" : "Diagnoza"}}</button>
           }
         </mat-card-actions>
       </mat-card>
@@ -90,9 +90,9 @@
 }
 @if (isLoggedIn() && !filteredAppointments || filteredAppointments.length === 0) {
   <div class="no-appointments">
-    <p>No appointments.</p>
+    <p>Brak wizyt.</p>
     @if (!appointments || appointments.length === 0) {
-      <button mat-flat-button routerLink="/services">See services</button>
+      <button mat-flat-button routerLink="/services">Zobacz usługi</button>
     }
   </div>
 }

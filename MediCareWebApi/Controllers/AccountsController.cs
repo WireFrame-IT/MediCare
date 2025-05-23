@@ -101,6 +101,13 @@ namespace MedicalFacility.Controllers
 			user.RefreshToken = _accountsService.GenerateSalt();
 			user.RefreshTokenExpiration = DateTime.Now.AddMinutes(double.Parse(
 				_configuration.GetSection("JwtSettings:RefreshTokenExpirationMinutes").Value));
+
+			if (user.Role.RoleType == RoleType.Admin)
+			{
+				var admin = await _context.Admins.FirstAsync(x => x.UserId == user.Id);
+				admin.LastLogin = DateTime.Now;
+			}
+
 			await _context.SaveChangesAsync();
 
 			return Ok(new LoginResponseDTO
