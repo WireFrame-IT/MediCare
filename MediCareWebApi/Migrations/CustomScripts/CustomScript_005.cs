@@ -13,8 +13,8 @@ namespace MediCare.Migrations.CustomScripts
 				    SET NOCOUNT ON;
 
 				    UPDATE Appointments
-				    SET status = 50
-				    WHERE Time < DATEADD(MINUTE, -15, GETDATE());
+				    SET Status = 50
+				    WHERE Time < DATEADD(MINUTE, -15, GETDATE()) AND (Status = 10 OR Status = 20);
 				END;
 		    ");
 		}
