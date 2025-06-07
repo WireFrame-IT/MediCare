@@ -28,7 +28,7 @@
     background-color: variables.$background-color;
 
     .header {
-      width: 30%;
+      width: 25%;
 
       .title {
         color: variables.$primary-color;
@@ -44,6 +44,7 @@
       display: flex;
       flex-direction: row;
       align-items: center;
+      justify-content: space-between;
       gap: 1rem;
       padding: 1rem;
       font-size: 1.1rem;
@@ -53,15 +54,15 @@
       .doctors-info {
         display: flex;
         flex-direction: column;
-        width: 40%;
+        width: 35%;
       }
 
-      .patients-info .diagnosis {
+      .patients-info, .diagnosis {
         width: 35%;
       }
 
       .status {
-        width: 25%;
+        width: 30%;
         cursor: default;
 
         &-accepted {
@@ -88,7 +89,7 @@
       display: flex;
       justify-content: end;
       gap: 1rem;
-      width: 25%;
+      width: 30%;
     }
   }
 }
