@@ -22,7 +22,7 @@ import { DoctorsAvailabilityRequest } from '../DTOs/request/doctors-availability
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  readonly apiUrl = 'https://localhost:5001/MediCareWebApi/accounts';
+  readonly apiUrl = 'https://medicare20250528195544-hucfcyf3dgatf6bn.northeurope-01.azurewebsites.net/MediCareWebApi/accounts';
 
   isAdmin = signal<boolean>(false);
   isDoctor = signal<boolean>(false);

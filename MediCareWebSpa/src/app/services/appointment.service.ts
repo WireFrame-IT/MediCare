@@ -21,7 +21,7 @@ import { MEDICAMENT_UNIT_MAP } from "../shared/maps/medicament-unit-map";
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
-  private readonly apiUrl = 'https://localhost:5001/MediCareWebApi/appointments';
+  private readonly apiUrl = 'https://medicare20250528195544-hucfcyf3dgatf6bn.northeurope-01.azurewebsites.net/MediCareWebApi/appointments';
 
   services = signal<Service[]>([]);
   doctors = signal<Doctor[]>([]);
