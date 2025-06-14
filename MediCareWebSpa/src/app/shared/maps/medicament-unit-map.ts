@@ -1,17 +1,17 @@
 import { MedicamentUnit } from "../../enums/medicament-unit";
 
 export const MEDICAMENT_UNIT_MAP: { [key in MedicamentUnit]: string } = {
-  [MedicamentUnit.Milliliter]: "Mililitr",
-  [MedicamentUnit.Gram]: "Gram",
-  [MedicamentUnit.Capsule]: "Kapsułka",
-  [MedicamentUnit.Patch]: "Plaster",
   [MedicamentUnit.Ampoule]: "Ampułka",
-  [MedicamentUnit.Vial]: "Fiolka",
-  [MedicamentUnit.Sachet]: "Saszetka",
-  [MedicamentUnit.Drop]: "Kropla",
-  [MedicamentUnit.Package]: "Opakowanie",
   [MedicamentUnit.Bottle]: "Butelka",
-  [MedicamentUnit.Tube]: "Tuba",
+  [MedicamentUnit.Capsule]: "Kapsułka",
+  [MedicamentUnit.Suppository]: "Czopek",
+  [MedicamentUnit.Vial]: "Fiolka",
+  [MedicamentUnit.Gram]: "Gram",
+  [MedicamentUnit.Drop]: "Kropla",
+  [MedicamentUnit.Milliliter]: "Mililitr",
+  [MedicamentUnit.Package]: "Opakowanie",
+  [MedicamentUnit.Patch]: "Plaster",
+  [MedicamentUnit.Sachet]: "Saszetka",
   [MedicamentUnit.Tablet]: "Tabletka",
-  [MedicamentUnit.Suppository]: "Czopek"
+  [MedicamentUnit.Tube]: "Tuba"
 };

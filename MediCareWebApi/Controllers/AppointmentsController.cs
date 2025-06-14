@@ -148,6 +148,8 @@ namespace MediCare.Controllers
 			return Ok(_mapper.Map<List<DoctorDTO>>(await _context.Doctors
 				.Include(x => x.User)
 				.Include(x => x.Speciality)
+				.OrderBy(x => x.User.Name)
+				.ThenBy(x => x.User.Surname)
 				.ToListAsync()));
 		}
 
@@ -167,6 +169,8 @@ namespace MediCare.Controllers
 		{
 			return Ok(_mapper.Map<List<PatientDTO>>(await _context.Patients
 				.Include(x => x.User)
+				.OrderBy(x => x.User.Name)
+				.ThenBy(x => x.User.Surname)
 				.ToListAsync()));
 		}
 

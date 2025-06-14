@@ -1,15 +1,15 @@
 export enum MedicamentUnit {
-  Milliliter = 10,
-  Gram = 20,
+  Ampoule = 10,
+  Bottle = 20,
   Capsule = 30,
-  Patch = 40,
-  Ampoule = 50,
-  Vial = 60,
-  Sachet = 70,
-  Drop = 80,
+  Suppository = 40,
+  Vial = 50,
+  Gram = 60,
+  Drop = 70,
+  Milliliter = 80,
   Package = 90,
-  Bottle = 100,
-  Tube = 110,
+  Patch = 100,
+  Sachet = 110,
   Tablet = 120,
-  Suppository = 130
+  Tube = 130
 }
