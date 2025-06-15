@@ -117,7 +117,7 @@ namespace MediCare.Controllers
 
 				var doctor = await FindAvailableDoctorAsync(appointment.Time, appointment.Service, appointment.Id, appointment.DoctorsUserId);
 				if (doctor == null)
-					return NotFound("Wybrany lekarz nie jest dostępny o podanej godzinie. Jeśli nie wybierzesz lekarza, przypiszemy dostępnego.");
+					return NotFound("Wybrany lekarz nie jest dostępny o podanej godzinie. Jeśli nie wybierzesz lekarza, przypiszemy dostępnego automatycznie.");
 				appointment.Doctor = doctor;
 			}
 			else
@@ -157,10 +157,23 @@ namespace MediCare.Controllers
 		[HttpGet("reduced-doctors")]
 		public async Task<IActionResult> GetReducedDoctorsAsync()
 		{
-			return Ok(_mapper.Map<List<ReducedDoctorDTO>>(await _context.Doctors
+			var reducedDoctors = await _context.Doctors
 				.Include(x => x.User)
 				.Include(x => x.Speciality)
-				.ToListAsync()));
+				.Include(x => x.DoctorsAvailabilities.Where(y => y.To == null || DateTime.Now <= y.To))
+				.ToListAsync();
+
+			var reducedDoctorsDTO = _mapper.Map<List<ReducedDoctorDTO>>(reducedDoctors);
+
+			foreach (var doctor in reducedDoctorsDTO)
+			{
+				doctor.UnavailableTerms = await _context.Appointments
+					.Where(x => x.DoctorsUserId == doctor.UserId && x.Time.Date >= DateTime.Now.Date && x.Status != AppointmentStatus.Canceled && x.Status != AppointmentStatus.Absent)
+					.Select(x => new TimeRangeDTO { Start = x.Time, End = x.Time.AddMinutes(x.Service.DurationMinutes)})
+					.ToListAsync();
+			}
+
+			return Ok(reducedDoctorsDTO);
 		}
 
 		[Authorize(Roles = "Admin")]

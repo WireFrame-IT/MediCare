@@ -12,7 +12,7 @@
     @if (hasChooseDoctorPermission()) {
       <mat-form-field class="form-field">
         <mat-label>Lekarz</mat-label>
-        <mat-select formControlName="doctorsUserId">
+        <mat-select formControlName="doctorsUserId" (selectionChange)="onDoctorChange()">
           <mat-option [value]="0">Automatyczne przypisanie</mat-option>
           @for (doctor of doctorsBySpeciality; track doctor.userId) {
             <mat-option [value]="doctor.userId">{{ doctor.user.name }} {{ doctor.user.surname }}</mat-option>
@@ -34,16 +34,21 @@
   @if (!isDoctor()) {
     <mat-form-field class="form-field">
       <mat-label>Data</mat-label>
-      <input matInput [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" formControlName="date" [min]="isAdmin() ? null : minDate"/>
+      <input matInput [matDatepicker]="picker" [matDatepickerFilter]="dateFilter" formControlName="date" [min]="isAdmin() ? null : minDate" (dateChange)="onDateChange($event.value)"/>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
     <mat-form-field class="form-field">
       <mat-label>Czas</mat-label>
-      <input matInput [matTimepicker]="timePicker" formControlName="time" matTimepickerMin="08:00" matTimepickerMax="15:45">
+      <input matInput [matTimepicker]="timePicker" formControlName="time" matTimepickerMin="08:00" matTimepickerMax="15:45" [disabled]="availableTimeOptions.length === 0"/>
       <mat-timepicker-toggle matIconSuffix [for]="timePicker"/>
-      <mat-timepicker #timePicker/>
+      <mat-timepicker #timePicker [options]="availableTimeOptions"/>
     </mat-form-field>
+    @if (this.appointmentForm.value.date && availableTimeOptions.length === 0) {
+      <div class="no-available-terms">
+        <i>Brak dostępnych godzin dla wybranego dnia.</i>
+      </div>
+    }
   }
   @if(isDoctor()) {
     <mat-form-field class="text-area">
