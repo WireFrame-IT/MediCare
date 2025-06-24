@@ -13,6 +13,8 @@ public class UtcToPolishTimeJsonConverter : JsonConverter<DateTime>
 
 	public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
 	{
-		writer.WriteStringValue(value.ToUniversalTime());
+		var unspecified = DateTime.SpecifyKind(value, DateTimeKind.Unspecified);
+		var utc = TimeZoneInfo.ConvertTimeToUtc(unspecified, PolishTimeZone);
+		writer.WriteStringValue(utc.ToString("o"));
 	}
 }
