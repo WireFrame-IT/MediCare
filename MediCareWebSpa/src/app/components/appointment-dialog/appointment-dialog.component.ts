@@ -102,7 +102,10 @@ export class AppointmentDialogComponent implements OnInit {
     });
 
     effect(() => this.servicesBySpeciality = this.services().filter(x => x.specialityId == this.data.service.specialityId));
-    effect(() => this.doctorsBySpeciality = this.doctors().filter(x => x.specialityId === this.data?.service?.specialityId));
+    effect(() => {
+      this.doctorsBySpeciality = this.doctors().filter(x => x.specialityId === this.data?.service?.specialityId);
+      this.onDateChange(this.appointmentForm.value.selectedDate ?? new Date(this.data.time));
+    });
   }
 
   ngOnInit(): void {
@@ -113,7 +116,6 @@ export class AppointmentDialogComponent implements OnInit {
 
   onServiceChange(event: MatSelectChange) {
     this.doctorsBySpeciality = this.doctors().filter(x => x.specialityId === this.findSpecialityIdByServiceId(event.value));
-
     this.onDoctorChange();
   }
 
