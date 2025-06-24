@@ -17,8 +17,13 @@ public class NullableUtcToPolishTimeJsonConverter : JsonConverter<DateTime?>
 	public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)
 	{
 		if (value.HasValue)
-			writer.WriteStringValue(value.Value.ToUniversalTime());
-		else
+		{
+			var unspecified = DateTime.SpecifyKind(value.Value, DateTimeKind.Unspecified);
+			var utc = TimeZoneInfo.ConvertTimeToUtc(unspecified, PolishTimeZone);
+			writer.WriteStringValue(utc.ToString("o"));
+		} else
+		{
 			writer.WriteNullValue();
+		}
 	}
 }
