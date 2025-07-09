@@ -46,7 +46,14 @@ export class AppointmentDialogComponent implements OnInit {
   servicesBySpeciality: Service[] = [];
   doctorsBySpeciality: ReducedDoctor[] = [];
   minDate: Date = new Date();
-  statusEnum = Object.entries(AppointmentStatus).filter(([key, value]) => !isNaN(Number(value))).map(([key, value]) => ({ key, value }));
+
+  statusEnum = [
+    { key: 'Nowa', value: 10 },
+    { key: 'Zaakceptowana', value: 20 },
+    { key: 'Potwierdzona', value: 30 },
+    { key: 'Anulowana', value: 40 },
+    { key: 'Nieobecność', value: 50 }
+  ];
 
   timeOptions: MatTimepickerOption<Date>[] = [
     { value: new Date(0, 0, 0, 8, 0), label: '08:00' },
