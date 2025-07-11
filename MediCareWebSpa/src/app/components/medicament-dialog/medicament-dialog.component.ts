@@ -54,7 +54,7 @@ export class MedicamentDialogComponent implements OnInit {
     this.medicamentUnitOptions = Object.values(MedicamentUnit).filter(value => typeof value === 'number').map((value) => ({
       label: this.appointmentService.getMedicamentUnitName(value as MedicamentUnit),
       value: value
-    }));
+    })).sort((a, b) => a.label.localeCompare(b.label));
   }
 
   onSubmit(): void {
